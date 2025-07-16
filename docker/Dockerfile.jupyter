@@ -1,0 +1,92 @@
+FROM jupyter/datascience-notebook:latest
+
+# Switch to root for system installations
+USER root
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    git \
+    vim \
+    build-essential \
+    libpq-dev \
+    libssl-dev \
+    libffi-dev \
+    python3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install additional Python packages for data science
+RUN pip install --no-cache-dir \
+    # Core data science
+    pandas \
+    numpy \
+    scipy \
+    scikit-learn \
+    matplotlib \
+    seaborn \
+    plotly \
+    bokeh \
+    # Deep learning
+    tensorflow \
+    torch \
+    torchvision \
+    transformers \
+    # Database connections
+    sqlalchemy \
+    psycopg2-binary \
+    redis \
+    # ML and MLOps
+    mlflow \
+    optuna \
+    hyperopt \
+    # Security and authentication
+    cryptography \
+    pyjwt \
+    requests-oauthlib \
+    # Platform-specific
+    databricks-cli \
+    qlik-sdk \
+    # Development tools
+    jupyterlab-git \
+    jupyterlab-lsp \
+    python-lsp-server[all] \
+    black \
+    flake8 \
+    pytest \
+    pre-commit
+
+# Install R packages
+RUN R -e "install.packages(c('tidyverse', 'caret', 'randomForest', 'xgboost', 'shiny', 'plotly', 'DT'), repos='https://cran.rstudio.com/')"
+
+# Create workspace directory
+WORKDIR /workspace
+
+# Copy requirements files
+COPY requirements.txt /workspace/
+COPY environment.yml /workspace/
+
+# Install additional requirements if they exist
+RUN if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+RUN if [ -f environment.yml ]; then conda env update -f environment.yml; fi
+
+# Configure Jupyter
+RUN jupyter lab --generate-config
+RUN echo "c.ServerApp.token = 'ds-handbook-2024'" >> /home/jovyan/.jupyter/jupyter_lab_config.py
+RUN echo "c.ServerApp.allow_origin = '*'" >> /home/jovyan/.jupyter/jupyter_lab_config.py
+RUN echo "c.ServerApp.ip = '0.0.0.0'" >> /home/jovyan/.jupyter/jupyter_lab_config.py
+
+# Create directories for data and notebooks
+RUN mkdir -p /workspace/data /workspace/notebooks /workspace/models
+
+# Set permissions
+RUN chown -R jovyan:users /workspace
+
+# Switch back to jovyan user
+USER jovyan
+
+# Expose port
+EXPOSE 8888
+
+# Start Jupyter Lab
+CMD ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root"]

@@ -1,0 +1,181 @@
+# === SECURITY AND SENSITIVE DATA ===
+# DoD/Government Sensitive Files
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cert
+*.cer
+CAC_*
+PIV_*
+*_classified*
+*_secret*
+*_confidential*
+.env*
+!.env.example
+secrets/
+credentials/
+cac-certificates/
+piv-certificates/
+
+# API Keys and Tokens
+*api_key*
+*access_token*
+*secret_key*
+*private_key*
+oauth_tokens/
+jwt_tokens/
+
+# === LOGS AND DEBUGGING ===
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+dev-debug.log
+audit.log
+security.log
+
+# === DEPENDENCY DIRECTORIES ===
+node_modules/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# R dependencies
+packrat/lib*/
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+
+# === VIRTUAL ENVIRONMENTS ===
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+conda-env/
+.conda/
+
+# === DOCKER AND CONTAINERS ===
+.dockerignore
+Dockerfile.tmp
+docker-compose.override.yml
+.docker/
+
+# === CI/CD AND BUILD ARTIFACTS ===
+.github/secrets/
+ci-secrets/
+build-artifacts/
+deployment-keys/
+pipeline-cache/
+
+# === JUPYTER AND NOTEBOOKS ===
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+profile_default/
+ipython_config.py
+*.ipynb.bak
+
+# === DATA FILES (Potentially Sensitive) ===
+data/raw/
+data/classified/
+data/sensitive/
+*.csv.encrypted
+*.json.encrypted
+*.parquet.encrypted
+*.db
+*.sqlite
+*.sql
+
+# === ML MODELS AND ARTIFACTS ===
+models/
+*.pkl
+*.joblib
+*.h5
+*.pb
+*.onnx
+mlruns/
+.mlflow/
+wandb/
+
+# === EDITOR AND IDE FILES ===
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.vs/
+.history/
+
+# === OS SPECIFIC ===
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# === COMPILED FILES ===
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# === ARCHIVES ===
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# === TERRAFORM AND INFRASTRUCTURE ===
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+terraform.tfvars
+terraform.tfvars.json
+
+# === KUBERNETES ===
+kubeconfig*
+*.kubeconfig
+k8s-secrets/
+
+# === TASK MANAGEMENT (Commented for Development) ===
+# .taskmaster/
+# tasks.json
+# tasks/ 

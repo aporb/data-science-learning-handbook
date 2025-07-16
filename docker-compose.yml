@@ -1,0 +1,104 @@
+version: '3.8'
+
+services:
+  # Jupyter Lab Environment
+  jupyter:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.jupyter
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./chapters:/workspace/chapters
+      - ./code-examples:/workspace/code-examples
+      - ./platform-guides:/workspace/platform-guides
+      - ./data:/workspace/data
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+      - JUPYTER_TOKEN=ds-handbook-2024
+    networks:
+      - ds-network
+
+  # PostgreSQL for metadata and examples
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=ds_handbook
+      - POSTGRES_USER=ds_user
+      - POSTGRES_PASSWORD=ds_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - ds-network
+
+  # Redis for caching and session management
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - ds-network
+
+  # Nginx reverse proxy
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./docker/nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - jupyter
+    networks:
+      - ds-network
+
+  # Monitoring with Prometheus
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    networks:
+      - ds-network
+
+  # Grafana for visualization
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./docker/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./docker/grafana/datasources:/etc/grafana/provisioning/datasources
+    networks:
+      - ds-network
+
+  # Security scanning
+  security-scanner:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.security
+    volumes:
+      - ./:/workspace
+    networks:
+      - ds-network
+
+volumes:
+  postgres_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  ds-network:
+    driver: bridge
