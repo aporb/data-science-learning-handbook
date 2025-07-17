@@ -1,0 +1,54 @@
+FROM python:3.11-slim
+
+# Install system dependencies for security scanning
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    git \
+    jq \
+    nmap \
+    nikto \
+    sqlmap \
+    clamav \
+    clamav-daemon \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /app
+
+# Install Python security tools
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Install additional security packages
+RUN pip install --no-cache-dir \
+    bandit \
+    safety \
+    semgrep \
+    yamllint \
+    ansible-lint \
+    dockerfile-lint \
+    pip-audit \
+    cyclonedx-bom \
+    pip-licenses
+
+# Create directories
+RUN mkdir -p /app/security-compliance /app/validation /app/reports
+
+# Copy security scripts
+COPY scripts/security/ /app/scripts/
+COPY security-compliance/ /app/security-compliance/
+COPY validation/ /app/validation/
+
+# Make scripts executable
+RUN chmod +x /app/scripts/*.sh
+
+# Update ClamAV database
+RUN freshclam
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD python -c "import sys; sys.exit(0)" || exit 1
+
+# Default command
+CMD ["/app/scripts/security-scanner.sh"]

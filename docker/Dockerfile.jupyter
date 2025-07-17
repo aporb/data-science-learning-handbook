@@ -1,0 +1,87 @@
+FROM jupyter/datascience-notebook:latest
+
+# Switch to root for system setup
+USER root
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    git \
+    vim \
+    htop \
+    tree \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install additional Python packages
+RUN pip install --no-cache-dir \
+    mlflow \
+    streamlit \
+    dash \
+    plotly \
+    seaborn \
+    scikit-learn \
+    xgboost \
+    lightgbm \
+    catboost \
+    tensorflow \
+    torch \
+    transformers \
+    datasets \
+    opencv-python \
+    pillow \
+    sqlalchemy \
+    psycopg2-binary \
+    pymongo \
+    redis \
+    celery \
+    fastapi \
+    uvicorn \
+    pydantic \
+    requests \
+    httpx \
+    beautifulsoup4 \
+    scrapy \
+    selenium \
+    pytest \
+    pytest-cov \
+    black \
+    flake8 \
+    mypy \
+    pre-commit \
+    bandit \
+    safety \
+    jupyterlab-git \
+    jupyterlab-lsp \
+    jupyterlab-system-monitor
+
+# Install R packages
+RUN R -e "install.packages(c('tidyverse', 'shiny', 'plotly', 'DT', 'leaflet', 'forecast', 'caret', 'randomForest', 'xgboost', 'keras', 'reticulate'), repos='https://cran.rstudio.com/')"
+
+# Create workspace directory
+RUN mkdir -p /workspace && \
+    chown -R jovyan:users /workspace
+
+# Copy custom configuration
+COPY --chown=jovyan:users docker/jupyter/jupyter_notebook_config.py /home/jovyan/.jupyter/
+
+# Install Jupyter extensions
+RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager && \
+    jupyter lab build
+
+# Switch back to jovyan user
+USER jovyan
+
+# Set working directory
+WORKDIR /workspace
+
+# Expose ports
+EXPOSE 8888 8501 8050
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8888/api || exit 1
+
+# Start Jupyter Lab
+CMD ["start-notebook.sh", "--NotebookApp.token=''", "--NotebookApp.password=''"]

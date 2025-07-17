@@ -1,0 +1,37 @@
+FROM redis:7-alpine
+
+# Install additional tools
+RUN apk add --no-cache \
+    curl \
+    redis-cli
+
+# Copy Redis configuration
+COPY ./docker/redis/redis.conf /usr/local/etc/redis/redis.conf
+
+# Set up SSL certificates for secure connections
+RUN mkdir -p /usr/local/etc/redis/ssl && \
+    openssl req -new -x509 -days 365 -nodes -text \
+    -out /usr/local/etc/redis/ssl/redis.crt \
+    -keyout /usr/local/etc/redis/ssl/redis.key \
+    -subj "/C=US/ST=DC/L=Washington/O=DoD/CN=redis.ds-handbook.local" && \
+    chmod 600 /usr/local/etc/redis/ssl/redis.key
+
+# Configure Redis for security
+RUN echo "tls-port 6380" >> /usr/local/etc/redis/redis.conf && \
+    echo "port 0" >> /usr/local/etc/redis/redis.conf && \
+    echo "tls-cert-file /usr/local/etc/redis/ssl/redis.crt" >> /usr/local/etc/redis/redis.conf && \
+    echo "tls-key-file /usr/local/etc/redis/ssl/redis.key" >> /usr/local/etc/redis/redis.conf && \
+    echo "tls-ca-cert-file /usr/local/etc/redis/ssl/redis.crt" >> /usr/local/etc/redis/redis.conf && \
+    echo "requirepass ds_redis_secure_2024" >> /usr/local/etc/redis/redis.conf && \
+    echo "maxmemory 256mb" >> /usr/local/etc/redis/redis.conf && \
+    echo "maxmemory-policy allkeys-lru" >> /usr/local/etc/redis/redis.conf && \
+    echo "save 900 1" >> /usr/local/etc/redis/redis.conf && \
+    echo "save 300 10" >> /usr/local/etc/redis/redis.conf && \
+    echo "save 60 10000" >> /usr/local/etc/redis/redis.conf
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD redis-cli -a ds_redis_secure_2024 ping || exit 1
+
+EXPOSE 6379 6380
+CMD ["redis-server", "/usr/local/etc/redis/redis.conf"]

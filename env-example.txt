@@ -1,0 +1,28 @@
+# Data Science Learning Handbook Environment Configuration
+# Copy this file to .env and fill in your actual values
+
+# Platform API Credentials
+DATABRICKS_HOST=https://your-workspace.cloud.databricks.com
+DATABRICKS_TOKEN=your_databricks_access_token_here
+QLIK_SERVER_URL=https://your-qlik-server.com
+QLIK_API_KEY=your_qlik_api_key_here
+ADVANA_API_ENDPOINT=https://advana.mil/api
+ADVANA_CLIENT_ID=your_advana_client_id
+JUPITER_API_URL=https://jupiter.navy.mil/api
+JUPITER_API_KEY=your_jupiter_api_key
+
+# Security and Authentication (DoD)
+CAC_CERT_PATH=/path/to/cac_certificate.pem
+PIV_CERT_PATH=/path/to/piv_certificate.pem
+OAUTH_CLIENT_ID=your_oauth_client_id
+OAUTH_CLIENT_SECRET=your_oauth_client_secret
+
+# ML Frameworks
+MLFLOW_TRACKING_URI=https://your-mlflow-server.com
+MLFLOW_EXPERIMENT_NAME=data_science_handbook
+
+# Development Settings
+ENVIRONMENT=development
+DEBUG=true
+LOG_LEVEL=INFO
+DATA_CLASSIFICATION=UNCLASSIFIED

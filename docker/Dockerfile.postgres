@@ -1,0 +1,38 @@
+FROM postgres:15-alpine
+
+# Set environment variables
+ENV POSTGRES_DB=ds_handbook
+ENV POSTGRES_USER=ds_user
+ENV POSTGRES_PASSWORD=ds_handbook_secure_2024
+
+# Install additional extensions
+RUN apk add --no-cache \
+    postgresql-contrib \
+    postgresql-plpython3
+
+# Copy initialization scripts
+COPY ./docker/postgres/init.sql /docker-entrypoint-initdb.d/
+
+# Set up SSL certificates for secure connections
+RUN mkdir -p /var/lib/postgresql/ssl && \
+    openssl req -new -x509 -days 365 -nodes -text \
+    -out /var/lib/postgresql/ssl/server.crt \
+    -keyout /var/lib/postgresql/ssl/server.key \
+    -subj "/C=US/ST=DC/L=Washington/O=DoD/CN=ds-handbook.local" && \
+    chmod 600 /var/lib/postgresql/ssl/server.key && \
+    chown postgres:postgres /var/lib/postgresql/ssl/server.key
+
+# Configure PostgreSQL for security and performance
+RUN echo "ssl = on" >> /usr/local/share/postgresql/postgresql.conf.sample && \
+    echo "ssl_cert_file = '/var/lib/postgresql/ssl/server.crt'" >> /usr/local/share/postgresql/postgresql.conf.sample && \
+    echo "ssl_key_file = '/var/lib/postgresql/ssl/server.key'" >> /usr/local/share/postgresql/postgresql.conf.sample && \
+    echo "log_connections = on" >> /usr/local/share/postgresql/postgresql.conf.sample && \
+    echo "log_disconnections = on" >> /usr/local/share/postgresql/postgresql.conf.sample && \
+    echo "log_statement = 'all'" >> /usr/local/share/postgresql/postgresql.conf.sample && \
+    echo "log_line_prefix = '%t [%p]: [%l-1] user=%u,db=%d,app=%a,client=%h '" >> /usr/local/share/postgresql/postgresql.conf.sample
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB} || exit 1
+
+EXPOSE 5432
