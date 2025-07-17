@@ -179,3 +179,10 @@ k8s-secrets/
 # .taskmaster/
 # tasks.json
 # tasks/ 
+
+# === MISCELLANEOUS ===
+CLAUDE.md 
+GEMINI.md
+.claude/
+.gemini/
+.clinerules/
