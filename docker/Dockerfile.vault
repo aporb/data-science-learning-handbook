@@ -1,0 +1,64 @@
+# HashiCorp Vault Dockerfile
+# Secure credential management system for Data Science Learning Handbook
+
+FROM hashicorp/vault:1.15.2
+
+# Set user to root temporarily for setup
+USER root
+
+# Install additional tools for DoD compliance
+RUN apk update && apk add --no-cache \
+    curl \
+    jq \
+    openssl \
+    ca-certificates \
+    tzdata \
+    bash \
+    && rm -rf /var/cache/apk/*
+
+# Create necessary directories
+RUN mkdir -p /vault/config \
+    /vault/data \
+    /vault/logs \
+    /vault/tls \
+    /vault/plugins \
+    /vault/policies \
+    /vault/scripts
+
+# Copy Vault configuration
+COPY vault/vault.hcl /vault/config/vault.hcl
+
+# Copy initialization and startup scripts
+COPY vault/scripts/ /vault/scripts/
+
+# Set proper permissions
+RUN chown -R vault:vault /vault && \
+    chmod -R 755 /vault && \
+    chmod 600 /vault/config/vault.hcl
+
+# Create TLS certificates directory with proper permissions
+RUN chmod 700 /vault/tls
+
+# Switch back to vault user for security
+USER vault
+
+# Set working directory
+WORKDIR /vault
+
+# Expose ports
+EXPOSE 8200 8201
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD vault status || exit 1
+
+# Set environment variables
+ENV VAULT_ADDR=https://0.0.0.0:8200
+ENV VAULT_API_ADDR=https://vault:8200
+ENV VAULT_CLUSTER_ADDR=https://vault:8201
+ENV VAULT_UI=true
+ENV VAULT_LOG_LEVEL=info
+ENV VAULT_LOG_FORMAT=json
+
+# Default command
+CMD ["/usr/local/bin/docker-entrypoint.sh", "vault", "server", "-config=/vault/config/vault.hcl"]
