@@ -180,9 +180,46 @@ k8s-secrets/
 # tasks.json
 # tasks/ 
 
-# === MISCELLANEOUS ===
-CLAUDE.md 
+# === VAULT AND SECRETS (Specific Patterns) ===
+vault/data/
+vault/logs/
+vault/keys/
+vault/tls/
+*vault-keys*
+*root-token*
+*unseal-key*
+*break-glass-token*
+vault-backup-*.snap
+consul/data/
+
+# === AI ASSISTANT CONFIGS (Local Development) ===
+CLAUDE.md
 GEMINI.md
 .claude/
 .gemini/
 .clinerules/
+.cursor/
+.continue/
+.cline/
+.aider/
+
+# === LOCAL DEVELOPMENT AND TESTING ===
+.vscode/settings.json
+.idea/workspace.xml
+*.local
+*-local.*
+dev-notes/
+scratch/
+temp/
+test-data/
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# === TASKMASTER LOCAL CONFIGS (Optional) ===
+# Uncomment if you want to keep taskmaster configs local
+# .taskmaster/config.json
+# .taskmaster/reports/
+
+# === MISCELLANEOUS ===
