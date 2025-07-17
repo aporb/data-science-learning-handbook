@@ -1,6 +1,6 @@
 FROM jupyter/datascience-notebook:latest
 
-# Switch to root for system installations
+# Switch to root for system setup
 USER root
 
 # Install system dependencies
@@ -9,84 +9,79 @@ RUN apt-get update && apt-get install -y \
     wget \
     git \
     vim \
+    htop \
+    tree \
     build-essential \
-    libpq-dev \
-    libssl-dev \
-    libffi-dev \
-    python3-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Install additional Python packages for data science
+# Install additional Python packages
 RUN pip install --no-cache-dir \
-    # Core data science
-    pandas \
-    numpy \
-    scipy \
-    scikit-learn \
-    matplotlib \
-    seaborn \
+    mlflow \
+    streamlit \
+    dash \
     plotly \
-    bokeh \
-    # Deep learning
+    seaborn \
+    scikit-learn \
+    xgboost \
+    lightgbm \
+    catboost \
     tensorflow \
     torch \
-    torchvision \
     transformers \
-    # Database connections
+    datasets \
+    opencv-python \
+    pillow \
     sqlalchemy \
     psycopg2-binary \
+    pymongo \
     redis \
-    # ML and MLOps
-    mlflow \
-    optuna \
-    hyperopt \
-    # Security and authentication
-    cryptography \
-    pyjwt \
-    requests-oauthlib \
-    # Platform-specific
-    databricks-cli \
-    qlik-sdk \
-    # Development tools
-    jupyterlab-git \
-    jupyterlab-lsp \
-    python-lsp-server[all] \
+    celery \
+    fastapi \
+    uvicorn \
+    pydantic \
+    requests \
+    httpx \
+    beautifulsoup4 \
+    scrapy \
+    selenium \
+    pytest \
+    pytest-cov \
     black \
     flake8 \
-    pytest \
-    pre-commit
+    mypy \
+    pre-commit \
+    bandit \
+    safety \
+    jupyterlab-git \
+    jupyterlab-lsp \
+    jupyterlab-system-monitor
 
 # Install R packages
-RUN R -e "install.packages(c('tidyverse', 'caret', 'randomForest', 'xgboost', 'shiny', 'plotly', 'DT'), repos='https://cran.rstudio.com/')"
+RUN R -e "install.packages(c('tidyverse', 'shiny', 'plotly', 'DT', 'leaflet', 'forecast', 'caret', 'randomForest', 'xgboost', 'keras', 'reticulate'), repos='https://cran.rstudio.com/')"
 
 # Create workspace directory
-WORKDIR /workspace
+RUN mkdir -p /workspace && \
+    chown -R jovyan:users /workspace
 
-# Copy requirements files
-COPY requirements.txt /workspace/
-COPY environment.yml /workspace/
+# Copy custom configuration
+COPY --chown=jovyan:users docker/jupyter/jupyter_notebook_config.py /home/jovyan/.jupyter/
 
-# Install additional requirements if they exist
-RUN if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-RUN if [ -f environment.yml ]; then conda env update -f environment.yml; fi
-
-# Configure Jupyter
-RUN jupyter lab --generate-config
-RUN echo "c.ServerApp.token = 'ds-handbook-2024'" >> /home/jovyan/.jupyter/jupyter_lab_config.py
-RUN echo "c.ServerApp.allow_origin = '*'" >> /home/jovyan/.jupyter/jupyter_lab_config.py
-RUN echo "c.ServerApp.ip = '0.0.0.0'" >> /home/jovyan/.jupyter/jupyter_lab_config.py
-
-# Create directories for data and notebooks
-RUN mkdir -p /workspace/data /workspace/notebooks /workspace/models
-
-# Set permissions
-RUN chown -R jovyan:users /workspace
+# Install Jupyter extensions
+RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager && \
+    jupyter lab build
 
 # Switch back to jovyan user
 USER jovyan
 
-# Expose port
-EXPOSE 8888
+# Set working directory
+WORKDIR /workspace
+
+# Expose ports
+EXPOSE 8888 8501 8050
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8888/api || exit 1
 
 # Start Jupyter Lab
-CMD ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root"]
+CMD ["start-notebook.sh", "--NotebookApp.token=''", "--NotebookApp.password=''"]

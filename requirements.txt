@@ -1,79 +1,97 @@
-# Core Data Science
-pandas>=2.0.0
+# Core Data Science Libraries
 numpy>=1.24.0
+pandas>=2.0.0
 scipy>=1.10.0
-scikit-learn>=1.3.0
-
-# Visualization
 matplotlib>=3.7.0
 seaborn>=0.12.0
 plotly>=5.15.0
-bokeh>=3.0.0
-altair>=5.0.0
 
-# Deep Learning
-tensorflow>=2.13.0
-torch>=2.0.0
-torchvision>=0.15.0
-transformers>=4.30.0
-keras>=2.13.0
-
-# Database & Storage
-sqlalchemy>=2.0.0
-psycopg2-binary>=2.9.0
-redis>=4.5.0
-pymongo>=4.4.0
-
-# MLOps & ML
-mlflow>=2.5.0
-optuna>=3.2.0
-hyperopt>=0.2.7
+# Machine Learning
+scikit-learn>=1.3.0
 xgboost>=1.7.0
 lightgbm>=3.3.0
 catboost>=1.2.0
 
+# Deep Learning
+tensorflow>=2.13.0
+torch>=2.0.0
+transformers>=4.30.0
+datasets>=2.12.0
+
+# Computer Vision
+opencv-python>=4.8.0
+pillow>=10.0.0
+
+# NLP
+nltk>=3.8.0
+spacy>=3.6.0
+textblob>=0.17.1
+
+# Web Frameworks
+fastapi>=0.100.0
+uvicorn>=0.23.0
+flask>=2.3.0
+django>=4.2.0
+
+# Database
+sqlalchemy>=2.0.0
+psycopg2-binary>=2.9.0
+pymongo>=4.4.0
+redis>=4.6.0
+
 # Data Processing
 dask>=2023.6.0
+pyspark>=3.4.0
 polars>=0.18.0
-pyarrow>=12.0.0
 
-# Web & APIs
-flask>=2.3.0
-fastapi>=0.100.0
-uvicorn>=0.22.0
-requests>=2.31.0
-httpx>=0.24.0
+# MLOps
+mlflow>=2.5.0
+wandb>=0.15.0
+optuna>=3.2.0
+hyperopt>=0.2.7
 
-# Security & Authentication
-cryptography>=41.0.0
-pyjwt>=2.8.0
-requests-oauthlib>=1.3.0
-python-jose>=3.3.0
-passlib>=1.7.4
-
-# Development & Testing
-pytest>=7.4.0
-black>=23.0.0
-flake8>=6.0.0
-mypy>=1.4.0
-pre-commit>=3.3.0
-
-# Documentation
-sphinx>=7.0.0
-mkdocs>=1.5.0
-mkdocs-material>=9.1.0
-
-# Platform-specific
-databricks-cli>=0.17.0
+# Cloud Services
 boto3>=1.28.0
 azure-storage-blob>=12.17.0
 google-cloud-storage>=2.10.0
 
+# Web Scraping
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+scrapy>=2.9.0
+selenium>=4.10.0
+
+# Jupyter Extensions
+jupyterlab>=4.0.0
+jupyterlab-git>=0.41.0
+jupyterlab-lsp>=4.2.0
+ipywidgets>=8.0.0
+
+# Development Tools
+pytest>=7.4.0
+pytest-cov>=4.1.0
+black>=23.7.0
+flake8>=6.0.0
+mypy>=1.5.0
+pre-commit>=3.3.0
+bandit>=1.7.0
+safety>=2.3.0
+
+# Security & Authentication
+cryptography>=41.0.0
+PyKCS11>=1.5.12
+python-jose[cryptography]>=3.3.0
+passlib[bcrypt]>=1.7.4
+python-multipart>=0.0.6
+PyJWT>=2.8.0
+requests>=2.31.0
+responses>=0.23.0
+
 # Utilities
-python-dotenv>=1.0.0
 click>=8.1.0
 typer>=0.9.0
-rich>=13.4.0
-tqdm>=4.65.0
+pydantic>=2.0.0
+python-dotenv>=1.0.0
 pyyaml>=6.0
-python-dateutil>=2.8.0
+tqdm>=4.65.0
+joblib>=1.3.0
