@@ -1,441 +1,773 @@
 """
-DoD-Compliant Encryption Manager
-Implements AES-256 encryption at rest and TLS 1.3 for data in transit
-with FIPS 140-2 compliant cryptographic modules.
+Encryption Manager for Data at Rest and In Transit
+
+This module provides a comprehensive encryption framework supporting:
+- AES-256-GCM authenticated encryption for data at rest
+- Envelope encryption for large data sets
+- Field-level encryption for database records
+- File-level encryption with secure metadata
+- Stream encryption for large files
+- Key versioning and migration support
+
+Security Features:
+- Authenticated encryption to prevent tampering
+- Secure initialization vector (IV) generation
+- Constant-time operations where possible
+- Memory protection for sensitive data
+- Comprehensive error handling without information leakage
 """
 
 import os
-import base64
+import secrets
+import hashlib
 import json
 import logging
-from typing import Dict, Any, Optional, Union, Tuple
-from datetime import datetime, timedelta
-from cryptography.fernet import Fernet
-from cryptography.hazmat.primitives import hashes, serialization
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+from typing import Dict, Optional, Tuple, Union, List, Any, BinaryIO
+from dataclasses import dataclass, asdict
+from datetime import datetime
+from enum import Enum
+import base64
+import struct
+
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-from cryptography.hazmat.primitives.asymmetric import rsa, padding
+from cryptography.hazmat.primitives import hashes, padding
 from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives.serialization import load_pem_private_key, load_pem_public_key
-import secrets
+from cryptography.exceptions import InvalidTag
 
-logger = logging.getLogger(__name__)
+from .key_manager import KeyManager, KeyType, KeyManagerError, SecureBytes
 
-class DoD_Encryption_Manager:
+
+class EncryptionAlgorithm(Enum):
+    """Supported encryption algorithms."""
+    AES_256_GCM = "aes-256-gcm"
+    AES_256_CBC = "aes-256-cbc"
+    CHACHA20_POLY1305 = "chacha20-poly1305"
+
+
+class EncryptionMode(Enum):
+    """Encryption operation modes."""
+    DATA_AT_REST = "at_rest"
+    DATA_IN_TRANSIT = "in_transit"
+    FIELD_LEVEL = "field_level"
+    FILE_LEVEL = "file_level"
+
+
+@dataclass
+class EncryptionMetadata:
+    """Metadata for encrypted data."""
+    algorithm: str
+    key_id: str
+    key_version: int = 1
+    iv: Optional[str] = None
+    tag: Optional[str] = None
+    timestamp: str = ""
+    mode: str = EncryptionMode.DATA_AT_REST.value
+    data_size: int = 0
+    checksum: Optional[str] = None
+    
+    def __post_init__(self):
+        if not self.timestamp:
+            self.timestamp = datetime.utcnow().isoformat()
+
+
+@dataclass
+class EncryptedData:
+    """Container for encrypted data and its metadata."""
+    data: bytes
+    metadata: EncryptionMetadata
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary for serialization."""
+        return {
+            'data': base64.b64encode(self.data).decode('utf-8'),
+            'metadata': asdict(self.metadata)
+        }
+    
+    @classmethod
+    def from_dict(cls, data_dict: Dict[str, Any]) -> 'EncryptedData':
+        """Create from dictionary."""
+        return cls(
+            data=base64.b64decode(data_dict['data']),
+            metadata=EncryptionMetadata(**data_dict['metadata'])
+        )
+
+
+class EncryptionError(Exception):
+    """Base exception for encryption operations."""
+    pass
+
+
+class DecryptionError(EncryptionError):
+    """Raised when decryption fails."""
+    pass
+
+
+class InvalidDataError(EncryptionError):
+    """Raised when input data is invalid."""
+    pass
+
+
+class EncryptionManager:
     """
-    DoD-compliant encryption manager implementing FIPS 140-2 validated
-    cryptographic operations for data at rest and in transit.
+    Comprehensive encryption manager for data at rest and in transit.
+    
+    Features:
+    - Multiple encryption algorithms (AES-256-GCM, ChaCha20-Poly1305)
+    - Envelope encryption for large datasets
+    - Field-level encryption for databases
+    - File-level encryption with streaming support
+    - Automatic key rotation and migration
+    - Authenticated encryption with tamper detection
+    - Secure random IV generation
+    - Comprehensive audit logging
     """
     
-    def __init__(self, classification_level: str = "NIPR"):
+    def __init__(self, 
+                 key_manager: KeyManager,
+                 default_algorithm: EncryptionAlgorithm = EncryptionAlgorithm.AES_256_GCM):
         """
-        Initialize encryption manager with classification-specific settings.
+        Initialize the Encryption Manager.
         
         Args:
-            classification_level: Security classification (NIPR, SIPR, JWICS)
+            key_manager: Key management system instance
+            default_algorithm: Default encryption algorithm to use
         """
-        self.classification_level = classification_level.upper()
-        self.backend = default_backend()
-        self._validate_fips_compliance()
+        self.key_manager = key_manager
+        self.default_algorithm = default_algorithm
+        self.logger = logging.getLogger(__name__)
         
-        # Classification-specific encryption parameters
-        self.encryption_params = self._get_classification_params()
-        
-        # Key derivation settings
-        self.kdf_iterations = self.encryption_params['kdf_iterations']
-        self.salt_length = 32  # 256 bits
-        
-        # Initialize key hierarchy
-        self.master_key = None
-        self.data_encryption_keys = {}
-        self.key_rotation_interval = timedelta(days=self.encryption_params['key_rotation_days'])
-        
-        logger.info(f"Initialized DoD Encryption Manager for {self.classification_level}")
-    
-    def _validate_fips_compliance(self) -> None:
-        """Validate FIPS 140-2 compliance of cryptographic backend."""
-        try:
-            # Check if FIPS mode is available
-            from cryptography.hazmat.backends.openssl.backend import backend
-            if hasattr(backend, '_lib') and hasattr(backend._lib, 'FIPS_mode'):
-                fips_enabled = backend._lib.FIPS_mode()
-                if not fips_enabled:
-                    logger.warning("FIPS 140-2 mode not enabled. Enable for production use.")
-            else:
-                logger.warning("FIPS 140-2 validation not available in current environment.")
-        except Exception as e:
-            logger.error(f"FIPS validation error: {e}")
-    
-    def _get_classification_params(self) -> Dict[str, Any]:
-        """Get encryption parameters based on classification level."""
-        params = {
-            "NIPR": {
-                "key_size": 256,  # AES-256
-                "kdf_iterations": 100000,
-                "key_rotation_days": 90,
-                "require_hsm": False,
-                "approved_algorithms": ["AES-256-GCM", "RSA-4096", "SHA-256"]
+        # Algorithm configurations
+        self._algorithm_configs = {
+            EncryptionAlgorithm.AES_256_GCM: {
+                'key_size': 32,  # 256 bits
+                'iv_size': 12,   # 96 bits for GCM
+                'tag_size': 16   # 128 bits
             },
-            "SIPR": {
-                "key_size": 256,  # AES-256
-                "kdf_iterations": 150000,
-                "key_rotation_days": 60,
-                "require_hsm": True,
-                "approved_algorithms": ["AES-256-GCM", "RSA-4096", "SHA-384"]
+            EncryptionAlgorithm.AES_256_CBC: {
+                'key_size': 32,  # 256 bits
+                'iv_size': 16,   # 128 bits
+                'tag_size': 0    # No authentication tag
             },
-            "JWICS": {
-                "key_size": 256,  # AES-256
-                "kdf_iterations": 200000,
-                "key_rotation_days": 30,
-                "require_hsm": True,
-                "approved_algorithms": ["AES-256-GCM", "RSA-4096", "SHA-512"]
+            EncryptionAlgorithm.CHACHA20_POLY1305: {
+                'key_size': 32,  # 256 bits
+                'iv_size': 12,   # 96 bits
+                'tag_size': 16   # 128 bits
             }
         }
         
-        if self.classification_level not in params:
-            raise ValueError(f"Unsupported classification level: {self.classification_level}")
-        
-        return params[self.classification_level]
+        # Chunk size for streaming operations (1MB)
+        self.chunk_size = 1024 * 1024
     
-    def generate_master_key(self, password: str, salt: Optional[bytes] = None) -> bytes:
+    def encrypt_data(self,
+                     data: Union[str, bytes],
+                     key_id: Optional[str] = None,
+                     algorithm: Optional[EncryptionAlgorithm] = None,
+                     mode: EncryptionMode = EncryptionMode.DATA_AT_REST,
+                     additional_data: Optional[bytes] = None) -> EncryptedData:
         """
-        Generate master key using PBKDF2 with classification-appropriate parameters.
+        Encrypt data using specified algorithm and key.
         
         Args:
-            password: Master password for key derivation
-            salt: Optional salt (generated if not provided)
+            data: Data to encrypt (string or bytes)
+            key_id: Key identifier (generated if None)
+            algorithm: Encryption algorithm to use
+            mode: Encryption mode context
+            additional_data: Additional authenticated data (AAD) for AEAD
             
         Returns:
-            Derived master key
+            EncryptedData object containing encrypted data and metadata
+            
+        Raises:
+            EncryptionError: If encryption fails
         """
-        if salt is None:
-            salt = os.urandom(self.salt_length)
-        
-        kdf = PBKDF2HMAC(
-            algorithm=hashes.SHA256(),
-            length=32,  # 256 bits
-            salt=salt,
-            iterations=self.kdf_iterations,
-            backend=self.backend
-        )
-        
-        self.master_key = kdf.derive(password.encode())
-        logger.info("Master key generated successfully")
-        
-        return self.master_key
+        try:
+            # Input validation and conversion
+            if isinstance(data, str):
+                data_bytes = data.encode('utf-8')
+            elif isinstance(data, bytes):
+                data_bytes = data
+            else:
+                raise InvalidDataError("Data must be string or bytes")
+            
+            if len(data_bytes) == 0:
+                raise InvalidDataError("Cannot encrypt empty data")
+            
+            # Use default algorithm if not specified
+            algorithm = algorithm or self.default_algorithm
+            config = self._algorithm_configs[algorithm]
+            
+            # Generate or retrieve key
+            if key_id is None:
+                key_id = f"dek_{secrets.token_hex(8)}"
+                self.key_manager.generate_key(
+                    key_id=key_id,
+                    key_type=KeyType.DATA_ENCRYPTION_KEY,
+                    key_length=config['key_size'],
+                    purpose=f"Data encryption - {mode.value}"
+                )
+            
+            encryption_key = self.key_manager.get_key(key_id)
+            
+            # Generate secure random IV
+            iv = secrets.token_bytes(config['iv_size'])
+            
+            # Perform encryption based on algorithm
+            if algorithm == EncryptionAlgorithm.AES_256_GCM:
+                encrypted_data, tag = self._encrypt_aes_gcm(
+                    data_bytes, encryption_key, iv, additional_data
+                )
+            elif algorithm == EncryptionAlgorithm.AES_256_CBC:
+                encrypted_data = self._encrypt_aes_cbc(data_bytes, encryption_key, iv)
+                tag = None
+            elif algorithm == EncryptionAlgorithm.CHACHA20_POLY1305:
+                encrypted_data, tag = self._encrypt_chacha20_poly1305(
+                    data_bytes, encryption_key, iv, additional_data
+                )
+            else:
+                raise EncryptionError(f"Unsupported algorithm: {algorithm}")
+            
+            # Calculate checksum for integrity verification
+            checksum = hashlib.sha256(data_bytes).hexdigest()
+            
+            # Create metadata
+            key_metadata = self.key_manager.get_key_metadata(key_id)
+            metadata = EncryptionMetadata(
+                algorithm=algorithm.value,
+                key_id=key_id,
+                key_version=key_metadata.version,
+                iv=base64.b64encode(iv).decode('utf-8'),
+                tag=base64.b64encode(tag).decode('utf-8') if tag else None,
+                mode=mode.value,
+                data_size=len(data_bytes),
+                checksum=checksum
+            )
+            
+            self.logger.info(f"Encrypted data using {algorithm.value} with key {key_id}")
+            
+            return EncryptedData(data=encrypted_data, metadata=metadata)
+            
+        except Exception as e:
+            self.logger.error(f"Encryption failed: {e}")
+            raise EncryptionError(f"Encryption failed: {e}")
     
-    def derive_data_encryption_key(self, context: str) -> bytes:
+    def decrypt_data(self,
+                     encrypted_data: Union[EncryptedData, Dict[str, Any]],
+                     additional_data: Optional[bytes] = None,
+                     verify_checksum: bool = True) -> bytes:
         """
-        Derive context-specific data encryption key from master key.
+        Decrypt encrypted data.
         
         Args:
-            context: Context identifier for key derivation
+            encrypted_data: EncryptedData object or dictionary
+            additional_data: Additional authenticated data (AAD) for AEAD
+            verify_checksum: Whether to verify data integrity checksum
             
         Returns:
-            Derived data encryption key
+            Decrypted data as bytes
+            
+        Raises:
+            DecryptionError: If decryption fails
         """
-        if not self.master_key:
-            raise ValueError("Master key not initialized")
+        try:
+            # Handle different input formats
+            if isinstance(encrypted_data, dict):
+                encrypted_data = EncryptedData.from_dict(encrypted_data)
+            elif not isinstance(encrypted_data, EncryptedData):
+                raise InvalidDataError("Invalid encrypted data format")
+            
+            metadata = encrypted_data.metadata
+            
+            # Retrieve encryption key
+            try:
+                encryption_key = self.key_manager.get_key(metadata.key_id)
+            except Exception as e:
+                raise DecryptionError(f"Failed to retrieve decryption key: {e}")
+            
+            # Parse metadata
+            algorithm = EncryptionAlgorithm(metadata.algorithm)
+            iv = base64.b64decode(metadata.iv)
+            tag = base64.b64decode(metadata.tag) if metadata.tag else None
+            
+            # Perform decryption based on algorithm
+            if algorithm == EncryptionAlgorithm.AES_256_GCM:
+                if not tag:
+                    raise DecryptionError("Authentication tag missing for GCM mode")
+                decrypted_data = self._decrypt_aes_gcm(
+                    encrypted_data.data, encryption_key, iv, tag, additional_data
+                )
+            elif algorithm == EncryptionAlgorithm.AES_256_CBC:
+                decrypted_data = self._decrypt_aes_cbc(
+                    encrypted_data.data, encryption_key, iv
+                )
+            elif algorithm == EncryptionAlgorithm.CHACHA20_POLY1305:
+                if not tag:
+                    raise DecryptionError("Authentication tag missing for ChaCha20-Poly1305")
+                decrypted_data = self._decrypt_chacha20_poly1305(
+                    encrypted_data.data, encryption_key, iv, tag, additional_data
+                )
+            else:
+                raise DecryptionError(f"Unsupported algorithm: {algorithm}")
+            
+            # Verify checksum if requested
+            if verify_checksum and metadata.checksum:
+                calculated_checksum = hashlib.sha256(decrypted_data).hexdigest()
+                if calculated_checksum != metadata.checksum:
+                    raise DecryptionError("Data integrity check failed")
+            
+            self.logger.info(f"Decrypted data using {algorithm.value} with key {metadata.key_id}")
+            
+            return decrypted_data
+            
+        except Exception as e:
+            if isinstance(e, DecryptionError):
+                raise
+            self.logger.error(f"Decryption failed: {e}")
+            raise DecryptionError(f"Decryption failed: {e}")
+    
+    def encrypt_field(self,
+                      field_value: Any,
+                      field_name: str,
+                      table_name: str = "",
+                      key_id: Optional[str] = None) -> Dict[str, str]:
+        """
+        Encrypt a database field value.
         
-        # Use HKDF for key derivation
-        from cryptography.hazmat.primitives.kdf.hkdf import HKDF
+        Args:
+            field_value: Value to encrypt
+            field_name: Name of the database field
+            table_name: Name of the database table
+            key_id: Key identifier for encryption
+            
+        Returns:
+            Dictionary with encrypted value and metadata
+        """
+        # Convert field value to string for encryption
+        if field_value is None:
+            return {"encrypted_value": None, "metadata": None}
         
-        hkdf = HKDF(
-            algorithm=hashes.SHA256(),
-            length=32,  # 256 bits
-            salt=None,
-            info=context.encode(),
-            backend=self.backend
+        field_str = json.dumps(field_value) if not isinstance(field_value, str) else field_value
+        
+        # Use field-specific key if not provided
+        if key_id is None:
+            key_id = f"field_{table_name}_{field_name}".replace(" ", "_").lower()
+            
+            # Generate key if it doesn't exist
+            try:
+                self.key_manager.get_key(key_id)
+            except:
+                self.key_manager.generate_key(
+                    key_id=key_id,
+                    key_type=KeyType.DATA_ENCRYPTION_KEY,
+                    purpose=f"Field encryption: {table_name}.{field_name}"
+                )
+        
+        # Encrypt the field value
+        encrypted_data = self.encrypt_data(
+            data=field_str,
+            key_id=key_id,
+            mode=EncryptionMode.FIELD_LEVEL
         )
         
-        dek = hkdf.derive(self.master_key)
-        self.data_encryption_keys[context] = {
-            'key': dek,
-            'created': datetime.utcnow(),
-            'context': context
+        return {
+            "encrypted_value": base64.b64encode(encrypted_data.data).decode('utf-8'),
+            "metadata": json.dumps(asdict(encrypted_data.metadata))
         }
-        
-        logger.info(f"Data encryption key derived for context: {context}")
-        return dek
     
-    def encrypt_data(self, data: Union[str, bytes], context: str = "default") -> Dict[str, str]:
+    def decrypt_field(self, encrypted_field: Dict[str, str]) -> Any:
         """
-        Encrypt data using AES-256-GCM with context-specific key.
+        Decrypt a database field value.
         
         Args:
-            data: Data to encrypt
-            context: Encryption context
+            encrypted_field: Dictionary with encrypted value and metadata
             
         Returns:
-            Dictionary containing encrypted data and metadata
+            Decrypted field value
         """
-        if isinstance(data, str):
-            data = data.encode('utf-8')
+        if encrypted_field["encrypted_value"] is None:
+            return None
         
-        # Get or derive data encryption key
-        if context not in self.data_encryption_keys:
-            self.derive_data_encryption_key(context)
-        
-        key = self.data_encryption_keys[context]['key']
-        
-        # Generate random IV
-        iv = os.urandom(12)  # 96 bits for GCM
-        
-        # Create cipher
-        cipher = Cipher(
-            algorithms.AES(key),
-            modes.GCM(iv),
-            backend=self.backend
+        # Reconstruct encrypted data object
+        encrypted_data = EncryptedData(
+            data=base64.b64decode(encrypted_field["encrypted_value"]),
+            metadata=EncryptionMetadata(**json.loads(encrypted_field["metadata"]))
         )
         
-        encryptor = cipher.encryptor()
-        ciphertext = encryptor.update(data) + encryptor.finalize()
+        # Decrypt the field value
+        decrypted_bytes = self.decrypt_data(encrypted_data)
+        decrypted_str = decrypted_bytes.decode('utf-8')
         
-        # Prepare encrypted package
-        encrypted_package = {
-            'ciphertext': base64.b64encode(ciphertext).decode('utf-8'),
-            'iv': base64.b64encode(iv).decode('utf-8'),
-            'tag': base64.b64encode(encryptor.tag).decode('utf-8'),
-            'algorithm': 'AES-256-GCM',
-            'context': context,
-            'classification': self.classification_level,
-            'timestamp': datetime.utcnow().isoformat()
-        }
-        
-        logger.debug(f"Data encrypted for context: {context}")
-        return encrypted_package
+        # Try to parse as JSON, fallback to string
+        try:
+            return json.loads(decrypted_str)
+        except json.JSONDecodeError:
+            return decrypted_str
     
-    def decrypt_data(self, encrypted_package: Dict[str, str]) -> bytes:
+    def encrypt_file(self,
+                     input_path: str,
+                     output_path: Optional[str] = None,
+                     key_id: Optional[str] = None,
+                     remove_original: bool = False) -> str:
         """
-        Decrypt data using AES-256-GCM.
+        Encrypt a file using streaming encryption.
         
         Args:
-            encrypted_package: Dictionary containing encrypted data and metadata
-            
-        Returns:
-            Decrypted data
-        """
-        context = encrypted_package['context']
-        
-        # Verify classification level
-        if encrypted_package.get('classification') != self.classification_level:
-            raise ValueError("Classification level mismatch")
-        
-        # Get data encryption key
-        if context not in self.data_encryption_keys:
-            raise ValueError(f"No encryption key available for context: {context}")
-        
-        key = self.data_encryption_keys[context]['key']
-        
-        # Extract encrypted components
-        ciphertext = base64.b64decode(encrypted_package['ciphertext'])
-        iv = base64.b64decode(encrypted_package['iv'])
-        tag = base64.b64decode(encrypted_package['tag'])
-        
-        # Create cipher
-        cipher = Cipher(
-            algorithms.AES(key),
-            modes.GCM(iv, tag),
-            backend=self.backend
-        )
-        
-        decryptor = cipher.decryptor()
-        plaintext = decryptor.update(ciphertext) + decryptor.finalize()
-        
-        logger.debug(f"Data decrypted for context: {context}")
-        return plaintext
-    
-    def encrypt_file(self, file_path: str, output_path: Optional[str] = None, 
-                    context: str = "file") -> str:
-        """
-        Encrypt file using AES-256-GCM.
-        
-        Args:
-            file_path: Path to file to encrypt
-            output_path: Output path for encrypted file
-            context: Encryption context
+            input_path: Path to input file
+            output_path: Path to output encrypted file
+            key_id: Key identifier for encryption
+            remove_original: Whether to securely delete original file
             
         Returns:
             Path to encrypted file
         """
+        if not os.path.exists(input_path):
+            raise EncryptionError(f"Input file not found: {input_path}")
+        
         if output_path is None:
-            output_path = f"{file_path}.encrypted"
+            output_path = input_path + ".encrypted"
         
-        with open(file_path, 'rb') as infile:
-            data = infile.read()
+        # Generate key if not provided
+        if key_id is None:
+            key_id = f"file_{secrets.token_hex(8)}"
+            self.key_manager.generate_key(
+                key_id=key_id,
+                key_type=KeyType.DATA_ENCRYPTION_KEY,
+                purpose=f"File encryption: {os.path.basename(input_path)}"
+            )
         
-        encrypted_package = self.encrypt_data(data, context)
+        encryption_key = self.key_manager.get_key(key_id)
         
-        with open(output_path, 'w') as outfile:
-            json.dump(encrypted_package, outfile, indent=2)
+        # Generate IV for file encryption
+        iv = secrets.token_bytes(12)  # AES-GCM IV
         
-        logger.info(f"File encrypted: {file_path} -> {output_path}")
-        return output_path
+        try:
+            with open(input_path, 'rb') as infile, open(output_path, 'wb') as outfile:
+                # Write file header with metadata
+                file_size = os.path.getsize(input_path)
+                metadata = EncryptionMetadata(
+                    algorithm=self.default_algorithm.value,
+                    key_id=key_id,
+                    iv=base64.b64encode(iv).decode('utf-8'),
+                    mode=EncryptionMode.FILE_LEVEL.value,
+                    data_size=file_size
+                )
+                
+                # Write metadata header
+                metadata_json = json.dumps(asdict(metadata)).encode('utf-8')
+                header_size = len(metadata_json)
+                outfile.write(struct.pack('<I', header_size))  # 4 bytes for header size
+                outfile.write(metadata_json)
+                
+                # Initialize cipher for streaming
+                cipher = Cipher(
+                    algorithms.AES(encryption_key),
+                    modes.GCM(iv),
+                    backend=default_backend()
+                )
+                encryptor = cipher.encryptor()
+                
+                # Encrypt file in chunks
+                total_encrypted = 0
+                while True:
+                    chunk = infile.read(self.chunk_size)
+                    if not chunk:
+                        break
+                    
+                    encrypted_chunk = encryptor.update(chunk)
+                    outfile.write(encrypted_chunk)
+                    total_encrypted += len(chunk)
+                
+                # Finalize encryption and get authentication tag
+                encryptor.finalize()
+                tag = encryptor.tag
+                outfile.write(tag)  # Write authentication tag at end
+            
+            # Update metadata with tag
+            with open(output_path, 'rb+') as f:
+                f.seek(4)  # Skip header size
+                metadata_dict = json.loads(f.read(header_size))
+                metadata_dict['tag'] = base64.b64encode(tag).decode('utf-8')
+                
+                # Rewrite metadata
+                f.seek(4)
+                updated_metadata = json.dumps(metadata_dict).encode('utf-8')
+                if len(updated_metadata) <= header_size:
+                    f.write(updated_metadata.ljust(header_size, b' '))
+            
+            # Securely delete original file if requested
+            if remove_original:
+                self._secure_delete_file(input_path)
+            
+            self.logger.info(f"Encrypted file {input_path} to {output_path}")
+            return output_path
+            
+        except Exception as e:
+            # Clean up partial output file
+            if os.path.exists(output_path):
+                os.remove(output_path)
+            raise EncryptionError(f"File encryption failed: {e}")
     
-    def decrypt_file(self, encrypted_file_path: str, output_path: Optional[str] = None) -> str:
+    def decrypt_file(self,
+                     input_path: str,
+                     output_path: Optional[str] = None,
+                     remove_encrypted: bool = False) -> str:
         """
-        Decrypt file encrypted with encrypt_file.
+        Decrypt an encrypted file.
         
         Args:
-            encrypted_file_path: Path to encrypted file
-            output_path: Output path for decrypted file
+            input_path: Path to encrypted file
+            output_path: Path to output decrypted file
+            remove_encrypted: Whether to delete encrypted file after decryption
             
         Returns:
             Path to decrypted file
         """
-        if output_path is None:
-            output_path = encrypted_file_path.replace('.encrypted', '.decrypted')
+        if not os.path.exists(input_path):
+            raise DecryptionError(f"Encrypted file not found: {input_path}")
         
-        with open(encrypted_file_path, 'r') as infile:
-            encrypted_package = json.load(infile)
-        
-        decrypted_data = self.decrypt_data(encrypted_package)
-        
-        with open(output_path, 'wb') as outfile:
-            outfile.write(decrypted_data)
-        
-        logger.info(f"File decrypted: {encrypted_file_path} -> {output_path}")
-        return output_path
-    
-    def generate_rsa_keypair(self, key_size: int = 4096) -> Tuple[bytes, bytes]:
-        """
-        Generate RSA key pair for asymmetric encryption.
-        
-        Args:
-            key_size: RSA key size (minimum 4096 for DoD compliance)
+        try:
+            with open(input_path, 'rb') as infile:
+                # Read metadata header
+                header_size = struct.unpack('<I', infile.read(4))[0]
+                metadata_json = infile.read(header_size).rstrip(b' ')
+                metadata_dict = json.loads(metadata_json)
+                metadata = EncryptionMetadata(**metadata_dict)
+                
+                # Get decryption key
+                encryption_key = self.key_manager.get_key(metadata.key_id)
+                iv = base64.b64decode(metadata.iv)
+                
+                # Determine output path
+                if output_path is None:
+                    if input_path.endswith('.encrypted'):
+                        output_path = input_path[:-10]  # Remove .encrypted extension
+                    else:
+                        output_path = input_path + ".decrypted"
+                
+                # Read encrypted data and authentication tag
+                file_data = infile.read()
+                encrypted_data = file_data[:-16]  # All except last 16 bytes (tag)
+                tag = file_data[-16:]  # Last 16 bytes
+                
+                # Initialize cipher for decryption
+                cipher = Cipher(
+                    algorithms.AES(encryption_key),
+                    modes.GCM(iv, tag),
+                    backend=default_backend()
+                )
+                decryptor = cipher.decryptor()
+                
+                # Decrypt and write to output file
+                with open(output_path, 'wb') as outfile:
+                    # Decrypt in chunks if data is large
+                    if len(encrypted_data) > self.chunk_size:
+                        for i in range(0, len(encrypted_data), self.chunk_size):
+                            chunk = encrypted_data[i:i + self.chunk_size]
+                            decrypted_chunk = decryptor.update(chunk)
+                            outfile.write(decrypted_chunk)
+                    else:
+                        decrypted_data = decryptor.update(encrypted_data)
+                        outfile.write(decrypted_data)
+                    
+                    decryptor.finalize()  # Verify authentication tag
             
-        Returns:
-            Tuple of (private_key_pem, public_key_pem)
-        """
-        if key_size < 4096:
-            raise ValueError("RSA key size must be at least 4096 bits for DoD compliance")
-        
-        private_key = rsa.generate_private_key(
-            public_exponent=65537,
-            key_size=key_size,
-            backend=self.backend
-        )
-        
-        public_key = private_key.public_key()
-        
-        # Serialize keys
-        private_pem = private_key.private_bytes(
-            encoding=serialization.Encoding.PEM,
-            format=serialization.PrivateFormat.PKCS8,
-            encryption_algorithm=serialization.NoEncryption()
-        )
-        
-        public_pem = public_key.public_bytes(
-            encoding=serialization.Encoding.PEM,
-            format=serialization.PublicFormat.SubjectPublicKeyInfo
-        )
-        
-        logger.info(f"RSA key pair generated ({key_size} bits)")
-        return private_pem, public_pem
+            # Remove encrypted file if requested
+            if remove_encrypted:
+                os.remove(input_path)
+            
+            self.logger.info(f"Decrypted file {input_path} to {output_path}")
+            return output_path
+            
+        except Exception as e:
+            raise DecryptionError(f"File decryption failed: {e}")
     
-    def rsa_encrypt(self, data: bytes, public_key_pem: bytes) -> bytes:
+    def envelope_encrypt(self,
+                         data: bytes,
+                         master_key_id: str,
+                         data_key_id: Optional[str] = None) -> Dict[str, Any]:
         """
-        Encrypt data using RSA public key.
+        Perform envelope encryption for large datasets.
         
         Args:
             data: Data to encrypt
-            public_key_pem: RSA public key in PEM format
+            master_key_id: Master key identifier
+            data_key_id: Data encryption key identifier
             
         Returns:
-            Encrypted data
+            Dictionary with encrypted data and encrypted data key
         """
-        public_key = load_pem_public_key(public_key_pem, backend=self.backend)
-        
-        ciphertext = public_key.encrypt(
-            data,
-            padding.OAEP(
-                mgf=padding.MGF1(algorithm=hashes.SHA256()),
-                algorithm=hashes.SHA256(),
-                label=None
+        # Generate data encryption key if not provided
+        if data_key_id is None:
+            data_key_id = f"envelope_dek_{secrets.token_hex(8)}"
+            self.key_manager.generate_key(
+                key_id=data_key_id,
+                key_type=KeyType.DATA_ENCRYPTION_KEY,
+                purpose="Envelope encryption data key"
             )
+        
+        # Encrypt data with data key
+        encrypted_data = self.encrypt_data(
+            data=data,
+            key_id=data_key_id,
+            mode=EncryptionMode.DATA_AT_REST
         )
         
-        return ciphertext
+        # Encrypt data key with master key
+        data_key = self.key_manager.get_key(data_key_id)
+        encrypted_data_key = self.encrypt_data(
+            data=data_key,
+            key_id=master_key_id,
+            mode=EncryptionMode.DATA_AT_REST
+        )
+        
+        return {
+            "encrypted_data": encrypted_data.to_dict(),
+            "encrypted_data_key": encrypted_data_key.to_dict(),
+            "master_key_id": master_key_id,
+            "data_key_id": data_key_id
+        }
     
-    def rsa_decrypt(self, ciphertext: bytes, private_key_pem: bytes) -> bytes:
+    def envelope_decrypt(self, envelope_data: Dict[str, Any]) -> bytes:
         """
-        Decrypt data using RSA private key.
+        Decrypt envelope-encrypted data.
         
         Args:
-            ciphertext: Encrypted data
-            private_key_pem: RSA private key in PEM format
+            envelope_data: Envelope encryption structure
             
         Returns:
             Decrypted data
         """
-        private_key = load_pem_private_key(private_key_pem, password=None, backend=self.backend)
+        # Decrypt data key using master key
+        encrypted_data_key = EncryptedData.from_dict(envelope_data["encrypted_data_key"])
+        data_key = self.decrypt_data(encrypted_data_key)
         
-        plaintext = private_key.decrypt(
-            ciphertext,
-            padding.OAEP(
-                mgf=padding.MGF1(algorithm=hashes.SHA256()),
-                algorithm=hashes.SHA256(),
-                label=None
-            )
-        )
+        # Temporarily store data key for decryption
+        temp_key_id = f"temp_{secrets.token_hex(8)}"
+        self.key_manager._key_cache[temp_key_id] = SecureBytes(data_key)
         
-        return plaintext
-    
-    def rotate_keys(self, context: Optional[str] = None) -> None:
-        """
-        Rotate encryption keys based on classification requirements.
-        
-        Args:
-            context: Specific context to rotate (all if None)
-        """
-        if context:
-            if context in self.data_encryption_keys:
-                self.derive_data_encryption_key(context)
-                logger.info(f"Key rotated for context: {context}")
-        else:
-            # Rotate all keys
-            contexts = list(self.data_encryption_keys.keys())
-            for ctx in contexts:
-                self.derive_data_encryption_key(ctx)
-            logger.info("All encryption keys rotated")
-    
-    def check_key_expiration(self) -> Dict[str, bool]:
-        """
-        Check if any keys need rotation based on age.
-        
-        Returns:
-            Dictionary mapping context to expiration status
-        """
-        expiration_status = {}
-        current_time = datetime.utcnow()
-        
-        for context, key_info in self.data_encryption_keys.items():
-            age = current_time - key_info['created']
-            expired = age > self.key_rotation_interval
-            expiration_status[context] = expired
+        try:
+            # Decrypt data using data key
+            encrypted_data = EncryptedData.from_dict(envelope_data["encrypted_data"])
+            # Update metadata to use temporary key
+            encrypted_data.metadata.key_id = temp_key_id
             
-            if expired:
-                logger.warning(f"Key expired for context: {context} (age: {age})")
-        
-        return expiration_status
+            decrypted_data = self.decrypt_data(encrypted_data)
+            return decrypted_data
+            
+        finally:
+            # Clean up temporary key
+            if temp_key_id in self.key_manager._key_cache:
+                del self.key_manager._key_cache[temp_key_id]
     
-    def get_encryption_metadata(self) -> Dict[str, Any]:
-        """
-        Get encryption manager metadata and status.
+    def _encrypt_aes_gcm(self,
+                         data: bytes,
+                         key: bytes,
+                         iv: bytes,
+                         additional_data: Optional[bytes] = None) -> Tuple[bytes, bytes]:
+        """Encrypt data using AES-256-GCM."""
+        cipher = Cipher(
+            algorithms.AES(key),
+            modes.GCM(iv),
+            backend=default_backend()
+        )
+        encryptor = cipher.encryptor()
         
-        Returns:
-            Dictionary containing encryption metadata
-        """
-        return {
-            'classification_level': self.classification_level,
-            'encryption_params': self.encryption_params,
-            'active_contexts': list(self.data_encryption_keys.keys()),
-            'key_rotation_interval_days': self.key_rotation_interval.days,
-            'fips_compliant': True,  # Assuming FIPS compliance
-            'algorithms': {
-                'symmetric': 'AES-256-GCM',
-                'asymmetric': 'RSA-4096',
-                'hash': 'SHA-256/384/512',
-                'kdf': 'PBKDF2-HMAC-SHA256'
-            }
-        }
+        if additional_data:
+            encryptor.authenticate_additional_data(additional_data)
+        
+        ciphertext = encryptor.update(data) + encryptor.finalize()
+        return ciphertext, encryptor.tag
+    
+    def _decrypt_aes_gcm(self,
+                         ciphertext: bytes,
+                         key: bytes,
+                         iv: bytes,
+                         tag: bytes,
+                         additional_data: Optional[bytes] = None) -> bytes:
+        """Decrypt data using AES-256-GCM."""
+        cipher = Cipher(
+            algorithms.AES(key),
+            modes.GCM(iv, tag),
+            backend=default_backend()
+        )
+        decryptor = cipher.decryptor()
+        
+        if additional_data:
+            decryptor.authenticate_additional_data(additional_data)
+        
+        try:
+            plaintext = decryptor.update(ciphertext) + decryptor.finalize()
+            return plaintext
+        except InvalidTag:
+            raise DecryptionError("Authentication tag verification failed")
+    
+    def _encrypt_aes_cbc(self, data: bytes, key: bytes, iv: bytes) -> bytes:
+        """Encrypt data using AES-256-CBC with PKCS7 padding."""
+        # Add PKCS7 padding
+        padder = padding.PKCS7(128).padder()
+        padded_data = padder.update(data) + padder.finalize()
+        
+        cipher = Cipher(
+            algorithms.AES(key),
+            modes.CBC(iv),
+            backend=default_backend()
+        )
+        encryptor = cipher.encryptor()
+        return encryptor.update(padded_data) + encryptor.finalize()
+    
+    def _decrypt_aes_cbc(self, ciphertext: bytes, key: bytes, iv: bytes) -> bytes:
+        """Decrypt data using AES-256-CBC with PKCS7 padding."""
+        cipher = Cipher(
+            algorithms.AES(key),
+            modes.CBC(iv),
+            backend=default_backend()
+        )
+        decryptor = cipher.decryptor()
+        padded_data = decryptor.update(ciphertext) + decryptor.finalize()
+        
+        # Remove PKCS7 padding
+        unpadder = padding.PKCS7(128).unpadder()
+        return unpadder.update(padded_data) + unpadder.finalize()
+    
+    def _encrypt_chacha20_poly1305(self,
+                                   data: bytes,
+                                   key: bytes,
+                                   nonce: bytes,
+                                   additional_data: Optional[bytes] = None) -> Tuple[bytes, bytes]:
+        """Encrypt data using ChaCha20-Poly1305."""
+        from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305
+        
+        aesgcm = ChaCha20Poly1305(key)
+        ciphertext = aesgcm.encrypt(nonce, data, additional_data)
+        
+        # ChaCha20Poly1305 returns ciphertext + tag
+        return ciphertext[:-16], ciphertext[-16:]
+    
+    def _decrypt_chacha20_poly1305(self,
+                                   ciphertext: bytes,
+                                   key: bytes,
+                                   nonce: bytes,
+                                   tag: bytes,
+                                   additional_data: Optional[bytes] = None) -> bytes:
+        """Decrypt data using ChaCha20-Poly1305."""
+        from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305
+        
+        aesgcm = ChaCha20Poly1305(key)
+        combined_data = ciphertext + tag
+        return aesgcm.decrypt(nonce, combined_data, additional_data)
+    
+    def _secure_delete_file(self, file_path: str):
+        """Securely delete a file by overwriting with random data."""
+        if not os.path.exists(file_path):
+            return
+        
+        file_size = os.path.getsize(file_path)
+        
+        # Overwrite with random data multiple times
+        with open(file_path, 'rb+') as f:
+            for _ in range(3):  # DoD 5220.22-M standard
+                f.seek(0)
+                f.write(secrets.token_bytes(file_size))
+                f.flush()
+                os.fsync(f.fileno())
+        
+        os.remove(file_path)
