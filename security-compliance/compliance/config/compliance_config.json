@@ -1,0 +1,134 @@
+{
+  "system_info": {
+    "name": "Automated Compliance Documentation Generation System",
+    "version": "1.0.0",
+    "description": "Comprehensive compliance documentation generation system leveraging existing infrastructure",
+    "classification": "UNCLASSIFIED//FOR OFFICIAL USE ONLY"
+  },
+  "paths": {
+    "templates_path": "./templates",
+    "output_path": "./output",
+    "workflows_path": "./workflows",
+    "cache_path": "./cache"
+  },
+  "integrations": {
+    "audit_system": {
+      "enabled": true,
+      "base_url": "http://audit-system:8080",
+      "api_key": "${AUDIT_API_KEY}",
+      "timeout": 30,
+      "retry_attempts": 3,
+      "data_retention_days": 90
+    },
+    "security_testing": {
+      "enabled": true,
+      "base_url": "http://security-testing:9090",
+      "api_key": "${SECURITY_TESTING_API_KEY}",
+      "timeout": 45,
+      "scan_frequency_days": 7,
+      "control_test_frequency_days": 30
+    },
+    "monitoring": {
+      "enabled": true,
+      "base_url": "http://monitoring:3000",
+      "api_key": "${MONITORING_API_KEY}",
+      "timeout": 30,
+      "metrics_retention_days": 365,
+      "alert_retention_days": 90
+    }
+  },
+  "template_engine": {
+    "default_classification": "UNCLASSIFIED",
+    "supported_formats": ["html", "pdf", "docx", "markdown"],
+    "default_format": "html",
+    "cache_enabled": true,
+    "cache_ttl_hours": 24,
+    "auto_validation": true,
+    "include_digital_signatures": false
+  },
+  "document_generation": {
+    "max_concurrent_jobs": 4,
+    "job_timeout_minutes": 30,
+    "auto_retry_failed_jobs": true,
+    "max_retry_attempts": 3,
+    "include_evidence_by_default": true,
+    "include_metrics_by_default": true,
+    "default_date_range_days": 30
+  },
+  "workflow_management": {
+    "auto_advance_enabled": true,
+    "notification_enabled": true,
+    "approval_timeout_days": 7,
+    "review_timeout_days": 14,
+    "emergency_workflow_timeout_days": 3,
+    "approval_chains": {
+      "standard": [
+        "technical_reviewer",
+        "compliance_officer", 
+        "authorizing_official"
+      ],
+      "expedited": [
+        "compliance_officer",
+        "authorizing_official"
+      ],
+      "emergency": [
+        "authorizing_official"
+      ]
+    }
+  },
+  "digital_signatures": {
+    "enabled": false,
+    "pki_provider": "dod_pki",
+    "certificate_validation": true,
+    "signature_algorithm": "RSA-SHA256",
+    "timestamp_required": true,
+    "crl_check_enabled": true
+  },
+  "compliance_standards": {
+    "primary_standards": [
+      "NIST SP 800-53",
+      "FISMA",
+      "DoD 8500.01E"
+    ],
+    "secondary_standards": [
+      "NIST SP 800-53A",
+      "DoD 8510.01",
+      "CNSSI-1253",
+      "ICD 503"
+    ],
+    "control_families": {
+      "AC": "Access Control",
+      "AT": "Awareness and Training", 
+      "AU": "Audit and Accountability",
+      "CA": "Security Assessment and Authorization",
+      "CM": "Configuration Management",
+      "CP": "Contingency Planning",
+      "IA": "Identification and Authentication",
+      "IR": "Incident Response",
+      "MA": "Maintenance",
+      "MP": "Media Protection",
+      "PE": "Physical and Environmental Protection",
+      "PL": "Planning",
+      "PS": "Personnel Security",
+      "RA": "Risk Assessment",
+      "SA": "System and Services Acquisition",
+      "SC": "System and Communications Protection",
+      "SI": "System and Information Integrity",
+      "SR": "Supply Chain Risk Management"
+    }
+  },
+  "templates": {
+    "ssp": {
+      "template_file": "nist/ssp_template.html",
+      "classification_levels": ["U", "C", "S", "TS"],
+      "required_data": ["system_info", "controls_matrix", "risk_assessment"],
+      "auto_populate": true
+    },
+    "sar": {
+      "template_file": "nist/sar_template.html",
+      "classification_levels": ["U", "C", "S", "TS"],
+      "required_data": ["test_results", "vulnerability_scan", "control_assessment"],
+      "auto_populate": true
+    }
+  }
+}

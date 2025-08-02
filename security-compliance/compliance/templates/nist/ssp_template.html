@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Security Plan - {{metadata.system_name}}</title>
+    <meta name="classification" content="{{metadata.classification|format_classification}}">
+    <style>
+        body {
+            font-family: 'Times New Roman', serif;
+            margin: 1in;
+            line-height: 1.6;
+            color: #000;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 2em;
+            border-bottom: 2px solid #000;
+            padding-bottom: 1em;
+        }
+        .classification {
+            color: red;
+            font-weight: bold;
+            text-align: center;
+            font-size: 14pt;
+            margin: 1em 0;
+            border: 2px solid red;
+            padding: 0.5em;
+        }
+        .section {
+            margin: 2em 0;
+            page-break-inside: avoid;
+        }
+        .section h2 {
+            color: #003366;
+            border-bottom: 1px solid #003366;
+            padding-bottom: 0.5em;
+        }
+        .section h3 {
+            color: #006699;
+            margin-top: 1.5em;
+        }
+        .metadata-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1em 0;
+        }
+        .metadata-table th, .metadata-table td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        .metadata-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .controls-matrix {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1em 0;
+            font-size: 10pt;
+        }
+        .controls-matrix th, .controls-matrix td {
+            border: 1px solid #ccc;
+            padding: 6px;
+            text-align: left;
+            vertical-align: top;
+        }
+        .controls-matrix th {
+            background-color: #e6f3ff;
+            font-weight: bold;
+        }
+        .status-implemented {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status-planned {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .status-not-implemented {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .risk-level-low {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .risk-level-moderate {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .risk-level-high {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .toc {
+            margin: 2em 0;
+            padding: 1em;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+        }
+        .page-break {
+            page-break-before: always;
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 10pt;
+            padding: 1em;
+            border-top: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <!-- Classification Header -->
+    <div class="classification">
+        {{metadata.classification|format_classification}}
+    </div>
+
+    <!-- Title Page -->
+    <div class="header">
+        <h1>System Security Plan (SSP)</h1>
+        <h2>{{data.system_info.name}}</h2>
+        <p><strong>System ID:</strong> {{data.system_info.id}}</p>
+        <p><strong>Version:</strong> {{metadata.version}}</p>
+        <p><strong>Date:</strong> {{metadata.created_date|format_date}}</p>
+        <p><strong>Organization:</strong> {{metadata.organization}}</p>
+    </div>
+
+    <!-- System Information Table -->
+    <div class="section">
+        <h2>1. System Information</h2>
+        <table class="metadata-table">
+            <tr>
+                <th>Field</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>System Name</td>
+                <td>{{data.system_info.name}}</td>
+            </tr>
+            <tr>
+                <td>System ID</td>
+                <td>{{data.system_info.id}}</td>
+            </tr>
+            <tr>
+                <td>System Type</td>
+                <td>{{data.system_info.system_type}}</td>
+            </tr>
+            <tr>
+                <td>Classification</td>
+                <td>{{data.system_info.classification}}</td>
+            </tr>
+            <tr>
+                <td>Operational Status</td>
+                <td>{{data.system_info.operational_status}}</td>
+            </tr>
+            <tr>
+                <td>System Owner</td>
+                <td>{{data.system_info.system_owner}}</td>
+            </tr>
+            <tr>
+                <td>Information Owner</td>
+                <td>{{data.system_info.information_owner}}</td>
+            </tr>
+            <tr>
+                <td>System Security Officer</td>
+                <td>{{data.system_info.system_security_officer}}</td>
+            </tr>
+        </table>
+
+        <h3>1.1 System Description</h3>
+        <p>{{data.system_info.description}}</p>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- System Categorization -->
+    <div class="section">
+        <h2>2. System Categorization (FIPS 199)</h2>
+        
+        <h3>2.1 Security Categorization</h3>
+        <table class="metadata-table">
+            <tr>
+                <th>Security Objective</th>
+                <th>Impact Level</th>
+                <th>Rationale</th>
+            </tr>
+            <tr>
+                <td>Confidentiality</td>
+                <td class="risk-level-{{data.system_categorization.confidentiality.impact_level}}">
+                    {{data.system_categorization.confidentiality.impact_level|upper}}
+                </td>
+                <td>{{data.system_categorization.confidentiality.rationale}}</td>
+            </tr>
+            <tr>
+                <td>Integrity</td>
+                <td class="risk-level-{{data.system_categorization.integrity.impact_level}}">
+                    {{data.system_categorization.integrity.impact_level|upper}}
+                </td>
+                <td>{{data.system_categorization.integrity.rationale}}</td>
+            </tr>
+            <tr>
+                <td>Availability</td>
+                <td class="risk-level-{{data.system_categorization.availability.impact_level}}">
+                    {{data.system_categorization.availability.impact_level|upper}}
+                </td>
+                <td>{{data.system_categorization.availability.rationale}}</td>
+            </tr>
+        </table>
+
+        <p><strong>Overall System Categorization:</strong> 
+           <span class="risk-level-{{data.system_categorization.overall_categorization}}">
+               {{data.system_categorization.overall_categorization|upper}}
+           </span>
+        </p>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- Control Implementation -->
+    <div class="section">
+        <h2>3. Security Control Implementation</h2>
+        
+        <h3>3.1 Control Implementation Summary</h3>
+        <table class="metadata-table">
+            <tr>
+                <th>Metric</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>Overall Compliance Score</td>
+                <td>{{data.compliance_status.overall_score}}%</td>
+            </tr>
+            <tr>
+                <td>Implemented Controls</td>
+                <td>{{data.compliance_status.implemented_controls}}</td>
+            </tr>
+            <tr>
+                <td>Total Controls</td>
+                <td>{{data.compliance_status.total_controls}}</td>
+            </tr>
+            <tr>
+                <td>Last Assessment</td>
+                <td>{{data.compliance_status.assessment_date|format_date}}</td>
+            </tr>
+        </table>
+
+        <h3>3.2 Control Implementation Details</h3>
+        {% for family_code, family_data in data.controls_matrix.items() %}
+        <h4>3.2.{{loop.index}} {{family_code}} - {{family_data.family_name}}</h4>
+        <p><strong>Family Implementation Rate:</strong> {{(family_data.family_implementation_rate * 100)|round(1)}}%</p>
+        
+        <table class="controls-matrix">
+            <tr>
+                <th>Control ID</th>
+                <th>Control Name</th>
+                <th>Implementation Status</th>
+                <th>Assessment Score</th>
+                <th>Test Score</th>
+                <th>Responsible Role</th>
+                <th>Implementation Description</th>
+            </tr>
+            {% for control_id, control in family_data.controls.items() %}
+            <tr>
+                <td><strong>{{control_id|format_control_id}}</strong></td>
+                <td>{{control.name}}</td>
+                <td class="status-{{control.implementation_status.replace('_', '-')}}">
+                    {{control.implementation_status.replace('_', ' ')|title}}
+                </td>
+                <td>{{control.assessment_score}}%</td>
+                <td>{{control.test_score}}%</td>
+                <td>{{control.responsible_role}}</td>
+                <td>{{control.implementation_description}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% endfor %}
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- Risk Assessment -->
+    <div class="section">
+        <h2>4. Risk Assessment</h2>
+        
+        <h3>4.1 Overall Risk Assessment</h3>
+        <table class="metadata-table">
+            <tr>
+                <th>Risk Element</th>
+                <th>Assessment</th>
+            </tr>
+            <tr>
+                <td>Overall Risk Level</td>
+                <td class="risk-level-{{data.risk_assessment.overall_risk_level}}">
+                    {{data.risk_assessment.overall_risk_level|upper}}
+                </td>
+            </tr>
+            <tr>
+                <td>Risk Rationale</td>
+                <td>{{data.risk_assessment.risk_rationale}}</td>
+            </tr>
+        </table>
+
+        <h3>4.2 Vulnerability Summary</h3>
+        <table class="metadata-table">
+            <tr>
+                <th>Severity</th>
+                <th>Count</th>
+            </tr>
+            <tr>
+                <td>Critical</td>
+                <td class="{% if data.risk_assessment.vulnerability_summary.critical > 0 %}risk-level-high{% else %}risk-level-low{% endif %}">
+                    {{data.risk_assessment.vulnerability_summary.critical}}
+                </td>
+            </tr>
+            <tr>
+                <td>High</td>
+                <td class="{% if data.risk_assessment.vulnerability_summary.high > 5 %}risk-level-high{% elif data.risk_assessment.vulnerability_summary.high > 0 %}risk-level-moderate{% else %}risk-level-low{% endif %}">
+                    {{data.risk_assessment.vulnerability_summary.high}}
+                </td>
+            </tr>
+            <tr>
+                <td>Total Vulnerabilities</td>
+                <td>{{data.risk_assessment.vulnerability_summary.total_vulnerabilities}}</td>
+            </tr>
+            <tr>
+                <td>Last Scan Date</td>
+                <td>{{data.risk_assessment.vulnerability_summary.last_scan_date|format_date}}</td>
+            </tr>
+        </table>
+
+        <h3>4.3 Threat Analysis</h3>
+        <table class="controls-matrix">
+            <tr>
+                <th>Threat</th>
+                <th>Likelihood</th>
+                <th>Impact</th>
+                <th>Risk Level</th>
+            </tr>
+            {% for threat in data.risk_assessment.threat_analysis %}
+            <tr>
+                <td>{{threat.name}}</td>
+                <td class="risk-level-{{threat.likelihood}}">{{threat.likelihood|upper}}</td>
+                <td class="risk-level-{{threat.impact}}">{{threat.impact|upper}}</td>
+                <td class="risk-level-{{threat.risk_level}}">{{threat.risk_level|upper}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <h3>4.4 Risk Treatment Plan</h3>
+        <table class="controls-matrix">
+            <tr>
+                <th>Risk</th>
+                <th>Treatment</th>
+                <th>Timeline</th>
+                <th>Responsible Party</th>
+            </tr>
+            {% for treatment in data.risk_assessment.risk_treatment_plan %}
+            <tr>
+                <td>{{treatment.risk}}</td>
+                <td>{{treatment.treatment}}</td>
+                <td>{{treatment.timeline}}</td>
+                <td>{{treatment.responsible_party}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- Authorization Information -->
+    <div class="section">
+        <h2>5. Security Authorization</h2>
+        
+        <table class="metadata-table">
+            <tr>
+                <th>Authorization Element</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>Authorization Date</td>
+                <td>{{data.authorization_info.authorization_date}}</td>
+            </tr>
+            <tr>
+                <td>Authorization Termination Date</td>
+                <td>{{data.authorization_info.authorization_termination_date}}</td>
+            </tr>
+            <tr>
+                <td>Authorizing Official</td>
+                <td>{{data.authorization_info.authorizing_official}}</td>
+            </tr>
+            <tr>
+                <td>Authorization Status</td>
+                <td class="{% if 'Granted' in data.authorization_info.authorization_status %}status-implemented{% else %}status-planned{% endif %}">
+                    {{data.authorization_info.authorization_status}}
+                </td>
+            </tr>
+            <tr>
+                <td>Continuous Monitoring</td>
+                <td>{{data.authorization_info.continuous_monitoring}}</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Evidence Summary -->
+    <div class="section">
+        <h2>6. Evidence and Documentation</h2>
+        
+        <h3>6.1 Evidence Summary</h3>
+        <table class="metadata-table">
+            <tr>
+                <th>Evidence Element</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>Total Artifacts</td>
+                <td>{{data.evidence_summary.total_artifacts}}</td>
+            </tr>
+            <tr>
+                <td>Artifact Types</td>
+                <td>{{data.evidence_summary.artifact_types|join(', ')}}</td>
+            </tr>
+            <tr>
+                <td>Last Updated</td>
+                <td>{{data.evidence_summary.last_updated|format_date}}</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- System Environment -->
+    <div class="section">
+        <h2>7. System Environment</h2>
+        
+        <table class="metadata-table">
+            <tr>
+                <th>Component</th>
+                <th>Status</th>
+            </tr>
+            <tr>
+                <td>Hardware Inventory</td>
+                <td>{{data.system_environment.hardware_inventory}}</td>
+            </tr>
+            <tr>
+                <td>Software Inventory</td>
+                <td>{{data.system_environment.software_inventory}}</td>
+            </tr>
+            <tr>
+                <td>Network Architecture</td>
+                <td>{{data.system_environment.network_architecture}}</td>
+            </tr>
+            <tr>
+                <td>Data Flows</td>
+                <td>{{data.system_environment.data_flows}}</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="classification">
+            {{metadata.classification|format_classification}}
+        </div>
+        <p>Generated: {{generated_date|format_date}} | Version: {{template_version}} | Page {{metadata.version}}</p>
+        <p>Content Hash: {{metadata.system_name|hash_content}}</p>
+    </div>
+</body>
+</html>

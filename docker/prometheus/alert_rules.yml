@@ -1,0 +1,605 @@
+groups:
+  - name: cac_piv_security_alerts
+    rules:
+      # Authentication Alerts
+      - alert: HighAuthenticationFailureRate
+        expr: rate(cac_piv_authentication_failures_total[5m]) > 0.1
+        for: 2m
+        labels:
+          severity: warning
+          component: authentication
+          service: cac-piv
+        annotations:
+          summary: "High authentication failure rate detected"
+          description: "Authentication failure rate is {{ $value }} failures/second for the last 5 minutes"
+
+      - alert: CriticalAuthenticationFailures
+        expr: rate(cac_piv_authentication_failures_total[1m]) > 0.5
+        for: 30s
+        labels:
+          severity: critical
+          component: authentication
+          service: cac-piv
+        annotations:
+          summary: "Critical authentication failure rate"
+          description: "Authentication failure rate is {{ $value }} failures/second indicating potential attack"
+
+      - alert: AuthenticationResponseTimeSlow
+        expr: histogram_quantile(0.95, rate(cac_piv_authentication_duration_seconds_bucket[5m])) > 5
+        for: 3m
+        labels:
+          severity: warning
+          component: authentication
+          service: cac-piv
+        annotations:
+          summary: "Authentication response time is slow"
+          description: "95th percentile authentication time is {{ $value }} seconds"
+
+      # Card Reader Health Alerts
+      - alert: CardReaderDown
+        expr: cac_piv_card_reader_health == 0
+        for: 1m
+        labels:
+          severity: critical
+          component: card-reader
+          service: cac-piv
+        annotations:
+          summary: "Card reader is down"
+          description: "Card reader {{ $labels.reader_id }} is not responding"
+
+      - alert: MultipleCardReadersDown
+        expr: count(cac_piv_card_reader_health == 0) > 1
+        for: 30s
+        labels:
+          severity: critical
+          component: card-reader
+          service: cac-piv
+        annotations:
+          summary: "Multiple card readers are down"
+          description: "{{ $value }} card readers are currently not responding"
+
+      # Security Event Alerts
+      - alert: HighThreatScoreDetected
+        expr: max(cac_piv_threat_score_current) > 8.0
+        for: 1m
+        labels:
+          severity: critical
+          component: security
+          service: cac-piv
+        annotations:
+          summary: "High threat score detected"
+          description: "Maximum threat score is {{ $value }}, indicating potential security threat"
+
+      - alert: SecurityViolationSpike
+        expr: rate(cac_piv_security_violations_total[5m]) > 0.05
+        for: 2m
+        labels:
+          severity: warning
+          component: security
+          service: cac-piv
+        annotations:
+          summary: "Security violation spike detected"
+          description: "Security violations occurring at {{ $value }} violations/second"
+
+      - alert: CriticalSecurityEvents
+        expr: rate(cac_piv_security_events_total{threat_level="CRITICAL"}[5m]) > 0
+        for: 0s
+        labels:
+          severity: critical
+          component: security
+          service: cac-piv
+        annotations:
+          summary: "Critical security events detected"
+          description: "Critical security events are occurring at {{ $value }} events/second"
+
+      # System Health Alerts
+      - alert: ComponentUnavailable
+        expr: cac_piv_component_availability == 0
+        for: 2m
+        labels:
+          severity: warning
+          component: system
+          service: cac-piv
+        annotations:
+          summary: "System component unavailable"
+          description: "Component {{ $labels.component_id }} of type {{ $labels.component_type }} is unavailable"
+
+      - alert: SystemCPUHigh
+        expr: cac_piv_system_cpu_usage_percent > 85
+        for: 5m
+        labels:
+          severity: warning
+          component: system
+          service: cac-piv
+        annotations:
+          summary: "High CPU usage on monitoring system"
+          description: "CPU usage is {{ $value }}% on {{ $labels.hostname }}"
+
+      - alert: SystemMemoryHigh
+        expr: cac_piv_system_memory_usage_percent > 90
+        for: 3m
+        labels:
+          severity: critical
+          component: system
+          service: cac-piv
+        annotations:
+          summary: "High memory usage on monitoring system"
+          description: "Memory usage is {{ $value }}% on {{ $labels.hostname }}"
+
+      # Failover Alerts
+      - alert: FailoverEventOccurred
+        expr: increase(cac_piv_failover_events_total[5m]) > 0
+        for: 0s
+        labels:
+          severity: warning
+          component: failover
+          service: cac-piv
+        annotations:
+          summary: "Failover event occurred"
+          description: "{{ $value }} failover events in the last 5 minutes"
+
+      - alert: FailoverFailure
+        expr: rate(cac_piv_failover_events_total{result="failure"}[10m]) > 0
+        for: 1m
+        labels:
+          severity: critical
+          component: failover
+          service: cac-piv
+        annotations:
+          summary: "Failover operation failed"
+          description: "Failover operations are failing at {{ $value }} failures/second"
+
+      - alert: SlowFailover
+        expr: histogram_quantile(0.95, rate(cac_piv_failover_duration_seconds_bucket[10m])) > 30
+        for: 5m
+        labels:
+          severity: warning
+          component: failover
+          service: cac-piv
+        annotations:
+          summary: "Slow failover operations"
+          description: "95th percentile failover time is {{ $value }} seconds"
+
+      # Alert Management
+      - alert: HighAlertVolume
+        expr: rate(cac_piv_alerts_generated_total[5m]) > 2
+        for: 3m
+        labels:
+          severity: warning
+          component: alerting
+          service: cac-piv
+        annotations:
+          summary: "High alert generation rate"
+          description: "Alerts are being generated at {{ $value }} alerts/second"
+
+      - alert: AlertDeliveryFailures
+        expr: rate(cac_piv_alert_deliveries_total{result="FAILED"}[10m]) > 0.1
+        for: 2m
+        labels:
+          severity: warning
+          component: alerting
+          service: cac-piv
+        annotations:
+          summary: "Alert delivery failures"
+          description: "Alert deliveries are failing at {{ $value }} failures/second"
+
+      - alert: SlowAlertResponse
+        expr: histogram_quantile(0.90, rate(cac_piv_alert_response_time_seconds_bucket[30m])) > 900
+        for: 5m
+        labels:
+          severity: warning
+          component: alerting
+          service: cac-piv
+        annotations:
+          summary: "Slow alert response times"
+          description: "90th percentile alert response time is {{ $value }} seconds (15+ minutes)"
+
+  - name: cac_piv_compliance_alerts
+    rules:
+      # Compliance Monitoring
+      - alert: ComplianceThresholdBreach
+        expr: cac_piv_compliance_score < 90
+        for: 10m
+        labels:
+          severity: critical
+          component: compliance
+          service: cac-piv
+        annotations:
+          summary: "Compliance score below threshold"
+          description: "Overall compliance score is {{ $value }}% (threshold: 90%)"
+
+      - alert: NonCompliantControls
+        expr: cac_piv_non_compliant_controls > 0
+        for: 5m
+        labels:
+          severity: warning
+          component: compliance
+          service: cac-piv
+        annotations:
+          summary: "Non-compliant controls detected"
+          description: "{{ $value }} controls are currently non-compliant"
+
+      - alert: CertificateExpiringSoon
+        expr: cac_piv_certificates_expiring_soon{days_until_expiry="30"} > 0
+        for: 1h
+        labels:
+          severity: warning
+          component: compliance
+          service: cac-piv
+        annotations:
+          summary: "Certificates expiring soon"
+          description: "{{ $value }} certificates will expire within 30 days"
+
+      - alert: CertificateExpiringCritical
+        expr: cac_piv_certificates_expiring_soon{days_until_expiry="7"} > 0
+        for: 30m
+        labels:
+          severity: critical
+          component: compliance
+          service: cac-piv
+        annotations:
+          summary: "Certificates expiring in 7 days"
+          description: "{{ $value }} certificates will expire within 7 days - immediate action required"
+
+  - name: cac_piv_availability_alerts
+    rules:
+      # Service Availability
+      - alert: MonitoringServiceDown
+        expr: up{job=~"cac-piv-.*"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          component: monitoring
+          service: cac-piv
+        annotations:
+          summary: "CAC/PIV monitoring service is down"
+          description: "Service {{ $labels.job }} is not responding to health checks"
+
+      - alert: LowSystemAvailability
+        expr: cac_piv_system_availability < 99.0
+        for: 5m
+        labels:
+          severity: warning
+          component: system
+          service: cac-piv
+        annotations:
+          summary: "Low system availability"
+          description: "System availability is {{ $value }}% (target: 99.9%)"
+
+      - alert: CriticalSystemAvailability
+        expr: cac_piv_system_availability < 95.0
+        for: 2m
+        labels:
+          severity: critical
+          component: system
+          service: cac-piv
+        annotations:
+          summary: "Critical system availability"
+          description: "System availability is {{ $value }}% - service degradation occurring"
+
+  - name: cac_piv_data_quality_alerts
+    rules:
+      # Data Quality and Integrity
+      - alert: AuditQueueBacklog
+        expr: cac_piv_audit_queue_size > 5000
+        for: 5m
+        labels:
+          severity: warning
+          component: audit
+          service: cac-piv
+        annotations:
+          summary: "Audit queue backlog"
+          description: "Audit queue has {{ $value }} pending events"
+
+      - alert: CriticalAuditQueueBacklog
+        expr: cac_piv_audit_queue_size > 15000
+        for: 2m
+        labels:
+          severity: critical
+          component: audit
+          service: cac-piv
+        annotations:
+          summary: "Critical audit queue backlog"
+          description: "Audit queue has {{ $value }} pending events - risk of data loss"
+
+      - alert: MissingMetricsData
+        expr: absent(cac_piv_authentication_attempts_total)
+        for: 5m
+        labels:
+          severity: warning
+          component: metrics
+          service: cac-piv
+        annotations:
+          summary: "Missing authentication metrics"
+          description: "Authentication metrics have not been reported for 5 minutes"
+
+      - alert: StaleMetricsData
+        expr: time() - timestamp(cac_piv_authentication_attempts_total) > 300
+        for: 2m
+        labels:
+          severity: warning
+          component: metrics
+          service: cac-piv
+        annotations:
+          summary: "Stale metrics data"
+          description: "Authentication metrics are {{ $value }} seconds old"
+
+  - name: vault_security_alerts
+    rules:
+      # Vault Status Alerts
+      - alert: VaultSealed
+        expr: vault_sealed == 1
+        for: 0s
+        labels:
+          severity: critical
+          component: vault
+          service: credential-management
+        annotations:
+          summary: "Vault is sealed"
+          description: "HashiCorp Vault is currently sealed and unavailable"
+
+      - alert: VaultNotInitialized
+        expr: vault_initialized == 0
+        for: 1m
+        labels:
+          severity: critical
+          component: vault
+          service: credential-management
+        annotations:
+          summary: "Vault is not initialized"
+          description: "HashiCorp Vault is not initialized"
+
+      - alert: VaultDown
+        expr: vault_status == 0
+        for: 1m
+        labels:
+          severity: critical
+          component: vault
+          service: credential-management
+        annotations:
+          summary: "Vault is down"
+          description: "HashiCorp Vault is not responding to health checks"
+
+      # Authentication Security
+      - alert: HighVaultAuthFailures
+        expr: rate(vault_auth_failures_total[5m]) > 0.1
+        for: 2m
+        labels:
+          severity: warning
+          component: vault-auth
+          service: credential-management
+        annotations:
+          summary: "High Vault authentication failure rate"
+          description: "Vault authentication failures: {{ $value }} failures/second"
+
+      - alert: CriticalVaultAuthFailures
+        expr: rate(vault_auth_failures_total[1m]) > 0.5
+        for: 30s
+        labels:
+          severity: critical
+          component: vault-auth
+          service: credential-management
+        annotations:
+          summary: "Critical Vault authentication failure rate"
+          description: "Vault authentication failures: {{ $value }} failures/second - possible attack"
+
+      # Credential Management
+      - alert: CredentialRotationFailures
+        expr: rate(vault_credential_rotations_total{status="failed"}[10m]) > 0
+        for: 2m
+        labels:
+          severity: warning
+          component: credential-rotation
+          service: credential-management
+        annotations:
+          summary: "Credential rotation failures detected"
+          description: "Credential rotations failing at {{ $value }} failures/second"
+
+      - alert: CredentialsExpiringSoon
+        expr: count(vault_credential_expiry_seconds < 3600) > 5
+        for: 30m
+        labels:
+          severity: warning
+          component: credential-lifecycle
+          service: credential-management
+        annotations:
+          summary: "Multiple credentials expiring soon"
+          description: "{{ $value }} credentials will expire within 1 hour"
+
+      - alert: ExpiredCredentials
+        expr: count(vault_credential_expiry_seconds <= 0) > 0
+        for: 5m
+        labels:
+          severity: critical
+          component: credential-lifecycle
+          service: credential-management
+        annotations:
+          summary: "Expired credentials detected"
+          description: "{{ $value }} credentials have expired and need immediate attention"
+
+      - alert: SlowCredentialRotation
+        expr: histogram_quantile(0.95, rate(vault_credential_rotation_duration_seconds_bucket[10m])) > 300
+        for: 5m
+        labels:
+          severity: warning
+          component: credential-rotation
+          service: credential-management
+        annotations:
+          summary: "Slow credential rotations"
+          description: "95th percentile rotation time is {{ $value }} seconds"
+
+      # Platform Connectivity
+      - alert: PlatformConnectivityLoss
+        expr: vault_platform_connectivity == 0
+        for: 2m
+        labels:
+          severity: warning
+          component: platform-adapter
+          service: credential-management
+        annotations:
+          summary: "Platform connectivity lost"
+          description: "Platform {{ $labels.platform }} is not accessible"
+
+      - alert: HighPlatformAuthFailures
+        expr: rate(vault_platform_auth_requests_total{status="failed"}[5m]) > 0.1
+        for: 3m
+        labels:
+          severity: warning
+          component: platform-auth
+          service: credential-management
+        annotations:
+          summary: "High platform authentication failures"
+          description: "Platform {{ $labels.platform }} auth failures: {{ $value }} failures/second"
+
+      # Zero-Downtime Rotation
+      - alert: ZeroDowntimeRotationFailures
+        expr: rate(vault_zero_downtime_rotations_total{status="failed"}[15m]) > 0
+        for: 5m
+        labels:
+          severity: warning
+          component: zero-downtime-rotation
+          service: credential-management
+        annotations:
+          summary: "Zero-downtime rotation failures"
+          description: "Zero-downtime rotations failing for platform {{ $labels.platform }}"
+
+  - name: vault_compliance_alerts
+    rules:
+      # Certificate Validation
+      - alert: CertificateValidationFailures
+        expr: rate(vault_certificate_validations_total{status="failed"}[10m]) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+          component: certificate-validation
+          service: credential-management
+        annotations:
+          summary: "Certificate validation failures"
+          description: "Certificate validations failing at {{ $value }} failures/second"
+
+      - alert: DoDPKIValidationFailures
+        expr: rate(vault_dod_pki_validations_total{status="failed"}[10m]) > 0.02
+        for: 5m
+        labels:
+          severity: critical
+          component: dod-pki-validation
+          service: credential-management
+        annotations:
+          summary: "DoD PKI validation failures"
+          description: "DoD PKI validations failing at {{ $value }} failures/second"
+
+      - alert: ComplianceViolations
+        expr: rate(vault_compliance_violations_total[15m]) > 0
+        for: 10m
+        labels:
+          severity: critical
+          component: compliance
+          service: credential-management
+        annotations:
+          summary: "Compliance violations detected"
+          description: "Compliance violations occurring: {{ $labels.violation_type }} ({{ $labels.standard }})"
+
+      # Security Events
+      - alert: HighSecurityEventRate
+        expr: rate(vault_security_events_total{severity="critical"}[5m]) > 0
+        for: 0s
+        labels:
+          severity: critical
+          component: security
+          service: credential-management
+        annotations:
+          summary: "Critical security events detected"
+          description: "Critical security events: {{ $labels.event_type }}"
+
+      - alert: PrivilegeEscalationAttempts
+        expr: rate(vault_privilege_escalation_attempts_total[10m]) > 0
+        for: 2m
+        labels:
+          severity: critical
+          component: security
+          service: credential-management
+        annotations:
+          summary: "Privilege escalation attempts detected"
+          description: "User {{ $labels.user }} attempting privilege escalation on path {{ $labels.path }}"
+
+      - alert: SuspiciousAccessPatterns
+        expr: rate(vault_failed_access_attempts_total[5m]) > 0.2
+        for: 5m
+        labels:
+          severity: warning
+          component: security
+          service: credential-management
+        annotations:
+          summary: "Suspicious access patterns detected"
+          description: "High failed access rate on path {{ $labels.path }}: {{ $value }} failures/second"
+
+  - name: vault_operational_alerts
+    rules:
+      # Vault Performance
+      - alert: HighVaultLatency
+        expr: histogram_quantile(0.95, rate(vault_request_duration_seconds_bucket[5m])) > 2
+        for: 5m
+        labels:
+          severity: warning
+          component: vault-performance
+          service: credential-management
+        annotations:
+          summary: "High Vault API latency"
+          description: "95th percentile Vault API latency is {{ $value }} seconds"
+
+      - alert: VaultHighLoadConnections
+        expr: vault_token_count > 1000
+        for: 10m
+        labels:
+          severity: warning
+          component: vault-performance
+          service: credential-management
+        annotations:
+          summary: "High number of active Vault tokens"
+          description: "{{ $value }} active tokens detected, consider cleanup"
+
+      - alert: VaultLeakySessions
+        expr: vault_leases_count > 5000
+        for: 15m
+        labels:
+          severity: warning
+          component: vault-performance
+          service: credential-management
+        annotations:
+          summary: "High number of active Vault leases"
+          description: "{{ $value }} active leases detected, potential lease buildup"
+
+      # Audit and Logging
+      - alert: VaultAuditLogErrors
+        expr: rate(vault_audit_log_errors_total[10m]) > 0
+        for: 2m
+        labels:
+          severity: critical
+          component: vault-audit
+          service: credential-management
+        annotations:
+          summary: "Vault audit log errors"
+          description: "Vault audit logging is experiencing errors"
+
+      - alert: MissingVaultMetrics
+        expr: absent(vault_status)
+        for: 5m
+        labels:
+          severity: warning
+          component: vault-monitoring
+          service: credential-management
+        annotations:
+          summary: "Vault metrics missing"
+          description: "Vault metrics have not been reported for 5 minutes"
+
+      # Consul Backend Health
+      - alert: ConsulDown
+        expr: up{job="consul"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          component: consul
+          service: credential-management
+        annotations:
+          summary: "Consul is down"
+          description: "Consul (Vault HA backend) is not responding"

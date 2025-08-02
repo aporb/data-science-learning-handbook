@@ -1,0 +1,452 @@
+# Base Permissions Configuration for DoD RBAC System
+# Defines core permissions and their hierarchical relationships
+# Compliant with DoD 8500 series and NIST SP 800-53
+
+base_permissions:
+  version: "2.0.0"
+  classification: "UNCLASSIFIED//CUI"
+  last_updated: "2024-01-01"
+  
+  # System-level permissions
+  system:
+    # Administrative permissions
+    admin:
+      - id: "system:admin:full"
+        name: "Full System Administration"
+        description: "Complete system administrative access"
+        classification_required: "SECRET"
+        compartments: ["SI"]
+        approval_required: true
+        dual_authorization: true
+        
+      - id: "system:admin:user_management"
+        name: "User Management"
+        description: "Create, modify, and delete user accounts"
+        classification_required: "CONFIDENTIAL"
+        approval_required: true
+        
+      - id: "system:admin:role_management"
+        name: "Role Management"
+        description: "Create, modify, and delete roles"
+        classification_required: "CONFIDENTIAL"
+        approval_required: true
+        
+      - id: "system:admin:permission_management"
+        name: "Permission Management"
+        description: "Grant and revoke permissions"
+        classification_required: "SECRET"
+        approval_required: true
+        dual_authorization: true
+        
+      - id: "system:admin:security_config"
+        name: "Security Configuration"
+        description: "Modify security policies and configurations"
+        classification_required: "SECRET"
+        compartments: ["SI"]
+        approval_required: true
+        dual_authorization: true
+        
+      - id: "system:admin:backup_restore"
+        name: "Backup and Restore"
+        description: "Perform system backup and restore operations"
+        classification_required: "CONFIDENTIAL"
+        approval_required: true
+        
+    # Monitoring and audit permissions
+    monitoring:
+      - id: "system:monitoring:read"
+        name: "Read System Monitoring"
+        description: "View system monitoring data and dashboards"
+        classification_required: "UNCLASSIFIED"
+        
+      - id: "system:monitoring:configure"
+        name: "Configure Monitoring"
+        description: "Configure monitoring systems and alerts"
+        classification_required: "CONFIDENTIAL"
+        approval_required: true
+        
+      - id: "system:audit:read"
+        name: "Read Audit Logs"
+        description: "Access and view audit logs"
+        classification_required: "CONFIDENTIAL"
+        need_to_know: true
+        
+      - id: "system:audit:configure"
+        name: "Configure Auditing"
+        description: "Configure audit policies and retention"
+        classification_required: "SECRET"
+        approval_required: true
+        
+    # Security permissions
+    security:
+      - id: "system:security:incident_response"
+        name: "Incident Response"
+        description: "Respond to security incidents"
+        classification_required: "SECRET"
+        compartments: ["SI"]
+        emergency_access: true
+        
+      - id: "system:security:vulnerability_management"
+        name: "Vulnerability Management"
+        description: "Manage security vulnerabilities"
+        classification_required: "CONFIDENTIAL"
+        
+      - id: "system:security:compliance_review"
+        name: "Compliance Review"
+        description: "Review system compliance status"
+        classification_required: "CONFIDENTIAL"
+        
+  # Data permissions
+  data:
+    # Data access permissions
+    access:
+      - id: "data:read:unclassified"
+        name: "Read Unclassified Data"
+        description: "Access unclassified data resources"
+        classification_required: "UNCLASSIFIED"
+        
+      - id: "data:read:cui"
+        name: "Read CUI Data"
+        description: "Access Controlled Unclassified Information"
+        classification_required: "UNCLASSIFIED"
+        cui_authorized: true
+        need_to_know: true
+        
+      - id: "data:read:confidential"
+        name: "Read Confidential Data"
+        description: "Access confidential classified data"
+        classification_required: "CONFIDENTIAL"
+        need_to_know: true
+        
+      - id: "data:read:secret"
+        name: "Read Secret Data"
+        description: "Access secret classified data"
+        classification_required: "SECRET"
+        compartments: ["SI"]
+        need_to_know: true
+        
+      - id: "data:read:top_secret"
+        name: "Read Top Secret Data"
+        description: "Access top secret classified data"
+        classification_required: "TOP_SECRET"
+        compartments: ["SI", "TK"]
+        need_to_know: true
+        special_access_program: true
+        
+    # Data modification permissions
+    modify:
+      - id: "data:create:unclassified"
+        name: "Create Unclassified Data"
+        description: "Create new unclassified data"
+        classification_required: "UNCLASSIFIED"
+        audit_required: true
+        
+      - id: "data:update:confidential"
+        name: "Update Confidential Data"
+        description: "Modify confidential data"
+        classification_required: "CONFIDENTIAL"
+        approval_required: true
+        audit_required: true
+        
+      - id: "data:delete:secret"
+        name: "Delete Secret Data"
+        description: "Delete secret classified data"
+        classification_required: "SECRET"
+        approval_required: true
+        dual_authorization: true
+        audit_required: true
+        
+    # Data export permissions
+    export:
+      - id: "data:export:unclassified"
+        name: "Export Unclassified Data"
+        description: "Export unclassified data"
+        classification_required: "UNCLASSIFIED"
+        audit_required: true
+        data_loss_prevention: true
+        
+      - id: "data:export:cui"
+        name: "Export CUI Data"
+        description: "Export Controlled Unclassified Information"
+        classification_required: "UNCLASSIFIED"
+        cui_authorized: true
+        approval_required: true
+        audit_required: true
+        data_loss_prevention: true
+        
+      - id: "data:export:classified"
+        name: "Export Classified Data"
+        description: "Export classified data"
+        classification_required: "CONFIDENTIAL"
+        approval_required: true
+        dual_authorization: true
+        audit_required: true
+        cross_domain_solution: true
+        
+  # Application permissions
+  application:
+    # Platform-specific permissions
+    qlik:
+      - id: "app:qlik:app:read"
+        name: "Read Qlik Applications"
+        description: "View Qlik Sense applications"
+        classification_required: "UNCLASSIFIED"
+        
+      - id: "app:qlik:app:create"
+        name: "Create Qlik Applications"
+        description: "Create new Qlik Sense applications"
+        classification_required: "UNCLASSIFIED"
+        approval_required: true
+        
+      - id: "app:qlik:app:publish"
+        name: "Publish Qlik Applications"
+        description: "Publish Qlik applications to streams"
+        classification_required: "CONFIDENTIAL"
+        approval_required: true
+        
+      - id: "app:qlik:space:manage"
+        name: "Manage Qlik Spaces"
+        description: "Create and manage Qlik spaces"
+        classification_required: "CONFIDENTIAL"
+        approval_required: true
+        
+      - id: "app:qlik:data:reload"
+        name: "Reload Qlik Data"
+        description: "Reload data in Qlik applications"
+        classification_required: "UNCLASSIFIED"
+        audit_required: true
+        
+    databricks:
+      - id: "app:databricks:workspace:read"
+        name: "Read Databricks Workspace"
+        description: "Access Databricks workspace"
+        classification_required: "UNCLASSIFIED"
+        
+      - id: "app:databricks:cluster:create"
+        name: "Create Databricks Clusters"
+        description: "Create new compute clusters"
+        classification_required: "CONFIDENTIAL"
+        approval_required: true
+        resource_limits: true
+        
+      - id: "app:databricks:cluster:manage"
+        name: "Manage Databricks Clusters"
+        description: "Start, stop, and configure clusters"
+        classification_required: "UNCLASSIFIED"
+        audit_required: true
+        
+      - id: "app:databricks:notebook:create"
+        name: "Create Databricks Notebooks"
+        description: "Create new notebooks"
+        classification_required: "UNCLASSIFIED"
+        
+      - id: "app:databricks:notebook:execute"
+        name: "Execute Databricks Notebooks"
+        description: "Run notebook code"
+        classification_required: "UNCLASSIFIED"
+        audit_required: true
+        
+      - id: "app:databricks:job:create"
+        name: "Create Databricks Jobs"
+        description: "Create automated jobs"
+        classification_required: "CONFIDENTIAL"
+        approval_required: true
+        
+      - id: "app:databricks:sql:execute"
+        name: "Execute SQL Queries"
+        description: "Run SQL queries"
+        classification_required: "UNCLASSIFIED"
+        audit_required: true
+        query_validation: true
+        
+    advana:
+      - id: "app:advana:dashboard:read"
+        name: "Read Advana Dashboards"
+        description: "View Advana dashboards"
+        classification_required: "UNCLASSIFIED"
+        
+      - id: "app:advana:dashboard:create"
+        name: "Create Advana Dashboards"
+        description: "Create new dashboards"
+        classification_required: "UNCLASSIFIED"
+        approval_required: true
+        
+      - id: "app:advana:model:deploy"
+        name: "Deploy ML Models"
+        description: "Deploy machine learning models"
+        classification_required: "CONFIDENTIAL"
+        approval_required: true
+        
+    jupiter:
+      - id: "app:jupiter:notebook:access"
+        name: "Access Jupiter Notebooks"
+        description: "Access Navy Jupiter notebook environment"
+        classification_required: "UNCLASSIFIED"
+        navy_clearance_required: true
+        
+      - id: "app:jupiter:compute:request"
+        name: "Request Compute Resources"
+        description: "Request additional compute resources"
+        classification_required: "CONFIDENTIAL"
+        approval_required: true
+        
+  # Emergency permissions
+  emergency:
+    - id: "emergency:incident_response"
+      name: "Emergency Incident Response"
+      description: "Emergency access for incident response"
+      classification_required: "SECRET"
+      compartments: ["SI"]
+      emergency_access: true
+      time_limited: true
+      max_duration: "4 hours"
+      approval_required: true
+      dual_authorization: true
+      break_glass: true
+      
+    - id: "emergency:system_recovery"
+      name: "Emergency System Recovery"
+      description: "Emergency access for system recovery"
+      classification_required: "SECRET"
+      emergency_access: true
+      time_limited: true
+      max_duration: "8 hours"
+      approval_required: true
+      dual_authorization: true
+      break_glass: true
+      
+# Permission hierarchies and relationships
+permission_hierarchies:
+  # System administration hierarchy
+  system_admin:
+    root: "system:admin:full"
+    children:
+      - "system:admin:user_management"
+      - "system:admin:role_management"
+      - "system:admin:permission_management"
+      - "system:admin:security_config"
+      - "system:admin:backup_restore"
+      - "system:monitoring:configure"
+      - "system:audit:configure"
+      
+  # Data access hierarchy
+  data_access:
+    levels:
+      - level: "UNCLASSIFIED"
+        permissions:
+          - "data:read:unclassified"
+          - "data:create:unclassified"
+          - "data:export:unclassified"
+      - level: "CUI"
+        permissions:
+          - "data:read:cui"
+          - "data:export:cui"
+        inherits: "UNCLASSIFIED"
+      - level: "CONFIDENTIAL"
+        permissions:
+          - "data:read:confidential"
+          - "data:update:confidential"
+        inherits: "CUI"
+      - level: "SECRET"
+        permissions:
+          - "data:read:secret"
+          - "data:delete:secret"
+        inherits: "CONFIDENTIAL"
+      - level: "TOP_SECRET"
+        permissions:
+          - "data:read:top_secret"
+        inherits: "SECRET"
+        
+# Permission constraints and policies
+permission_constraints:
+  # Time-based constraints
+  time_constraints:
+    business_hours_only:
+      permissions:
+        - "data:export:classified"
+        - "system:admin:security_config"
+      hours: "0800-1700"
+      days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+      timezone: "America/New_York"
+      
+    maintenance_window:
+      permissions:
+        - "system:admin:backup_restore"
+      hours: "0200-0400"
+      days: ["Sunday"]
+      
+  # Location-based constraints
+  location_constraints:
+    secure_facility_only:
+      permissions:
+        - "data:read:top_secret"
+        - "emergency:incident_response"
+      locations: ["SCIF", "Secure Facility"]
+      
+  # Device constraints
+  device_constraints:
+    government_device_only:
+      permissions:
+        - "data:read:secret"
+        - "data:read:top_secret"
+      device_types: ["Government Furnished Equipment"]
+      certificate_required: true
+      
+# Approval workflows
+approval_workflows:
+  standard_approval:
+    steps:
+      - step: 1
+        approver_role: "data_steward"
+        required: true
+      - step: 2
+        approver_role: "security_admin"
+        required: true
+        
+  dual_authorization:
+    steps:
+      - step: 1
+        approver_role: "security_admin"
+        required: true
+      - step: 2
+        approver_role: "system_admin"
+        required: true
+        concurrent: false
+        
+  emergency_approval:
+    steps:
+      - step: 1
+        approver_role: "security_admin"
+        required: true
+        timeout: "15 minutes"
+      - step: 2
+        approver_role: "system_admin"
+        required: true
+        timeout: "30 minutes"
+        
+# Audit requirements
+audit_requirements:
+  high_sensitivity:
+    permissions:
+      - "data:read:secret"
+      - "data:read:top_secret"
+      - "system:admin:security_config"
+    requirements:
+      - "log_all_access"
+      - "real_time_monitoring"
+      - "behavioral_analysis"
+      
+  medium_sensitivity:
+    permissions:
+      - "data:read:confidential"
+      - "system:admin:user_management"
+    requirements:
+      - "log_access_attempts"
+      - "periodic_review"
+      
+  standard:
+    permissions:
+      - "data:read:unclassified"
+      - "app:qlik:app:read"
+    requirements:
+      - "basic_logging"

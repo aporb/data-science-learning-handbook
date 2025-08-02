@@ -55,3 +55,97 @@ scrape_configs:
     static_configs:
       - targets: ['cadvisor:8080']
     scrape_interval: 30s
+
+  # CAC/PIV Security Monitoring
+  - job_name: 'cac-piv-security-monitor'
+    static_configs:
+      - targets: ['security-monitor:8080']
+    metrics_path: '/metrics'
+    scrape_interval: 15s
+    scrape_timeout: 10s
+    honor_labels: true
+    params:
+      format: ['prometheus']
+
+  - job_name: 'cac-piv-failover-detector'
+    static_configs:
+      - targets: ['failover-detector:8081']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  - job_name: 'cac-piv-alerting-system'
+    static_configs:
+      - targets: ['alerting-system:8082']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  - job_name: 'cac-piv-compliance-reporting'
+    static_configs:
+      - targets: ['compliance-reporting:8083']
+    metrics_path: '/metrics'
+    scrape_interval: 60s
+    scrape_timeout: 15s
+
+  # HashiCorp Vault Monitoring
+  - job_name: 'vault'
+    static_configs:
+      - targets: ['vault:8200']
+    metrics_path: '/v1/sys/metrics'
+    params:
+      format: ['prometheus']
+    scrape_interval: 30s
+    scrape_timeout: 10s
+    scheme: 'https'
+    tls_config:
+      insecure_skip_verify: true
+    bearer_token_file: '/etc/prometheus/vault-token'
+
+  # Vault Credential Management Metrics
+  - job_name: 'vault-credential-manager'
+    static_configs:
+      - targets: ['vault-credential-manager:8080']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+    honor_labels: true
+
+  # Platform Authentication Metrics
+  - job_name: 'platform-auth-qlik'
+    static_configs:
+      - targets: ['platform-auth-qlik:8081']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  - job_name: 'platform-auth-databricks'
+    static_configs:
+      - targets: ['platform-auth-databricks:8082']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  - job_name: 'platform-auth-advana'
+    static_configs:
+      - targets: ['platform-auth-advana:8083']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  - job_name: 'platform-auth-navy-jupiter'
+    static_configs:
+      - targets: ['platform-auth-navy-jupiter:8084']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  # Consul (Vault HA Backend)
+  - job_name: 'consul'
+    static_configs:
+      - targets: ['consul:8500']
+    metrics_path: '/v1/agent/metrics'
+    params:
+      format: ['prometheus']
+    scrape_interval: 30s
+    scrape_timeout: 10s

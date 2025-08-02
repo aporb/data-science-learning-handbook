@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Assessment Report - {{metadata.system_name}}</title>
+    <meta name="classification" content="{{metadata.classification|format_classification}}">
+    <style>
+        body {
+            font-family: 'Times New Roman', serif;
+            margin: 1in;
+            line-height: 1.6;
+            color: #000;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 2em;
+            border-bottom: 2px solid #000;
+            padding-bottom: 1em;
+        }
+        .classification {
+            color: red;
+            font-weight: bold;
+            text-align: center;
+            font-size: 14pt;
+            margin: 1em 0;
+            border: 2px solid red;
+            padding: 0.5em;
+        }
+        .section {
+            margin: 2em 0;
+            page-break-inside: avoid;
+        }
+        .section h2 {
+            color: #003366;
+            border-bottom: 1px solid #003366;
+            padding-bottom: 0.5em;
+        }
+        .section h3 {
+            color: #006699;
+            margin-top: 1.5em;
+        }
+        .assessment-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1em 0;
+            font-size: 10pt;
+        }
+        .assessment-table th, .assessment-table td {
+            border: 1px solid #ccc;
+            padding: 6px;
+            text-align: left;
+            vertical-align: top;
+        }
+        .assessment-table th {
+            background-color: #e6f3ff;
+            font-weight: bold;
+        }
+        .status-satisfied {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status-not-satisfied {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .status-not-tested {
+            background-color: #f8f9fa;
+            color: #6c757d;
+        }
+        .severity-critical {
+            background-color: #dc3545;
+            color: white;
+        }
+        .severity-high {
+            background-color: #fd7e14;
+            color: white;
+        }
+        .severity-medium {
+            background-color: #ffc107;
+            color: #000;
+        }
+        .severity-low {
+            background-color: #28a745;
+            color: white;
+        }
+        .page-break {
+            page-break-before: always;
+        }
+        .executive-summary {
+            background-color: #f8f9fa;
+            padding: 1em;
+            border-left: 4px solid #007bff;
+            margin: 1em 0;
+        }
+        .recommendation {
+            background-color: #fff3cd;
+            padding: 0.5em;
+            border-left: 4px solid #ffc107;
+            margin: 0.5em 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Classification Header -->
+    <div class="classification">
+        {{metadata.classification|format_classification}}
+    </div>
+
+    <!-- Title Page -->
+    <div class="header">
+        <h1>Security Assessment Report (SAR)</h1>
+        <h2>{{data.system_info.name}}</h2>
+        <p><strong>System ID:</strong> {{data.system_info.id}}</p>
+        <p><strong>Assessment Date:</strong> {{data.assessment_info.assessment_completion_date}}</p>
+        <p><strong>Organization:</strong> {{data.system_info.organization}}</p>
+    </div>
+
+    <!-- Executive Summary -->
+    <div class="section">
+        <h2>1. Executive Summary</h2>
+        <div class="executive-summary">
+            <h3>Assessment Overview</h3>
+            <p>This Security Assessment Report presents the results of the comprehensive security assessment 
+               conducted for {{data.system_info.name}} ({{data.system_info.id}}) from 
+               {{data.assessment_info.assessment_start_date}} to {{data.assessment_info.assessment_completion_date}}.</p>
+            
+            <p><strong>Overall Risk Posture:</strong> 
+               <span class="status-{{data.overall_assessment.overall_risk_posture.replace('_', '-')}}">
+                   {{data.overall_assessment.overall_risk_posture|upper}}
+               </span>
+            </p>
+            
+            <p><strong>Authorization Recommendation:</strong> 
+               {{data.overall_assessment.authorization_recommendation.replace('_', ' ')|title}}</p>
+        </div>
+
+        <h3>1.1 Key Findings</h3>
+        <ul>
+            {% for finding in data.overall_assessment.key_findings %}
+            <li>{{finding}}</li>
+            {% endfor %}
+        </ul>
+
+        <h3>1.2 Key Recommendations</h3>
+        {% for recommendation in data.overall_assessment.recommendations %}
+        <div class="recommendation">
+            {{recommendation}}
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- Assessment Information -->
+    <div class="section">
+        <h2>2. Assessment Information</h2>
+        
+        <table class="assessment-table">
+            <tr>
+                <th>Assessment Element</th>
+                <th>Details</th>
+            </tr>
+            <tr>
+                <td>Assessment Type</td>
+                <td>{{data.assessment_info.assessment_type}}</td>
+            </tr>
+            <tr>
+                <td>Assessment Scope</td>
+                <td>{{data.assessment_info.assessment_scope}}</td>
+            </tr>
+            <tr>
+                <td>Assessment Start Date</td>
+                <td>{{data.assessment_info.assessment_start_date}}</td>
+            </tr>
+            <tr>
+                <td>Assessment Completion Date</td>
+                <td>{{data.assessment_info.assessment_completion_date}}</td>
+            </tr>
+            <tr>
+                <td>Assessment Team</td>
+                <td>{{data.assessment_info.assessment_team|join(', ')}}</td>
+            </tr>
+            <tr>
+                <td>Assessment Methods</td>
+                <td>{{data.assessment_info.assessment_methods_used|join(', ')}}</td>
+            </tr>
+            <tr>
+                <td>Assessment Standards</td>
+                <td>{{data.assessment_info.assessment_standards|join(', ')}}</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Control Assessment Results -->
+    <div class="section">
+        <h2>3. Control Assessment Results</h2>
+        
+        <h3>3.1 Assessment Summary</h3>
+        <table class="assessment-table">
+            <tr>
+                <th>Metric</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>Total Controls Tested</td>
+                <td>{{data.control_assessment_results.total_controls_tested}}</td>
+            </tr>
+            <tr>
+                <td>Controls Satisfied</td>
+                <td class="status-satisfied">{{data.control_assessment_results.passed_controls}}</td>
+            </tr>
+            <tr>
+                <td>Controls Not Satisfied</td>
+                <td class="status-not-satisfied">{{data.control_assessment_results.failed_controls}}</td>
+            </tr>
+            <tr>
+                <td>Controls Not Tested</td>
+                <td class="status-not-tested">{{data.control_assessment_results.not_tested}}</td>
+            </tr>
+            <tr>
+                <td>Overall Satisfaction Rate</td>
+                <td>{{data.overall_assessment.control_satisfaction_rate * 100|round(1)}}%</td>
+            </tr>
+        </table>
+
+        <h3>3.2 Assessment Results by Control Family</h3>
+        {% for family_code, family_data in data.control_assessment_results.assessment_summary.items() %}
+        <h4>3.2.{{loop.index}} {{family_code}} - {{family_data.family_name}}</h4>
+        
+        <table class="assessment-table">
+            <tr>
+                <th>Metric</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>Total Controls</td>
+                <td>{{family_data.total_controls}}</td>
+            </tr>
+            <tr>
+                <td>Satisfied</td>
+                <td class="status-satisfied">{{family_data.satisfied}}</td>
+            </tr>
+            <tr>
+                <td>Not Satisfied</td>
+                <td class="status-not-satisfied">{{family_data.not_satisfied}}</td>
+            </tr>
+            <tr>
+                <td>Not Tested</td>
+                <td class="status-not-tested">{{family_data.not_tested}}</td>
+            </tr>
+            <tr>
+                <td>Average Score</td>
+                <td>{{family_data.average_score|round(1)}}%</td>
+            </tr>
+            <tr>
+                <td>Satisfaction Rate</td>
+                <td>{{family_data.satisfaction_rate * 100|round(1)}}%</td>
+            </tr>
+        </table>
+
+        <p><strong>Findings Summary:</strong></p>
+        <ul>
+            <li>Critical: {{family_data.critical_findings}}</li>
+            <li>High: {{family_data.high_findings}}</li>
+            <li>Medium: {{family_data.medium_findings}}</li>
+            <li>Low: {{family_data.low_findings}}</li>
+        </ul>
+        {% endfor %}
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- Detailed Assessment Results -->
+    <div class="section">
+        <h2>4. Detailed Assessment Results</h2>
+        
+        <table class="assessment-table">
+            <tr>
+                <th>Control ID</th>
+                <th>Control Name</th>
+                <th>Test Status</th>
+                <th>Test Score</th>
+                <th>Assessment Methods</th>
+                <th>Assessor</th>
+                <th>Assessment Date</th>
+            </tr>
+            {% for control_id, details in data.control_assessment_results.control_details.items() %}
+            <tr>
+                <td><strong>{{control_id|format_control_id}}</strong></td>
+                <td>{{details.control_name}}</td>
+                <td class="status-{{details.test_status.replace('_', '-')}}">
+                    {{details.test_status.replace('_', ' ')|title}}
+                </td>
+                <td>{{details.test_score}}%</td>
+                <td>{{details.assessment_methods|join(', ')}}</td>
+                <td>{{details.assessor}}</td>
+                <td>{{details.assessment_date|format_date}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- Vulnerability Assessment -->
+    <div class="section">
+        <h2>5. Vulnerability Assessment</h2>
+        
+        <h3>5.1 Vulnerability Summary</h3>
+        <table class="assessment-table">
+            <tr>
+                <th>Severity</th>
+                <th>Count</th>
+            </tr>
+            <tr>
+                <td>Critical</td>
+                <td class="severity-critical">{{data.vulnerability_assessment.severity_breakdown.critical}}</td>
+            </tr>
+            <tr>
+                <td>High</td>
+                <td class="severity-high">{{data.vulnerability_assessment.severity_breakdown.high}}</td>
+            </tr>
+            <tr>
+                <td>Medium</td>
+                <td class="severity-medium">{{data.vulnerability_assessment.severity_breakdown.medium}}</td>
+            </tr>
+            <tr>
+                <td>Low</td>
+                <td class="severity-low">{{data.vulnerability_assessment.severity_breakdown.low}}</td>
+            </tr>
+            <tr>
+                <td><strong>Total</strong></td>
+                <td><strong>{{data.vulnerability_assessment.total_vulnerabilities}}</strong></td>
+            </tr>
+        </table>
+
+        <p><strong>Vulnerability Trend:</strong> {{data.vulnerability_assessment.vulnerability_trend|title}}</p>
+        <p><strong>Risk Score:</strong> {{data.vulnerability_assessment.risk_score}}</p>
+
+        <h3>5.2 Scan Details</h3>
+        <table class="assessment-table">
+            <tr>
+                <th>Scan Date</th>
+                <th>Scanner</th>
+                <th>Total Findings</th>
+            </tr>
+            {% for scan in data.vulnerability_assessment.scan_details %}
+            <tr>
+                <td>{{scan.scan_date|format_date}}</td>
+                <td>{{scan.scanner}}</td>
+                <td>{{scan.total_findings}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <h3>5.3 Vulnerability Recommendations</h3>
+        {% for recommendation in data.vulnerability_assessment.recommendations %}
+        <div class="recommendation">
+            {{recommendation}}
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Penetration Testing -->
+    <div class="section">
+        <h2>6. Penetration Testing</h2>
+        
+        <p><strong>Tests Conducted:</strong> {{data.penetration_testing.tests_conducted}}</p>
+        <p><strong>Overall Result:</strong> {{data.penetration_testing.overall_result}}</p>
+
+        {% if data.penetration_testing.findings %}
+        <h3>6.1 Penetration Test Results</h3>
+        <table class="assessment-table">
+            <tr>
+                <th>Test ID</th>
+                <th>Test Date</th>
+                <th>Test Type</th>
+                <th>Findings</th>
+                <th>Status</th>
+            </tr>
+            {% for test in data.penetration_testing.findings %}
+            <tr>
+                <td>{{test.id}}</td>
+                <td>{{test.test_date|format_date}}</td>
+                <td>{{test.test_type}}</td>
+                <td>{{test.findings_count}}</td>
+                <td>{{test.status}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% endif %}
+    </div>
+
+    <!-- Overall Assessment Conclusion -->
+    <div class="section">
+        <h2>7. Assessment Conclusion</h2>
+        
+        <div class="executive-summary">
+            <h3>Final Assessment</h3>
+            <table class="assessment-table">
+                <tr>
+                    <th>Assessment Element</th>
+                    <th>Result</th>
+                </tr>
+                <tr>
+                    <td>Overall Risk Posture</td>
+                    <td class="status-{{data.overall_assessment.overall_risk_posture.replace('_', '-')}}">
+                        {{data.overall_assessment.overall_risk_posture|upper}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>Control Satisfaction Rate</td>
+                    <td>{{data.overall_assessment.control_satisfaction_rate * 100|round(1)}}%</td>
+                </tr>
+                <tr>
+                    <td>Authorization Recommendation</td>
+                    <td>{{data.overall_assessment.authorization_recommendation.replace('_', ' ')|title}}</td>
+                </tr>
+                <tr>
+                    <td>Assessment Confidence</td>
+                    <td>{{data.overall_assessment.assessment_confidence|title}}</td>
+                </tr>
+                <tr>
+                    <td>Next Assessment Date</td>
+                    <td>{{data.overall_assessment.next_assessment_date}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- Assessment Limitations -->
+    <div class="section">
+        <h2>8. Assessment Limitations</h2>
+        <ul>
+            {% for limitation in data.assessment_limitations %}
+            <li>{{limitation}}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Evidence Artifacts -->
+    <div class="section">
+        <h2>9. Evidence Artifacts</h2>
+        
+        <table class="assessment-table">
+            <tr>
+                <th>Artifact ID</th>
+                <th>Control Reference</th>
+                <th>Artifact Type</th>
+                <th>Description</th>
+            </tr>
+            {% for artifact in data.evidence_artifacts %}
+            <tr>
+                <td>{{artifact.artifact_id}}</td>
+                <td>{{artifact.control_reference|format_control_id}}</td>
+                <td>{{artifact.artifact_type}}</td>
+                <td>{{artifact.description}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="classification">
+            {{metadata.classification|format_classification}}
+        </div>
+        <p>Generated: {{generated_date|format_date}} | Assessment Completed: {{data.assessment_info.assessment_completion_date}}</p>
+        <p>Content Hash: {{metadata.system_name|hash_content}}</p>
+    </div>
+</body>
+</html>

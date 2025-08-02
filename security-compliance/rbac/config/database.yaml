@@ -1,0 +1,180 @@
+# Database Configuration for DoD RBAC System
+# Compliant with DoD 8500 series and STIG requirements
+
+database:
+  # Primary database configuration (PostgreSQL recommended for DoD compliance)
+  primary:
+    engine: "postgresql"
+    host: "${DB_HOST:-localhost}"
+    port: "${DB_PORT:-5432}"
+    database: "${DB_NAME:-rbac_system}"
+    username: "${DB_USER:-rbac_admin}"
+    password: "${DB_PASSWORD}"
+    
+    # Connection pool settings
+    pool:
+      min_connections: 5
+      max_connections: 50
+      connection_timeout: 30
+      idle_timeout: 300
+      
+    # SSL/TLS configuration (mandatory for DoD)
+    ssl:
+      enabled: true
+      mode: "require"
+      cert_file: "${DB_SSL_CERT:-/etc/ssl/certs/client-cert.pem}"
+      key_file: "${DB_SSL_KEY:-/etc/ssl/private/client-key.pem}"
+      ca_file: "${DB_SSL_CA:-/etc/ssl/certs/ca-cert.pem}"
+      verify_server_cert: true
+      
+    # DoD-specific security settings
+    security:
+      encrypt_at_rest: true
+      backup_encryption: true
+      audit_all_queries: true
+      max_query_time: 60
+      connection_encryption: "AES-256"
+      
+  # Read replica configuration for high availability
+  replica:
+    enabled: true
+    host: "${DB_REPLICA_HOST}"
+    port: "${DB_REPLICA_PORT:-5432}"
+    read_only: true
+    lag_threshold: 5  # seconds
+    
+  # Audit database (separate for compliance)
+  audit:
+    engine: "postgresql"
+    host: "${AUDIT_DB_HOST:-localhost}"
+    port: "${AUDIT_DB_PORT:-5433}"
+    database: "${AUDIT_DB_NAME:-rbac_audit}"
+    username: "${AUDIT_DB_USER:-audit_admin}"
+    password: "${AUDIT_DB_PASSWORD}"
+    
+    # Retention policy for audit logs
+    retention:
+      access_logs: "7 years"      # DoD requirement
+      permission_changes: "7 years"
+      authentication_logs: "3 years"
+      system_events: "1 year"
+      
+    # Backup configuration
+    backup:
+      enabled: true
+      frequency: "daily"
+      retention: "10 years"
+      encryption: true
+      offsite_backup: true
+      
+# Cache configuration (Redis for session management)
+cache:
+  redis:
+    host: "${REDIS_HOST:-localhost}"
+    port: "${REDIS_PORT:-6379}"
+    password: "${REDIS_PASSWORD}"
+    database: 0
+    
+    # SSL configuration
+    ssl:
+      enabled: true
+      cert_reqs: "required"
+      ca_certs: "/etc/ssl/certs/redis-ca.pem"
+      certfile: "/etc/ssl/certs/redis-client.pem"
+      keyfile: "/etc/ssl/private/redis-client.pem"
+      
+    # Connection settings
+    connection:
+      max_connections: 100
+      connection_timeout: 5
+      socket_keepalive: true
+      socket_keepalive_options:
+        TCP_KEEPIDLE: 1
+        TCP_KEEPINTVL: 3
+        TCP_KEEPCNT: 5
+        
+# Security and compliance settings
+security:
+  # Database encryption
+  encryption:
+    algorithm: "AES-256-GCM"
+    key_rotation_days: 90
+    master_key_source: "hsm"  # Hardware Security Module
+    
+  # Access controls
+  access_control:
+    max_concurrent_sessions: 10
+    session_timeout: 3600  # 1 hour
+    idle_timeout: 900      # 15 minutes
+    failed_login_threshold: 3
+    account_lockout_duration: 900  # 15 minutes
+    
+  # Monitoring and alerting
+  monitoring:
+    enabled: true
+    log_level: "INFO"
+    alert_on_failures: true
+    performance_monitoring: true
+    security_event_logging: true
+    
+# Environment-specific overrides
+environments:
+  development:
+    database:
+      primary:
+        host: "localhost"
+        database: "rbac_dev"
+      ssl:
+        mode: "prefer"  # More lenient for dev
+        
+  staging:
+    database:
+      primary:
+        host: "${STAGING_DB_HOST}"
+        database: "rbac_staging"
+      ssl:
+        mode: "require"
+        
+  production:
+    database:
+      primary:
+        host: "${PROD_DB_HOST}"
+        database: "rbac_prod"
+      ssl:
+        mode: "require"
+        verify_server_cert: true
+      security:
+        encrypt_at_rest: true
+        audit_all_queries: true
+        
+  # Classification-specific settings
+  nipr:
+    database:
+      primary:
+        host: "${NIPR_DB_HOST}"
+        database: "rbac_nipr"
+      security:
+        classification_level: "UNCLASSIFIED"
+        data_marking: "CUI"
+        
+  sipr:
+    database:
+      primary:
+        host: "${SIPR_DB_HOST}"
+        database: "rbac_sipr"
+      security:
+        classification_level: "SECRET"
+        data_marking: "SECRET//REL TO USA"
+        additional_encryption: true
+        
+  jwics:
+    database:
+      primary:
+        host: "${JWICS_DB_HOST}"
+        database: "rbac_jwics"
+      security:
+        classification_level: "TOP_SECRET"
+        data_marking: "TOP SECRET//SI//TK//NOFORN"
+        hsm_required: true
+        additional_encryption: true
+        compartment_isolation: true

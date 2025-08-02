@@ -1,0 +1,333 @@
+# Main RBAC System Configuration
+# DoD-compliant Role-Based Access Control System
+# Compliant with DoD 8500 series, NIST SP 800-53, and STIG requirements
+
+rbac_system:
+  # System identification
+  system_name: "DoD RBAC System"
+  version: "2.0.0"
+  classification: "${SYSTEM_CLASSIFICATION:-UNCLASSIFIED}"
+  authority_to_operate: "${ATO_NUMBER}"
+  
+  # Core RBAC settings
+  core:
+    # Access control models supported
+    access_models:
+      - "RBAC"    # Primary model
+      - "MAC"     # Mandatory Access Control
+      - "DAC"     # Discretionary Access Control  
+      - "ABAC"    # Attribute-Based Access Control
+      
+    # Permission resolution strategy
+    permission_resolution:
+      strategy: "deny_by_default"
+      conflict_resolution: "most_restrictive"
+      inheritance_enabled: true
+      delegation_enabled: false  # Disabled for DoD compliance
+      
+    # Session management
+    session:
+      max_concurrent_sessions: 5
+      session_timeout: 3600        # 1 hour
+      idle_timeout: 900           # 15 minutes
+      absolute_timeout: 28800     # 8 hours maximum
+      reauthentication_required: true
+      
+  # Security policies
+  security:
+    # Authentication requirements
+    authentication:
+      multi_factor_required: true
+      cac_piv_required: true
+      certificate_validation: "strict"
+      pin_verification: true
+      biometric_fallback: false
+      
+      # Password policy (for service accounts)
+      password_policy:
+        min_length: 15
+        complexity_required: true
+        history_count: 24
+        max_age_days: 60
+        min_age_days: 1
+        lockout_threshold: 3
+        lockout_duration: 900  # 15 minutes
+        
+    # Authorization settings
+    authorization:
+      principle_of_least_privilege: true
+      need_to_know_enforcement: true
+      separation_of_duties: true
+      emergency_access_enabled: true
+      emergency_access_approval_required: true
+      
+    # Audit and logging
+    audit:
+      enabled: true
+      log_all_access_attempts: true
+      log_privilege_escalation: true
+      log_administrative_actions: true
+      log_data_access: true
+      log_system_changes: true
+      retention_period: "7 years"
+      
+    # Encryption settings
+    encryption:
+      in_transit: "TLS 1.3"
+      at_rest: "AES-256-GCM"
+      key_management: "HSM"
+      key_rotation_days: 90
+      
+  # Role management
+  roles:
+    # Hierarchical role structure
+    hierarchy:
+      enabled: true
+      max_depth: 5
+      inheritance_type: "strict"
+      
+    # Built-in system roles
+    system_roles:
+      - name: "system_admin"
+        description: "System Administrator"
+        classification_level: "TOP_SECRET"
+        compartments: ["SCI", "TK"]
+        
+      - name: "security_admin"
+        description: "Security Administrator"
+        classification_level: "SECRET"
+        compartments: ["SI"]
+        
+      - name: "audit_admin"
+        description: "Audit Administrator"
+        classification_level: "SECRET"
+        read_only: true
+        
+      - name: "data_steward"
+        description: "Data Steward"
+        classification_level: "SECRET"
+        data_centric: true
+        
+      - name: "analyst"
+        description: "Intelligence Analyst"
+        classification_level: "SECRET"
+        compartments: ["SI"]
+        
+      - name: "operator"
+        description: "System Operator"
+        classification_level: "UNCLASSIFIED"
+        
+    # Role assignment rules
+    assignment:
+      approval_required: true
+      approval_levels: 2
+      automatic_expiration: true
+      default_duration: "1 year"
+      max_duration: "2 years"
+      review_frequency: "quarterly"
+      
+  # Permission management
+  permissions:
+    # Permission categories
+    categories:
+      - "system"
+      - "data"
+      - "application"
+      - "administrative"
+      - "audit"
+      - "emergency"
+      
+    # Permission granularity
+    granularity:
+      resource_level: true
+      action_level: true
+      context_aware: true
+      time_based: true
+      location_based: true
+      
+    # Dynamic permissions
+    dynamic:
+      enabled: true
+      evaluation_frequency: "real_time"
+      cache_duration: 300  # 5 minutes
+      
+  # Integration settings
+  integration:
+    # CAC/PIV integration
+    cac_piv:
+      enabled: true
+      certificate_validation: "full_path"
+      ocsp_validation: true
+      crl_validation: true
+      piv_authentication: true
+      
+    # OAuth integration
+    oauth:
+      enabled: true
+      token_validation: "strict"
+      scope_enforcement: true
+      audience_validation: true
+      issuer_validation: true
+      
+    # External systems
+    external_systems:
+      - name: "Active Directory"
+        type: "ldap"
+        sync_enabled: true
+        sync_frequency: "hourly"
+        
+      - name: "DEERS"
+        type: "personnel_system"
+        sync_enabled: true
+        sync_frequency: "daily"
+        
+      - name: "SIMS"
+        type: "security_system"
+        sync_enabled: true
+        sync_frequency: "real_time"
+        
+  # Classification and handling
+  classification:
+    # Supported classification levels
+    levels:
+      - "UNCLASSIFIED"
+      - "CONFIDENTIAL"
+      - "SECRET"
+      - "TOP_SECRET"
+      
+    # Compartments and special access programs
+    compartments:
+      - "SI"        # Special Intelligence
+      - "TK"        # Talent Keyhole
+      - "SCI"       # Sensitive Compartmented Information
+      - "SAR"       # Special Access Required
+      - "NOFORN"    # Not Releasable to Foreign Nationals
+      
+    # Handling caveats
+    handling:
+      - "REL TO USA"
+      - "EYES ONLY"
+      - "ORCON"     # Originator Controlled
+      - "PROPIN"    # Caution - Proprietary Information
+      - "CUI"       # Controlled Unclassified Information
+      
+    # Cross-domain solutions
+    cross_domain:
+      enabled: true
+      guard_required: true
+      one_way_transfer: true
+      content_filtering: true
+      
+  # Environment-specific settings
+  environments:
+    development:
+      security:
+        authentication:
+          cac_piv_required: false  # Relaxed for dev
+        audit:
+          retention_period: "30 days"
+          
+    staging:
+      security:
+        authentication:
+          cac_piv_required: true
+        audit:
+          retention_period: "1 year"
+          
+    production:
+      security:
+        authentication:
+          cac_piv_required: true
+          multi_factor_required: true
+        audit:
+          retention_period: "7 years"
+          log_all_access_attempts: true
+          
+    # Network-specific configurations
+    nipr:
+      classification:
+        max_level: "UNCLASSIFIED"
+        cui_handling: true
+        
+    sipr:
+      classification:
+        max_level: "SECRET"
+        compartment_support: true
+        cross_domain_enabled: false
+        
+    jwics:
+      classification:
+        max_level: "TOP_SECRET"
+        compartment_support: true
+        special_access_programs: true
+        enhanced_security: true
+        
+  # Performance and scalability
+  performance:
+    # Caching
+    cache:
+      permission_cache_ttl: 300     # 5 minutes
+      role_cache_ttl: 3600         # 1 hour
+      user_cache_ttl: 1800         # 30 minutes
+      
+    # Database optimization
+    database:
+      connection_pooling: true
+      read_replicas: true
+      query_optimization: true
+      index_maintenance: true
+      
+    # Load balancing
+    load_balancing:
+      enabled: true
+      algorithm: "least_connections"
+      health_checks: true
+      failover_enabled: true
+      
+  # Monitoring and alerting
+  monitoring:
+    # Metrics collection
+    metrics:
+      enabled: true
+      collection_interval: 60  # seconds
+      retention_period: "90 days"
+      
+    # Health monitoring
+    health:
+      endpoint_checks: true
+      database_checks: true
+      cache_checks: true
+      external_service_checks: true
+      
+    # Alerting
+    alerts:
+      - type: "authentication_failure"
+        threshold: 5
+        window: "5 minutes"
+        
+      - type: "privilege_escalation"
+        threshold: 1
+        window: "immediate"
+        
+      - type: "unauthorized_access"
+        threshold: 1
+        window: "immediate"
+        
+      - type: "system_error"
+        threshold: 10
+        window: "5 minutes"
+        
+  # Backup and disaster recovery
+  backup:
+    enabled: true
+    frequency: "daily"
+    retention: "1 year"
+    encryption: true
+    offsite_storage: true
+    
+    # Recovery procedures
+    recovery:
+      rto: 4  # hours
+      rpo: 1  # hour
+      automated_failover: true
+      geo_redundancy: true
