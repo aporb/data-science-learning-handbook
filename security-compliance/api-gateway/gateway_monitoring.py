@@ -30,6 +30,12 @@ from dataclasses import dataclass, asdict
 from enum import Enum
 from collections import defaultdict, deque
 import statistics
+import numpy as np
+import pandas as pd
+from sklearn.cluster import DBSCAN
+from sklearn.preprocessing import StandardScaler
+from scipy import stats
+import psutil
 
 import aioredis
 import prometheus_client
@@ -47,6 +53,46 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from api_gateway.api_security_controls import SecurityEvent, SecurityThreatLevel, AttackType
+from audits.audit_logger import AuditLogger
+from audits.compliance_reporter import ComplianceReporter
+
+
+class AnomalyDetector:
+    """Machine learning-based anomaly detection for API patterns."""
+    
+    def __init__(self):
+        self.model_trained = False
+        self.baseline_metrics = {}
+    
+    async def detect_anomalies(self, metrics_data: List[Dict]) -> List[Dict]:
+        """Detect anomalies in metrics data."""
+        # Implementation would use ML models for anomaly detection
+        return []
+
+
+class RequestPatternAnalyzer:
+    """Analyzes API request patterns and user behavior."""
+    
+    def __init__(self):
+        self.patterns = {}
+        self.user_profiles = {}
+    
+    async def analyze_patterns(self, request_data: List[Dict]) -> Dict:
+        """Analyze request patterns."""
+        # Implementation would analyze request patterns
+        return {}
+
+
+class BusinessIntelligenceReporter:
+    """Generates business intelligence reports from API analytics."""
+    
+    def __init__(self):
+        self.report_cache = {}
+    
+    async def generate_usage_report(self, timeframe: str) -> Dict:
+        """Generate API usage report."""
+        # Implementation would generate BI reports
+        return {}
 
 
 class MetricType(Enum):
@@ -91,6 +137,12 @@ class HealthCheck:
     interval_seconds: int
     timeout_seconds: int
     enabled: bool = True
+    dependencies: List[str] = None
+    critical: bool = False
+    
+    def __post_init__(self):
+        if self.dependencies is None:
+            self.dependencies = []
 
 
 @dataclass
@@ -104,6 +156,13 @@ class Alert:
     threshold: float
     duration_seconds: int
     enabled: bool = True
+    notification_channels: List[str] = None
+    escalation_policy: str = None
+    runbook_url: str = None
+    
+    def __post_init__(self):
+        if self.notification_channels is None:
+            self.notification_channels = []
 
 
 @dataclass
@@ -116,6 +175,8 @@ class MonitoringMetrics:
     successful_requests: int
     failed_requests: int
     average_response_time: float
+    p95_response_time: float = 0.0
+    p99_response_time: float = 0.0
     
     # Security metrics
     blocked_requests: int
@@ -126,10 +187,32 @@ class MonitoringMetrics:
     cpu_usage: float
     memory_usage: float
     disk_usage: float
+    network_io: float = 0.0
     
     # Availability metrics
     uptime_seconds: int
     availability_percentage: float
+    
+    # Advanced analytics
+    user_session_count: int = 0
+    peak_concurrent_users: int = 0
+    data_transfer_gb: float = 0.0
+    cache_hit_ratio: float = 0.0
+    database_query_time: float = 0.0
+    
+    # Business metrics
+    unique_endpoints_accessed: int = 0
+    api_usage_patterns: Dict[str, int] = None
+    geographic_distribution: Dict[str, int] = None
+    device_type_distribution: Dict[str, int] = None
+    
+    def __post_init__(self):
+        if self.api_usage_patterns is None:
+            self.api_usage_patterns = {}
+        if self.geographic_distribution is None:
+            self.geographic_distribution = {}
+        if self.device_type_distribution is None:
+            self.device_type_distribution = {}
 
 
 class PrometheusMetrics:
@@ -269,7 +352,8 @@ class APIGatewayMonitor:
     """
     
     def __init__(self, redis_url: str = "redis://localhost:6379", 
-                 jaeger_endpoint: str = "http://localhost:14268/api/traces"):
+                 jaeger_endpoint: str = "http://localhost:14268/api/traces",
+                 enable_advanced_analytics: bool = True):
         """Initialize API Gateway monitor."""
         self.logger = logging.getLogger(__name__)
         
@@ -292,11 +376,40 @@ class APIGatewayMonitor:
         self.active_alerts: Dict[str, datetime] = {}
         
         # Metrics storage
-        self.metrics_history: deque = deque(maxlen=1000)
-        self.performance_history: deque = deque(maxlen=1000)
+        self.metrics_history: deque = deque(maxlen=10000)  # Increased for analytics
+        self.performance_history: deque = deque(maxlen=10000)
+        self.request_patterns: deque = deque(maxlen=50000)  # For pattern analysis
+        self.user_sessions: Dict[str, datetime] = {}  # Active user sessions
+        
+        # Advanced analytics
+        self.enable_advanced_analytics = enable_advanced_analytics
+        self.anomaly_detector = None
+        self.pattern_analyzer = None
+        
+        # Audit integration
+        self.audit_logger = None
+        self.compliance_reporter = None
+        
+        # Performance tracking
+        self.system_metrics = {}
+        self.database_metrics = {}
+        self.cache_metrics = {}
+        
+        # Business intelligence
+        self.usage_analytics = defaultdict(int)
+        self.geographic_stats = defaultdict(int)
+        self.device_stats = defaultdict(int)
         
         # Start time for uptime calculation
         self.start_time = datetime.utcnow()
+        
+        # SLA tracking
+        self.sla_targets = {
+            'availability': 99.9,
+            'response_time_p95': 2.0,
+            'error_rate': 0.01
+        }
+        self.sla_violations = deque(maxlen=1000)
     
     async def initialize(self) -> None:
         """Initialize monitoring components."""
@@ -308,6 +421,18 @@ class APIGatewayMonitor:
             # Start Prometheus metrics server
             prometheus_client.start_http_server(8000)
             
+            # Initialize audit integration
+            try:
+                self.audit_logger = AuditLogger()
+                self.compliance_reporter = ComplianceReporter()
+                await self.audit_logger.initialize()
+            except Exception as e:
+                self.logger.warning(f"Audit integration failed: {e}")
+            
+            # Initialize advanced analytics
+            if self.enable_advanced_analytics:
+                await self._initialize_analytics()
+            
             # Initialize default health checks
             self._setup_default_health_checks()
             
@@ -318,8 +443,11 @@ class APIGatewayMonitor:
             asyncio.create_task(self._health_check_loop())
             asyncio.create_task(self._metrics_collection_loop())
             asyncio.create_task(self._alert_evaluation_loop())
+            asyncio.create_task(self._analytics_processing_loop())
+            asyncio.create_task(self._sla_monitoring_loop())
+            asyncio.create_task(self._system_metrics_loop())
             
-            self.logger.info("API Gateway monitoring initialized")
+            self.logger.info("API Gateway monitoring initialized with advanced analytics")
             
         except Exception as e:
             self.logger.error(f"Failed to initialize monitoring: {e}")
@@ -399,11 +527,285 @@ class APIGatewayMonitor:
         for alert in alerts:
             self.alerts[alert.id] = alert
     
+    async def _initialize_analytics(self) -> None:
+        """Initialize advanced analytics components."""
+        try:
+            # Initialize anomaly detection
+            self.anomaly_detector = AnomalyDetector()
+            
+            # Initialize pattern analyzer
+            self.pattern_analyzer = RequestPatternAnalyzer()
+            
+            self.logger.info("Advanced analytics initialized")
+            
+        except Exception as e:
+            self.logger.error(f"Failed to initialize analytics: {e}")
+    
+    async def _analytics_processing_loop(self) -> None:
+        """Background analytics processing loop."""
+        while True:
+            try:
+                if self.enable_advanced_analytics and len(self.request_patterns) > 10:
+                await self._process_analytics()
+                
+                await asyncio.sleep(300)  # Process every 5 minutes
+                
+            except Exception as e:
+                self.logger.error(f"Analytics processing error: {e}")
+                await asyncio.sleep(300)
+    
+    async def _sla_monitoring_loop(self) -> None:
+        """Background SLA monitoring loop."""
+        while True:
+            try:
+                await self._check_sla_compliance()
+                await asyncio.sleep(60)  # Check every minute
+                
+            except Exception as e:
+                self.logger.error(f"SLA monitoring error: {e}")
+                await asyncio.sleep(60)
+    
+    async def _system_metrics_loop(self) -> None:
+        """Background system metrics collection loop."""
+        while True:
+            try:
+                await self._collect_system_metrics()
+                await asyncio.sleep(30)  # Collect every 30 seconds
+                
+            except Exception as e:
+                self.logger.error(f"System metrics error: {e}")
+                await asyncio.sleep(30)
+    
+    async def _process_analytics(self) -> None:
+        """Process advanced analytics."""
+        try:
+            # Convert request patterns to DataFrame for analysis
+            df = pd.DataFrame(list(self.request_patterns))
+            
+            if len(df) > 0:
+                # Detect anomalies
+                anomalies = await self._detect_anomalies(df)
+                
+                # Analyze usage patterns
+                patterns = await self._analyze_usage_patterns(df)
+                
+                # Update business intelligence metrics
+                await self._update_business_metrics(df)
+                
+                # Store analytics results
+                await self._store_analytics_results({
+                    'anomalies': anomalies,
+                    'patterns': patterns,
+                    'timestamp': datetime.utcnow().isoformat()
+                })
+                
+        except Exception as e:
+            self.logger.error(f"Analytics processing failed: {e}")
+    
+    async def _detect_anomalies(self, df: pd.DataFrame) -> List[Dict]:
+        """Detect anomalies in request patterns."""
+        anomalies = []
+        
+        try:
+            # Response time anomalies
+            if 'response_time' in df.columns:
+                response_times = df['response_time'].values.reshape(-1, 1)
+                scaler = StandardScaler()
+                scaled_times = scaler.fit_transform(response_times)
+                
+                # Use DBSCAN for anomaly detection
+                dbscan = DBSCAN(eps=2.0, min_samples=5)
+                clusters = dbscan.fit_predict(scaled_times)
+                
+                # Points with cluster label -1 are anomalies
+                anomaly_indices = np.where(clusters == -1)[0]
+                
+                for idx in anomaly_indices:
+                    anomalies.append({
+                        'type': 'response_time_anomaly',
+                        'timestamp': df.iloc[idx].get('timestamp', ''),
+                        'value': df.iloc[idx]['response_time'],
+                        'endpoint': df.iloc[idx].get('endpoint', ''),
+                        'severity': 'medium'
+                    })
+            
+            # Request volume anomalies
+            hourly_counts = df.groupby(df['timestamp'].dt.hour).size()
+            mean_count = hourly_counts.mean()
+            std_count = hourly_counts.std()
+            
+            for hour, count in hourly_counts.items():
+                z_score = abs((count - mean_count) / std_count) if std_count > 0 else 0
+                if z_score > 3:  # 3 sigma rule
+                    anomalies.append({
+                        'type': 'volume_anomaly',
+                        'hour': hour,
+                        'count': count,
+                        'z_score': z_score,
+                        'severity': 'high' if z_score > 4 else 'medium'
+                    })
+                    
+        except Exception as e:
+            self.logger.error(f"Anomaly detection failed: {e}")
+        
+        return anomalies
+    
+    async def _analyze_usage_patterns(self, df: pd.DataFrame) -> Dict:
+        """Analyze API usage patterns."""
+        patterns = {}
+        
+        try:
+            # Peak usage times
+            hourly_usage = df.groupby(df['timestamp'].dt.hour).size()
+            patterns['peak_hours'] = hourly_usage.nlargest(3).to_dict()
+            
+            # Most accessed endpoints
+            if 'endpoint' in df.columns:
+                endpoint_usage = df['endpoint'].value_counts()
+                patterns['top_endpoints'] = endpoint_usage.head(10).to_dict()
+            
+            # Error patterns
+            if 'status_code' in df.columns:
+                error_codes = df[df['status_code'] >= 400]['status_code'].value_counts()
+                patterns['error_patterns'] = error_codes.to_dict()
+            
+            # User behavior patterns
+            if 'user_id' in df.columns:
+                user_activity = df.groupby('user_id').size()
+                patterns['user_activity'] = {
+                    'active_users': len(user_activity),
+                    'avg_requests_per_user': user_activity.mean(),
+                    'heavy_users': user_activity.nlargest(5).to_dict()
+                }
+                
+        except Exception as e:
+            self.logger.error(f"Pattern analysis failed: {e}")
+        
+        return patterns
+    
+    async def _update_business_metrics(self, df: pd.DataFrame) -> None:
+        """Update business intelligence metrics."""
+        try:
+            # Update usage analytics
+            if 'endpoint' in df.columns:
+                for endpoint in df['endpoint'].unique():
+                    self.usage_analytics[endpoint] += len(df[df['endpoint'] == endpoint])
+            
+            # Update geographic stats (if available)
+            if 'country' in df.columns:
+                for country in df['country'].value_counts().to_dict().items():
+                    self.geographic_stats[country[0]] += country[1]
+            
+            # Update device stats (if available)
+            if 'device_type' in df.columns:
+                for device in df['device_type'].value_counts().to_dict().items():
+                    self.device_stats[device[0]] += device[1]
+                    
+        except Exception as e:
+            self.logger.error(f"Business metrics update failed: {e}")
+    
+    async def _store_analytics_results(self, results: Dict) -> None:
+        """Store analytics results in Redis."""
+        try:
+            key = f"analytics_results:{datetime.utcnow().strftime('%Y%m%d%H%M')}"
+            await self.redis_client.set(key, json.dumps(results), ex=86400)
+            
+        except Exception as e:
+            self.logger.error(f"Failed to store analytics results: {e}")
+    
+    async def _check_sla_compliance(self) -> None:
+        """Check SLA compliance and track violations."""
+        try:
+            if not self.metrics_history:
+                return
+            
+            latest_metrics = self.metrics_history[-1]
+            violations = []
+            
+            # Check availability SLA
+            if latest_metrics.availability_percentage < self.sla_targets['availability']:
+                violations.append({
+                    'type': 'availability',
+                    'target': self.sla_targets['availability'],
+                    'actual': latest_metrics.availability_percentage,
+                    'timestamp': datetime.utcnow().isoformat()
+                })
+            
+            # Check response time SLA
+            if latest_metrics.p95_response_time > self.sla_targets['response_time_p95']:
+                violations.append({
+                    'type': 'response_time',
+                    'target': self.sla_targets['response_time_p95'],
+                    'actual': latest_metrics.p95_response_time,
+                    'timestamp': datetime.utcnow().isoformat()
+                })
+            
+            # Check error rate SLA
+            error_rate = latest_metrics.failed_requests / latest_metrics.total_requests if latest_metrics.total_requests > 0 else 0
+            if error_rate > self.sla_targets['error_rate']:
+                violations.append({
+                    'type': 'error_rate',
+                    'target': self.sla_targets['error_rate'],
+                    'actual': error_rate,
+                    'timestamp': datetime.utcnow().isoformat()
+                })
+            
+            # Store violations
+            for violation in violations:
+                self.sla_violations.append(violation)
+                
+                # Log critical SLA violations
+                if self.audit_logger:
+                    await self.audit_logger.log_event(
+                        event_type="sla_violation",
+                        details=violation,
+                        severity="high"
+                    )
+                    
+        except Exception as e:
+            self.logger.error(f"SLA compliance check failed: {e}")
+    
+    async def _collect_system_metrics(self) -> None:
+        """Collect system performance metrics."""
+        try:
+            # CPU usage
+            cpu_percent = psutil.cpu_percent(interval=1)
+            
+            # Memory usage
+            memory = psutil.virtual_memory()
+            memory_percent = memory.percent
+            
+            # Disk usage
+            disk = psutil.disk_usage('/')
+            disk_percent = (disk.used / disk.total) * 100
+            
+            # Network I/O
+            network = psutil.net_io_counters()
+            network_mb = (network.bytes_sent + network.bytes_recv) / (1024 * 1024)
+            
+            # Update Prometheus metrics
+            self.prometheus_metrics.active_connections.set(len(self.user_sessions))
+            
+            # Store system metrics
+            self.system_metrics = {
+                'cpu_usage': cpu_percent,
+                'memory_usage': memory_percent,
+                'disk_usage': disk_percent,
+                'network_io': network_mb,
+                'timestamp': datetime.utcnow().isoformat()
+            }
+            
+        except Exception as e:
+            self.logger.error(f"System metrics collection failed: {e}")
+    
     def record_request(self, method: str, endpoint: str, status_code: int,
                       response_time: float, request_size: int, response_size: int,
-                      classification: str = "UNCLASSIFIED") -> None:
-        """Record API request metrics."""
+                      classification: str = "UNCLASSIFIED", user_id: str = None,
+                      client_ip: str = None, user_agent: str = None) -> None:
+        """Record API request metrics with enhanced analytics."""
         try:
+            timestamp = datetime.utcnow()
+            
             # Prometheus metrics
             self.prometheus_metrics.request_total.labels(
                 method=method,
@@ -428,17 +830,57 @@ class APIGatewayMonitor:
                 endpoint=endpoint
             ).observe(response_size)
             
-            # Store in Redis for analysis
-            asyncio.create_task(self._store_request_metric({
-                'timestamp': datetime.utcnow().isoformat(),
+            # Enhanced request data for analytics
+            request_data = {
+                'timestamp': timestamp,
                 'method': method,
                 'endpoint': endpoint,
                 'status_code': status_code,
                 'response_time': response_time,
                 'request_size': request_size,
                 'response_size': response_size,
-                'classification': classification
+                'classification': classification,
+                'user_id': user_id,
+                'client_ip': client_ip,
+                'user_agent': user_agent
+            }
+            
+            # Add to request patterns for analytics
+            if self.enable_advanced_analytics:
+                self.request_patterns.append(request_data)
+            
+            # Track user sessions
+            if user_id:
+                self.user_sessions[user_id] = timestamp
+                
+                # Clean old sessions (older than 30 minutes)
+                cutoff = timestamp - timedelta(minutes=30)
+                self.user_sessions = {
+                    uid: ts for uid, ts in self.user_sessions.items()
+                    if ts > cutoff
+                }
+            
+            # Store in Redis for analysis
+            asyncio.create_task(self._store_request_metric({
+                'timestamp': timestamp.isoformat(),
+                'method': method,
+                'endpoint': endpoint,
+                'status_code': status_code,
+                'response_time': response_time,
+                'request_size': request_size,
+                'response_size': response_size,
+                'classification': classification,
+                'user_id': user_id,
+                'client_ip': client_ip
             }))
+            
+            # Log to audit system if enabled
+            if self.audit_logger and status_code >= 400:
+                asyncio.create_task(self.audit_logger.log_event(
+                    event_type="api_error",
+                    details=request_data,
+                    severity="medium" if status_code < 500 else "high"
+                ))
             
         except Exception as e:
             self.logger.error(f"Failed to record request metric: {e}")
@@ -653,9 +1095,32 @@ class APIGatewayMonitor:
                 except:
                     continue
             
+            # Calculate percentiles
+            p95_response_time = np.percentile(response_times, 95) if response_times else 0
+            p99_response_time = np.percentile(response_times, 99) if response_times else 0
+            
             # Calculate uptime and availability
             uptime_seconds = int((datetime.utcnow() - self.start_time).total_seconds())
             availability_percentage = (successful_requests / total_requests * 100) if total_requests > 0 else 100
+            
+            # Get system metrics
+            cpu_usage = self.system_metrics.get('cpu_usage', 0.0)
+            memory_usage = self.system_metrics.get('memory_usage', 0.0)
+            disk_usage = self.system_metrics.get('disk_usage', 0.0)
+            network_io = self.system_metrics.get('network_io', 0.0)
+            
+            # Calculate advanced metrics
+            user_session_count = len(self.user_sessions)
+            peak_concurrent_users = max(len(self.user_sessions), getattr(self, '_peak_users', 0))
+            self._peak_users = peak_concurrent_users
+            
+            # Calculate data transfer
+            total_data = sum([d.get('request_size', 0) + d.get('response_size', 0) 
+                            for d in request_data])
+            data_transfer_gb = total_data / (1024 ** 3)
+            
+            # Get unique endpoints
+            unique_endpoints = len(set([d.get('endpoint', '') for d in request_data]))
             
             return MonitoringMetrics(
                 timestamp=datetime.utcnow(),
@@ -663,14 +1128,24 @@ class APIGatewayMonitor:
                 successful_requests=successful_requests,
                 failed_requests=failed_requests,
                 average_response_time=avg_response_time,
+                p95_response_time=p95_response_time,
+                p99_response_time=p99_response_time,
                 blocked_requests=blocked_requests,
                 security_events=len(security_data),
                 attack_attempts=attack_attempts,
-                cpu_usage=0.0,  # Would be collected from system
-                memory_usage=0.0,  # Would be collected from system
-                disk_usage=0.0,  # Would be collected from system
+                cpu_usage=cpu_usage,
+                memory_usage=memory_usage,
+                disk_usage=disk_usage,
+                network_io=network_io,
                 uptime_seconds=uptime_seconds,
-                availability_percentage=availability_percentage
+                availability_percentage=availability_percentage,
+                user_session_count=user_session_count,
+                peak_concurrent_users=peak_concurrent_users,
+                data_transfer_gb=data_transfer_gb,
+                unique_endpoints_accessed=unique_endpoints,
+                api_usage_patterns=dict(self.usage_analytics),
+                geographic_distribution=dict(self.geographic_stats),
+                device_type_distribution=dict(self.device_stats)
             )
             
         except Exception as e:
@@ -681,14 +1156,21 @@ class APIGatewayMonitor:
                 successful_requests=0,
                 failed_requests=0,
                 average_response_time=0.0,
+                p95_response_time=0.0,
+                p99_response_time=0.0,
                 blocked_requests=0,
                 security_events=0,
                 attack_attempts=0,
                 cpu_usage=0.0,
                 memory_usage=0.0,
                 disk_usage=0.0,
+                network_io=0.0,
                 uptime_seconds=0,
-                availability_percentage=100.0
+                availability_percentage=100.0,
+                user_session_count=0,
+                peak_concurrent_users=0,
+                data_transfer_gb=0.0,
+                unique_endpoints_accessed=0
             )
     
     async def _alert_evaluation_loop(self) -> None:
@@ -814,8 +1296,15 @@ class APIGatewayMonitor:
             avg_response_times = [m.average_response_time for m in relevant_metrics if m.average_response_time > 0]
             overall_avg_response_time = statistics.mean(avg_response_times) if avg_response_times else 0
             
+            p95_response_times = [m.p95_response_time for m in relevant_metrics if m.p95_response_time > 0]
+            overall_p95_response_time = statistics.mean(p95_response_times) if p95_response_times else 0
+            
             availability_percentages = [m.availability_percentage for m in relevant_metrics]
             overall_availability = statistics.mean(availability_percentages) if availability_percentages else 100
+            
+            # Advanced analytics
+            peak_users = max([m.peak_concurrent_users for m in relevant_metrics], default=0)
+            total_data_transfer = sum([m.data_transfer_gb for m in relevant_metrics])
             
             return {
                 'time_period_hours': hours,
@@ -824,14 +1313,133 @@ class APIGatewayMonitor:
                 'failed_requests': total_failed,
                 'error_rate': total_failed / total_requests if total_requests > 0 else 0,
                 'average_response_time': overall_avg_response_time,
+                'p95_response_time': overall_p95_response_time,
                 'availability_percentage': overall_availability,
                 'total_security_events': sum(m.security_events for m in relevant_metrics),
                 'total_attack_attempts': sum(m.attack_attempts for m in relevant_metrics),
-                'total_blocked_requests': sum(m.blocked_requests for m in relevant_metrics)
+                'total_blocked_requests': sum(m.blocked_requests for m in relevant_metrics),
+                'peak_concurrent_users': peak_users,
+                'total_data_transfer_gb': total_data_transfer,
+                'sla_violations': len([v for v in self.sla_violations 
+                                     if datetime.fromisoformat(v['timestamp']) >= cutoff_time])
             }
             
         except Exception as e:
             self.logger.error(f"Failed to get metrics summary: {e}")
+            return {}
+    
+    async def get_analytics_report(self, timeframe: str = '24h') -> Dict[str, Any]:
+        """Get comprehensive analytics report."""
+        try:
+            # Get latest analytics results
+            pattern = f"analytics_results:*"
+            keys = await self.redis_client.keys(pattern)
+            
+            if not keys:
+                return {'message': 'No analytics data available'}
+            
+            # Get the most recent analytics
+            latest_key = sorted(keys)[-1]
+            analytics_data = await self.redis_client.get(latest_key)
+            
+            if analytics_data:
+                analytics = json.loads(analytics_data)
+                
+                # Add current metrics summary
+                hours = {'1h': 1, '24h': 24, '7d': 168}.get(timeframe, 24)
+                metrics_summary = await self.get_metrics_summary(hours)
+                
+                return {
+                    'timeframe': timeframe,
+                    'generated_at': datetime.utcnow().isoformat(),
+                    'metrics_summary': metrics_summary,
+                    'anomalies': analytics.get('anomalies', []),
+                    'usage_patterns': analytics.get('patterns', {}),
+                    'sla_compliance': await self._get_sla_compliance_report(),
+                    'business_metrics': {
+                        'api_usage_distribution': dict(self.usage_analytics),
+                        'geographic_distribution': dict(self.geographic_stats),
+                        'device_distribution': dict(self.device_stats)
+                    }
+                }
+            
+            return {'message': 'No analytics data available'}
+            
+        except Exception as e:
+            self.logger.error(f"Failed to get analytics report: {e}")
+            return {'error': str(e)}
+    
+    async def _get_sla_compliance_report(self) -> Dict[str, Any]:
+        """Get SLA compliance report."""
+        try:
+            if not self.metrics_history:
+                return {}
+            
+            latest_metrics = self.metrics_history[-1]
+            
+            # Calculate current SLA status
+            error_rate = latest_metrics.failed_requests / latest_metrics.total_requests if latest_metrics.total_requests > 0 else 0
+            
+            sla_status = {
+                'availability': {
+                    'target': self.sla_targets['availability'],
+                    'current': latest_metrics.availability_percentage,
+                    'compliant': latest_metrics.availability_percentage >= self.sla_targets['availability']
+                },
+                'response_time_p95': {
+                    'target': self.sla_targets['response_time_p95'],
+                    'current': latest_metrics.p95_response_time,
+                    'compliant': latest_metrics.p95_response_time <= self.sla_targets['response_time_p95']
+                },
+                'error_rate': {
+                    'target': self.sla_targets['error_rate'],
+                    'current': error_rate,
+                    'compliant': error_rate <= self.sla_targets['error_rate']
+                }
+            }
+            
+            # Add violation history
+            recent_violations = list(self.sla_violations)[-10:]  # Last 10 violations
+            
+            return {
+                'current_status': sla_status,
+                'recent_violations': recent_violations,
+                'total_violations_count': len(self.sla_violations)
+            }
+            
+        except Exception as e:
+            self.logger.error(f"Failed to get SLA compliance report: {e}")
+            return {}
+    
+    async def get_real_time_dashboard_data(self) -> Dict[str, Any]:
+        """Get real-time dashboard data."""
+        try:
+            current_status = await self.get_current_status()
+            recent_metrics = await self.get_metrics_summary(1)  # Last hour
+            
+            # Get active user sessions
+            active_sessions = len(self.user_sessions)
+            
+            # Get recent alerts
+            recent_alerts = list(self.active_alerts.keys())
+            
+            return {
+                'timestamp': datetime.utcnow().isoformat(),
+                'system_status': current_status,
+                'recent_metrics': recent_metrics,
+                'active_user_sessions': active_sessions,
+                'active_alerts': recent_alerts,
+                'health_checks': {name: status.value for name, status in self.health_status.items()},
+                'performance': {
+                    'cpu_usage': self.system_metrics.get('cpu_usage', 0),
+                    'memory_usage': self.system_metrics.get('memory_usage', 0),
+                    'disk_usage': self.system_metrics.get('disk_usage', 0),
+                    'network_io': self.system_metrics.get('network_io', 0)
+                }
+            }
+            
+        except Exception as e:
+            self.logger.error(f"Failed to get dashboard data: {e}")
             return {}
     
     async def close(self) -> None:
@@ -845,18 +1453,21 @@ class APIGatewayMonitor:
 if __name__ == "__main__":
     # Example usage
     async def main():
-        monitor = APIGatewayMonitor()
+        monitor = APIGatewayMonitor(enable_advanced_analytics=True)
         await monitor.initialize()
         
-        # Simulate some metrics
-        for i in range(10):
+        # Simulate some metrics with enhanced data
+        for i in range(100):
             monitor.record_request(
                 method="GET",
-                endpoint="/api/v1/data",
-                status_code=200,
-                response_time=0.5,
-                request_size=1024,
-                response_size=2048
+                endpoint=f"/api/v1/data/{i % 5}",
+                status_code=200 if i % 10 != 0 else 500,
+                response_time=0.5 + (i % 3) * 0.1,
+                request_size=1024 + (i % 100),
+                response_size=2048 + (i % 200),
+                classification="UNCLASSIFIED",
+                user_id=f"user_{i % 20}",
+                client_ip=f"192.168.1.{i % 254 + 1}"
             )
         
         # Get current status
@@ -866,6 +1477,14 @@ if __name__ == "__main__":
         # Get metrics summary
         summary = await monitor.get_metrics_summary(1)  # Last 1 hour
         print(f"Metrics Summary: {json.dumps(summary, indent=2)}")
+        
+        # Get analytics report
+        analytics = await monitor.get_analytics_report('1h')
+        print(f"Analytics Report: {json.dumps(analytics, indent=2)}")
+        
+        # Get real-time dashboard data
+        dashboard = await monitor.get_real_time_dashboard_data()
+        print(f"Dashboard Data: {json.dumps(dashboard, indent=2)}")
         
         await monitor.close()
     

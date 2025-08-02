@@ -43,6 +43,12 @@ import sys
 import os
 sys.path.append(os.path.dirname(__file__))
 
+# Additional test imports for comprehensive integration testing
+import threading
+import concurrent.futures
+from contextlib import asynccontextmanager
+from unittest.mock import call
+
 from dod_api_gateway import (
     DoDAPIGateway, APIGatewayManager, DoDAGWConfig, APIRequest, APIResponse,
     APIGatewayEnvironment, SecurityClassification, APIEndpointType
@@ -799,28 +805,588 @@ class TestGatewayMonitoring:
 
 
 class TestIntegration:
-    """Integration tests for complete API Gateway system."""
+    """Comprehensive integration tests for complete API Gateway system."""
+    
+    @pytest.fixture
+    async def integrated_gateway(self):
+        """Create fully integrated gateway system for testing."""
+        # Setup integrated components
+        from auth.oauth_client import OAuthConfig, Platform
+        
+        oauth_config = OAuthConfig(
+            platform=Platform.ADVANA,
+            client_id="integration-test-client",
+            client_secret="integration-test-secret",
+            authorization_url="https://test-auth.mil/oauth/authorize",
+            token_url="https://test-auth.mil/oauth/token",
+            redirect_uri="https://localhost:8080/callback",
+            scopes=["read", "write", "admin"]
+        )
+        
+        gateway_config = DoDAGWConfig(
+            environment=APIGatewayEnvironment.DEVELOPMENT,
+            gateway_url="https://integration-test-gateway.mil",
+            client_certificate_path="/tmp/integration-test-client.crt",
+            private_key_path="/tmp/integration-test-client.key",
+            ca_bundle_path="/tmp/integration-test-ca.crt",
+            oauth_config=oauth_config,
+            service_name="integration-test-service",
+            service_version="1.0.0",
+            security_classification=SecurityClassification.UNCLASSIFIED
+        )
+        
+        # Mock all external dependencies
+        with patch('aiohttp.ClientSession') as mock_session, \
+             patch('dod_api_gateway.ssl.create_default_context'), \
+             patch('api_security_controls.aioredis.from_url') as mock_redis, \
+             patch('gateway_monitoring.aioredis.from_url'):
+            
+            # Setup mock session
+            mock_session_instance = AsyncMock()
+            mock_session.return_value = mock_session_instance
+            
+            # Setup mock Redis
+            mock_redis_instance = AsyncMock()
+            mock_redis.return_value = mock_redis_instance
+            
+            # Create integrated system
+            gateway = DoDAPIGateway(gateway_config)
+            security_controller = APISecurityController("redis://localhost:6379")
+            monitor = APIGatewayMonitor("redis://localhost:6379")
+            
+            # Initialize components
+            gateway._session = mock_session_instance
+            security_controller.redis_client = mock_redis_instance
+            monitor.redis_client = mock_redis_instance
+            
+            yield {
+                'gateway': gateway,
+                'security': security_controller,
+                'monitor': monitor,
+                'mock_session': mock_session_instance,
+                'mock_redis': mock_redis_instance
+            }
     
     @pytest.mark.asyncio
-    async def test_end_to_end_request_flow(self):
+    async def test_end_to_end_request_flow(self, integrated_gateway):
         """Test complete request flow through API Gateway."""
-        # This would test the entire flow from request ingress through
-        # security controls, to backend service and response
-        pass
+        gateway = integrated_gateway['gateway']
+        security = integrated_gateway['security']
+        monitor = integrated_gateway['monitor']
+        mock_session = integrated_gateway['mock_session']
+        
+        # Setup successful response mock
+        mock_response = AsyncMock()
+        mock_response.status = 200
+        mock_response.headers = {'Content-Type': 'application/json'}
+        mock_response.json.return_value = {'data': 'success', 'id': '12345'}
+        mock_session.request.return_value.__aenter__.return_value = mock_response
+        
+        # Create test request
+        request = APIRequest(
+            method='GET',
+            endpoint='/api/v1/users/12345',
+            headers={
+                'Authorization': 'Bearer valid_token',
+                'X-Request-ID': 'test-request-123'
+            },
+            classification=SecurityClassification.UNCLASSIFIED
+        )
+        
+        # Test complete flow
+        start_time = time.time()
+        
+        # 1. Security validation
+        request_data = {
+            'client_ip': '192.168.1.100',
+            'endpoint': request.endpoint,
+            'method': request.method,
+            'headers': request.headers,
+            'body': None
+        }
+        
+        with patch.object(security, '_check_rate_limit', return_value=True), \
+             patch.object(security, '_validate_oauth_token', return_value=True), \
+             patch.object(security, '_detect_attacks', return_value=False):
+            
+            is_valid, errors = await security.validate_request(request_data)
+            assert is_valid is True
+            assert len(errors) == 0
+        
+        # 2. Gateway request processing
+        response = await gateway.make_request(request)
+        
+        # 3. Monitor metrics recording
+        monitor.record_request(
+            method=request.method,
+            endpoint=request.endpoint,
+            status_code=response.status_code,
+            response_time=time.time() - start_time,
+            request_size=1024,
+            response_size=2048
+        )
+        
+        # Verify end-to-end flow
+        assert response.status_code == 200
+        assert response.data['data'] == 'success'
+        assert response.error is None
+        
+        # Verify security logging
+        assert len(security.security_events) > 0
+        
+        # Verify monitoring metrics
+        assert monitor.prometheus_metrics.request_total._value._value > 0
     
     @pytest.mark.asyncio
-    async def test_security_incident_response(self):
-        """Test security incident detection and response."""
-        # This would test the complete security incident workflow
-        pass
+    async def test_security_incident_response(self, integrated_gateway):
+        """Test complete security incident detection and response workflow."""
+        gateway = integrated_gateway['gateway']
+        security = integrated_gateway['security']
+        monitor = integrated_gateway['monitor']
+        
+        # Create malicious request
+        malicious_request = APIRequest(
+            method='POST',
+            endpoint='/api/v1/users',
+            headers={
+                'Authorization': 'Bearer invalid_token',
+                'Content-Type': 'application/json'
+            },
+            data={'query': "'; DROP TABLE users; --"},  # SQL injection attempt
+            classification=SecurityClassification.UNCLASSIFIED
+        )
+        
+        request_data = {
+            'client_ip': '192.168.1.100',
+            'endpoint': malicious_request.endpoint,
+            'method': malicious_request.method,
+            'headers': malicious_request.headers,
+            'body': malicious_request.data
+        }
+        
+        # Test security incident detection
+        with patch.object(security, '_check_rate_limit', return_value=True), \
+             patch.object(security, '_validate_oauth_token', return_value=False):
+            
+            is_valid, errors = await security.validate_request(request_data)
+            
+            # Verify incident detection
+            assert is_valid is False
+            assert len(errors) > 0
+            assert any('OAuth' in error for error in errors)
+        
+        # Verify security event logging
+        security_events = [event for event in security.security_events if event.blocked]
+        assert len(security_events) > 0
+        
+        # Verify high threat level events
+        high_threat_events = [
+            event for event in security_events 
+            if event.threat_level in [SecurityThreatLevel.HIGH, SecurityThreatLevel.CRITICAL]
+        ]
+        assert len(high_threat_events) > 0
+        
+        # Test security metrics
+        security_metrics = await security.get_security_metrics()
+        assert security_metrics['blocked_requests_last_hour'] > 0
+        
+        # Record security event in monitor
+        if security_events:
+            monitor.record_security_event(security_events[0])
+            assert monitor.prometheus_metrics.security_events_total._value._value > 0
     
     @pytest.mark.asyncio
-    async def test_high_availability_scenarios(self):
+    async def test_high_availability_scenarios(self, integrated_gateway):
         """Test high availability and failover scenarios."""
-        # This would test circuit breakers, retries, and failover
-        pass
+        gateway = integrated_gateway['gateway']
+        mock_session = integrated_gateway['mock_session']
+        
+        # Test circuit breaker functionality
+        from external_api_client import ExternalAPIConfig, ExternalAPIClient, AuthenticationType, ExternalAPIEnvironment, RetryStrategy
+        
+        api_config = ExternalAPIConfig(
+            name="test-failover-api",
+            base_url="https://failover-test.mil",
+            environment=ExternalAPIEnvironment.DEVELOPMENT,
+            authentication_type=AuthenticationType.API_KEY,
+            api_key="test-key",
+            timeout_seconds=5,
+            max_retries=2,
+            retry_strategy=RetryStrategy.EXPONENTIAL_BACKOFF,
+            circuit_breaker_enabled=True,
+            failure_threshold=3,
+            recovery_timeout_seconds=30
+        )
+        
+        with patch('external_api_client.ssl.create_default_context'), \
+             patch('external_api_client.certifi.where', return_value="/tmp/ca-bundle.crt"):
+            
+            api_client = ExternalAPIClient(api_config)
+            api_client._session = mock_session
+            
+            # Test failover scenario - simulate API failures
+            mock_session.request.side_effect = Exception("Connection timeout")
+            
+            from external_api_client import APIRequest as ExtAPIRequest
+            test_request = ExtAPIRequest(
+                method='GET',
+                endpoint='/api/v1/health'
+            )
+            
+            # First few requests should fail and trigger circuit breaker
+            for i in range(3):
+                response = await api_client.make_request(test_request)
+                assert response.error is not None
+            
+            # Circuit breaker should now be open
+            circuit_status = api_client.get_circuit_breaker_status()
+            assert circuit_status['failure_count'] >= 3
+    
+    @pytest.mark.asyncio
+    async def test_classification_data_handling(self, integrated_gateway):
+        """Test proper handling of classified data through the gateway."""
+        gateway = integrated_gateway['gateway']
+        security = integrated_gateway['security']
+        mock_session = integrated_gateway['mock_session']
+        
+        # Test SECRET classification request
+        classified_request = APIRequest(
+            method='POST',
+            endpoint='/api/v1/classified/data',
+            headers={
+                'Authorization': 'Bearer valid_secret_token',
+                'Content-Type': 'application/json',
+                'X-Classification': 'SECRET'
+            },
+            data={'sensitive_data': 'classified_information'},
+            classification=SecurityClassification.SECRET,
+            endpoint_type=APIEndpointType.CLASSIFIED
+        )
+        
+        # Mock encryption for classified data
+        mock_encryption = AsyncMock()
+        mock_encryption.encrypt_data.return_value = b'encrypted_classified_data'
+        mock_encryption.decrypt_data.return_value = b'{"result": "success", "classification": "SECRET"}'
+        gateway.encryption_manager = mock_encryption
+        
+        # Setup classified response
+        mock_response = AsyncMock()
+        mock_response.status = 200
+        mock_response.headers = {
+            'Content-Type': 'application/json',
+            'X-Encrypted': 'true',
+            'X-Classification': 'SECRET'
+        }
+        mock_response.text.return_value = 'encrypted_response_data'
+        mock_session.request.return_value.__aenter__.return_value = mock_response
+        
+        # Execute classified request
+        response = await gateway.make_request(classified_request)
+        
+        # Verify classified data handling
+        assert response.status_code == 200
+        assert mock_encryption.encrypt_data.called
+        assert mock_encryption.decrypt_data.called
+        
+        # Verify security controls for classified data
+        request_data = {
+            'client_ip': '192.168.1.100',
+            'endpoint': classified_request.endpoint,
+            'method': classified_request.method,
+            'headers': classified_request.headers,
+            'body': classified_request.data,
+            'classification': SecurityClassification.SECRET.value
+        }
+        
+        # Should have stricter validation for classified endpoints
+        high_security_policy = create_high_security_policy()
+        security.add_security_policy(r"/api/v1/classified/.*", high_security_policy)
+        
+        with patch.object(security, '_check_rate_limit', return_value=True), \
+             patch.object(security, '_validate_oauth_token', return_value=True), \
+             patch.object(security, '_detect_attacks', return_value=False):
+            
+            is_valid, errors = await security.validate_request(request_data)
+            assert is_valid is True
+    
+    @pytest.mark.asyncio
+    async def test_service_mesh_integration(self):
+        """Test service mesh configuration and deployment."""
+        from service_mesh_config import ServiceMeshManager, ServiceMeshConfig, ServiceConfig, TrafficManagementConfig, MeshEnvironment, SecurityMode
+        
+        mesh_config = ServiceMeshConfig(
+            namespace="api-gateway-test",
+            environment=MeshEnvironment.DEVELOPMENT,
+            cluster_name="test-cluster",
+            mesh_id="test-mesh",
+            network="test-network"
+        )
+        
+        service_config = ServiceConfig(
+            name="api-gateway",
+            namespace="api-gateway-test",
+            port=443,
+            version="v1"
+        )
+        
+        traffic_config = TrafficManagementConfig(
+            circuit_breaker_consecutive_errors=5,
+            max_requests=100,
+            timeout_seconds=30
+        )
+        
+        with patch('service_mesh_config.config.load_kube_config'), \
+             patch('service_mesh_config.client.ApiClient'), \
+             patch('service_mesh_config.client.CustomObjectsApi'):
+            
+            mesh_manager = ServiceMeshManager(mesh_config)
+            
+            # Test Istio configurations
+            gateway_config = mesh_manager.generate_istio_gateway(
+                "api-gateway",
+                ["api.test.mil"],
+                443,
+                "SIMPLE"
+            )
+            
+            assert gateway_config['kind'] == 'Gateway'
+            assert gateway_config['spec']['servers'][0]['hosts'] == ['api.test.mil']
+            
+            # Test VirtualService configuration
+            vs_config = mesh_manager.generate_virtual_service(
+                "api-gateway",
+                "api-gateway",
+                ["api.test.mil"],
+                "api-gateway",
+                443
+            )
+            
+            assert vs_config['kind'] == 'VirtualService'
+            assert vs_config['spec']['hosts'] == ['api.test.mil']
+            
+            # Test mTLS configuration
+            peer_auth = mesh_manager.generate_peer_authentication(
+                "api-gateway",
+                SecurityMode.STRICT
+            )
+            
+            assert peer_auth['spec']['mtls']['mode'] == 'STRICT'
+    
+    @pytest.mark.asyncio
+    async def test_external_api_integration(self):
+        """Test external API client integration with gateway."""
+        from external_api_client import ExternalAPIConfig, ExternalAPIClient, AuthenticationType, ExternalAPIEnvironment
+        
+        # Create external API configuration
+        api_config = ExternalAPIConfig(
+            name="external-dod-service",
+            base_url="https://external.dod.mil",
+            environment=ExternalAPIEnvironment.DEVELOPMENT,
+            authentication_type=AuthenticationType.MUTUAL_TLS,
+            client_cert_path="/tmp/external-client.crt",
+            client_key_path="/tmp/external-client.key",
+            ca_bundle_path="/tmp/external-ca.crt",
+            timeout_seconds=30,
+            max_retries=3
+        )
+        
+        with patch('external_api_client.ssl.create_default_context'), \
+             patch('external_api_client.certifi.where', return_value="/tmp/ca-bundle.crt"), \
+             patch('aiohttp.ClientSession') as mock_session:
+            
+            mock_session_instance = AsyncMock()
+            mock_session.return_value = mock_session_instance
+            
+            # Mock successful external API response
+            mock_response = AsyncMock()
+            mock_response.status = 200
+            mock_response.headers = {'Content-Type': 'application/json'}
+            mock_response.text.return_value = '{"status": "success", "data": "external_data"}'
+            mock_response.json.return_value = {'status': 'success', 'data': 'external_data'}
+            mock_session_instance.request.return_value.__aenter__.return_value = mock_response
+            
+            # Test external API client
+            api_client = ExternalAPIClient(api_config)
+            api_client._session = mock_session_instance
+            
+            # Test GET request
+            response = await api_client.get('/api/v1/external-data')
+            
+            assert response.status_code == 200
+            assert response.json_data['status'] == 'success'
+            assert response.error is None
+            
+            # Test circuit breaker status
+            circuit_status = api_client.get_circuit_breaker_status()
+            assert circuit_status['state'] == 'closed'
+            assert circuit_status['failure_count'] == 0
+    
+    @pytest.mark.asyncio
+    async def test_comprehensive_monitoring_integration(self, integrated_gateway):
+        """Test comprehensive monitoring and alerting integration."""
+        monitor = integrated_gateway['monitor']
+        mock_redis = integrated_gateway['mock_redis']
+        
+        # Initialize monitoring
+        await monitor.initialize()
+        
+        # Test metrics collection
+        test_metrics = {
+            'timestamp': datetime.utcnow().isoformat(),
+            'method': 'GET',
+            'endpoint': '/api/v1/test',
+            'status_code': 200,
+            'response_time': 0.5,
+            'request_size': 1024,
+            'response_size': 2048,
+            'classification': 'UNCLASSIFIED'
+        }
+        
+        # Mock Redis responses for metrics collection
+        mock_redis.lrange.return_value = [json.dumps(test_metrics)]
+        
+        # Test health checks
+        mock_redis.ping.return_value = True
+        health_status = await monitor._check_redis_health()
+        assert health_status == HealthStatus.HEALTHY
+        
+        # Test metrics collection
+        current_metrics = await monitor._collect_current_metrics()
+        assert current_metrics.total_requests == 1
+        assert current_metrics.successful_requests == 1
+        assert current_metrics.failed_requests == 0
+        
+        # Test security event recording
+        from api_gateway.api_security_controls import SecurityEvent, SecurityThreatLevel, AttackType
+        
+        security_event = SecurityEvent(
+            timestamp=datetime.utcnow(),
+            event_id=str(uuid.uuid4()),
+            client_ip="192.168.1.100",
+            user_id=None,
+            endpoint="/api/v1/test",
+            method="GET",
+            threat_level=SecurityThreatLevel.LOW,
+            attack_type=None,
+            description="Normal request processed",
+            request_data=None,
+            response_code=200,
+            blocked=False
+        )
+        
+        monitor.record_security_event(security_event)
+        
+        # Verify Prometheus metrics
+        assert monitor.prometheus_metrics.security_events_total._value._value > 0
+
+
+# Additional integration test utilities
+class IntegrationTestUtils:
+    """Utilities for integration testing."""
+    
+    @staticmethod
+    def create_test_certificate():
+        """Create test certificate for mTLS testing."""
+        from cryptography import x509
+        from cryptography.hazmat.primitives import hashes, serialization
+        from cryptography.hazmat.primitives.asymmetric import rsa
+        from cryptography.x509.oid import NameOID
+        
+        # Generate private key
+        private_key = rsa.generate_private_key(
+            public_exponent=65537,
+            key_size=2048
+        )
+        
+        # Create certificate
+        subject = issuer = x509.Name([
+            x509.NameAttribute(NameOID.COUNTRY_NAME, "US"),
+            x509.NameAttribute(NameOID.STATE_OR_PROVINCE_NAME, "DC"),
+            x509.NameAttribute(NameOID.LOCALITY_NAME, "Washington"),
+            x509.NameAttribute(NameOID.ORGANIZATION_NAME, "DoD Test"),
+            x509.NameAttribute(NameOID.COMMON_NAME, "test.dod.mil"),
+        ])
+        
+        cert = x509.CertificateBuilder().subject_name(
+            subject
+        ).issuer_name(
+            issuer
+        ).public_key(
+            private_key.public_key()
+        ).serial_number(
+            x509.random_serial_number()
+        ).not_valid_before(
+            datetime.utcnow()
+        ).not_valid_after(
+            datetime.utcnow() + timedelta(days=365)
+        ).add_extension(
+            x509.SubjectAlternativeName([
+                x509.DNSName("test.dod.mil"),
+                x509.DNSName("*.test.dod.mil"),
+            ]),
+            critical=False,
+        ).sign(private_key, hashes.SHA256())
+        
+        return private_key, cert
+    
+    @staticmethod
+    def setup_test_environment():
+        """Setup test environment with necessary certificates and configurations."""
+        import tempfile
+        import os
+        
+        # Create temporary directory for test certificates
+        test_dir = tempfile.mkdtemp(prefix='dod_api_gateway_test_')
+        
+        # Generate test certificates
+        private_key, cert = IntegrationTestUtils.create_test_certificate()
+        
+        # Write certificate files
+        cert_path = os.path.join(test_dir, 'test_cert.pem')
+        key_path = os.path.join(test_dir, 'test_key.pem')
+        ca_path = os.path.join(test_dir, 'test_ca.pem')
+        
+        with open(cert_path, 'wb') as f:
+            f.write(cert.public_bytes(serialization.Encoding.PEM))
+        
+        with open(key_path, 'wb') as f:
+            f.write(private_key.private_bytes(
+                encoding=serialization.Encoding.PEM,
+                format=serialization.PrivateFormat.PKCS8,
+                encryption_algorithm=serialization.NoEncryption()
+            ))
+        
+        # Copy cert as CA for testing
+        with open(ca_path, 'wb') as f:
+            f.write(cert.public_bytes(serialization.Encoding.PEM))
+        
+        return {
+            'test_dir': test_dir,
+            'cert_path': cert_path,
+            'key_path': key_path,
+            'ca_path': ca_path
+        }
+    
+    @staticmethod
+    def cleanup_test_environment(test_env):
+        """Clean up test environment."""
+        import shutil
+        shutil.rmtree(test_env['test_dir'], ignore_errors=True)
 
 
 if __name__ == "__main__":
-    # Run tests
-    pytest.main([__file__, "-v", "--tb=short"])
+    # Run comprehensive integration tests
+    pytest.main([
+        __file__, 
+        "-v", 
+        "--tb=short",
+        "-k", "test_",
+        "--durations=10",
+        "--cov=dod_api_gateway",
+        "--cov=api_security_controls",
+        "--cov=gateway_monitoring",
+        "--cov=external_api_client",
+        "--cov=service_mesh_config",
+        "--cov-report=html",
+        "--cov-report=term-missing"
+    ])
