@@ -1,0 +1,176 @@
+{
+  "version": "1.0.0",
+  "description": "Content Management System Configuration for Data Science Learning Handbook",
+  
+  "templates": {
+    "base_path": "content-management/templates",
+    "supported_types": ["chapter", "section", "exercise", "platform"],
+    "auto_sync": true,
+    "template_version": "1.0.0"
+  },
+  
+  "content": {
+    "chapters_path": "chapters",
+    "templates_path": "templates",
+    "validation_path": "validation",
+    "supported_formats": [".md", ".ipynb", ".py", ".R", ".sql"],
+    "default_language": "en",
+    "encoding": "utf-8"
+  },
+  
+  "validation": {
+    "auto_validate": true,
+    "minimum_score": 80.0,
+    "required_sections": [
+      "learning_objectives",
+      "content",
+      "exercises"
+    ],
+    "check_links": true,
+    "check_code": true,
+    "check_images": true,
+    "accessibility_check": true,
+    "bias_detection": false,
+    "max_word_count": 10000,
+    "min_word_count": 500
+  },
+  
+  "workflow": {
+    "auto_branch": true,
+    "branch_prefix": "content/",
+    "review_prefix": "review/",
+    "hotfix_prefix": "hotfix/",
+    "main_branch": "main",
+    "review_required": true,
+    "merge_strategy": "squash",
+    "auto_delete_merged": true,
+    "required_approvals": 1
+  },
+  
+  "metadata": {
+    "required_fields": [
+      "title",
+      "chapter_id",
+      "author",
+      "platforms",
+      "learning_objectives"
+    ],
+    "auto_update": true,
+    "track_changes": true,
+    "generate_timestamps": true,
+    "content_hash": true
+  },
+  
+  "platforms": {
+    "supported": ["python", "r", "sql", "scala", "julia", "spark"],
+    "default": ["python"],
+    "validation_rules": {
+      "python": {
+        "syntax_check": true,
+        "style_check": false,
+        "import_validation": true
+      },
+      "r": {
+        "syntax_check": true,
+        "style_check": false,
+        "library_validation": true
+      },
+      "sql": {
+        "syntax_check": true,
+        "dialect": "standard"
+      }
+    }
+  },
+  
+  "quality": {
+    "readability": {
+      "max_sentence_length": 25,
+      "max_paragraph_length": 150,
+      "min_paragraph_count": 3
+    },
+    "educational": {
+      "min_learning_objectives": 1,
+      "max_learning_objectives": 8,
+      "min_examples": 1,
+      "max_examples": 10,
+      "exercise_required": true
+    },
+    "technical": {
+      "code_comment_ratio": 0.2,
+      "max_code_block_lines": 50,
+      "code_explanation_required": true
+    }
+  },
+  
+  "output": {
+    "formats": ["markdown", "html", "pdf"],
+    "default_format": "markdown",
+    "include_toc": true,
+    "include_metadata": true,
+    "syntax_highlighting": true,
+    "math_rendering": "katex"
+  },
+  
+  "integration": {
+    "git": {
+      "auto_commit": false,
+      "commit_message_template": "content: {action} {chapter_id} - {title}",
+      "sign_commits": false
+    },
+    "ci_cd": {
+      "validation_on_pr": true,
+      "auto_deploy": false,
+      "test_environments": ["staging", "production"]
+    },
+    "external_tools": {
+      "jupyter": {
+        "auto_convert": true,
+        "preserve_outputs": true
+      },
+      "mermaid": {
+        "diagram_support": true
+      },
+      "plantUML": {
+        "diagram_support": false
+      }
+    }
+  },
+  
+  "logging": {
+    "level": "INFO",
+    "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    "file": "content-management/logs/cms.log",
+    "max_size": "10MB",
+    "backup_count": 5
+  },
+  
+  "cache": {
+    "enabled": true,
+    "directory": "content-management/cache",
+    "metadata_cache": "metadata.json",
+    "validation_cache": "validation.json",
+    "workflow_cache": "workflows.json",
+    "ttl": 3600
+  },
+  
+  "security": {
+    "sanitize_input": true,
+    "validate_yaml": true,
+    "restrict_file_access": true,
+    "allowed_extensions": [".md", ".ipynb", ".py", ".R", ".sql", ".json", ".yaml"],
+    "max_file_size": "50MB"
+  },
+  
+  "customization": {
+    "theme": "default",
+    "custom_css": "",
+    "custom_templates": {},
+    "plugins": [],
+    "hooks": {
+      "pre_generation": [],
+      "post_generation": [],
+      "pre_validation": [],
+      "post_validation": []
+    }
+  }
+}
