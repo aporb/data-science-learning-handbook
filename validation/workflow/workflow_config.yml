@@ -1,0 +1,211 @@
+# Content Review Workflow Configuration
+# =====================================
+
+workflow:
+  max_parallel_workflows: 50
+  default_deadline_days: 14
+  escalation_threshold_hours: 48
+  auto_assignment: true
+  quality_gate_enforcement: true
+
+notifications:
+  enabled: true
+  smtp_server: "localhost"
+  smtp_port: 587
+  from_email: "workflow@datascience-handbook.org"
+  reminder_intervals: [24, 6, 1]  # hours before deadline
+
+scoring:
+  minimum_overall_score: 80.0
+  bias_threshold: 0.3
+  technical_accuracy_weight: 0.3
+  educational_effectiveness_weight: 0.25
+  bias_assessment_weight: 0.2
+  security_compliance_weight: 0.15
+  implementation_feasibility_weight: 0.1
+
+assignment:
+  load_balancing: true
+  expertise_matching: true
+  max_assignments_per_reviewer: 5
+  rotation_policy: "round_robin"
+
+# Review Stage Configurations
+stages:
+  technical_review:
+    required_roles: ["technical_reviewer"]
+    optional_roles: ["author"]
+    minimum_approvals: 1
+    maximum_duration_hours: 72
+    parallel_reviews: false
+    auto_advance_threshold: 85.0
+    criteria:
+      - name: "technical_accuracy"
+        description: "Technical correctness and implementation feasibility"
+        weight: 0.4
+        required_score: 75.0
+      - name: "code_quality"
+        description: "Code examples and technical implementation quality"
+        weight: 0.3
+        required_score: 80.0
+      - name: "platform_compatibility"
+        description: "Compatibility across target platforms"
+        weight: 0.3
+        required_score: 70.0
+    notification_triggers: ["assignment", "reminder", "completion"]
+
+  educational_review:
+    required_roles: ["educational_reviewer"]
+    optional_roles: ["author"]
+    minimum_approvals: 1
+    maximum_duration_hours: 48
+    parallel_reviews: false
+    auto_advance_threshold: 80.0
+    criteria:
+      - name: "learning_effectiveness"
+        description: "Educational value and learning outcomes"
+        weight: 0.4
+        required_score: 75.0
+      - name: "content_structure"
+        description: "Organization and flow of content"
+        weight: 0.3
+        required_score: 80.0
+      - name: "accessibility"
+        description: "Content accessibility and inclusive design"
+        weight: 0.3
+        required_score: 75.0
+    notification_triggers: ["assignment", "reminder", "completion"]
+
+  bias_assessment:
+    required_roles: ["bias_assessor"]
+    optional_roles: []
+    minimum_approvals: 1
+    maximum_duration_hours: 24
+    parallel_reviews: false
+    auto_advance_threshold: null  # Manual review required
+    criteria:
+      - name: "methodology_bias"
+        description: "Balance in methodology presentation"
+        weight: 0.4
+        required_score: 70.0
+      - name: "platform_neutrality"
+        description: "Neutrality across platform implementations"
+        weight: 0.3
+        required_score: 70.0
+      - name: "demographic_inclusivity"
+        description: "Inclusive examples and use cases"
+        weight: 0.3
+        required_score: 75.0
+    notification_triggers: ["assignment", "reminder", "completion"]
+
+  security_review:
+    required_roles: ["security_reviewer"]
+    optional_roles: []
+    minimum_approvals: 1
+    maximum_duration_hours: 48
+    parallel_reviews: false
+    auto_advance_threshold: 90.0
+    criteria:
+      - name: "security_compliance"
+        description: "DoD and government security compliance"
+        weight: 0.5
+        required_score: 85.0
+      - name: "data_protection"
+        description: "Data protection and privacy measures"
+        weight: 0.3
+        required_score: 80.0
+      - name: "vulnerability_assessment"
+        description: "Security vulnerability assessment"
+        weight: 0.2
+        required_score: 75.0
+    notification_triggers: ["assignment", "reminder", "completion"]
+
+  final_approval:
+    required_roles: ["content_approver"]
+    optional_roles: ["publisher"]
+    minimum_approvals: 1
+    maximum_duration_hours: 24
+    parallel_reviews: false
+    auto_advance_threshold: null  # Manual approval required
+    criteria:
+      - name: "overall_quality"
+        description: "Overall content quality assessment"
+        weight: 0.6
+        required_score: 80.0
+      - name: "readiness"
+        description: "Readiness for publication"
+        weight: 0.4
+        required_score: 85.0
+    notification_triggers: ["assignment", "reminder", "completion"]
+
+# Quality Gate Definitions
+quality_gates:
+  technical_accuracy:
+    name: "Technical Accuracy Gate"
+    description: "Ensures technical content meets accuracy standards"
+    stage: "technical_review"
+    required_score: 80.0
+    automated: true
+    blocking: true
+
+  bias_threshold:
+    name: "Bias Assessment Gate"
+    description: "Ensures content meets bias neutrality standards"
+    stage: "bias_assessment"
+    required_score: 70.0
+    automated: false
+    blocking: true
+
+  security_compliance:
+    name: "Security Compliance Gate"
+    description: "Ensures security and compliance requirements are met"
+    stage: "security_review"
+    required_score: 85.0
+    automated: true
+    blocking: true
+
+  overall_quality:
+    name: "Overall Quality Gate"
+    description: "Ensures overall content quality meets publication standards"
+    stage: "final_approval"
+    required_score: 80.0
+    automated: false
+    blocking: true
+
+# Default Reviewer Database
+reviewers:
+  default_reviewers:
+    - user_id: "tech_lead_001"
+      name: "Technical Lead"
+      email: "tech.lead@example.org"
+      roles: ["technical_reviewer", "content_approver"]
+      expertise_areas: ["python", "machine_learning", "data_science"]
+      workload_capacity: 5
+
+    - user_id: "edu_specialist_001"
+      name: "Educational Specialist"
+      email: "edu.specialist@example.org"
+      roles: ["educational_reviewer"]
+      expertise_areas: ["curriculum_design", "learning_theory", "accessibility"]
+      workload_capacity: 8
+
+    - user_id: "bias_assessor_001"
+      name: "Bias Assessment Specialist"
+      email: "bias.assessor@example.org"
+      roles: ["bias_assessor"]
+      expertise_areas: ["bias_detection", "inclusive_design", "ethics"]
+      workload_capacity: 6
+
+    - user_id: "security_reviewer_001"
+      name: "Security Reviewer"
+      email: "security.reviewer@example.org"
+      roles: ["security_reviewer"]
+      expertise_areas: ["information_security", "compliance", "dod_standards"]
+      workload_capacity: 4
+
+    - user_id: "content_manager_001"
+      name: "Content Manager"
+      email: "content.manager@example.org"
+      roles: ["content_approver", "publisher", "administrator"]
+      expertise_areas: ["content_strategy", "publication", "project_management"]
+      workload_capacity: 10

@@ -1,0 +1,306 @@
+# Content Migration Configuration
+# ===============================
+
+migration:
+  default_backup_strategy: "copy"
+  max_parallel_workers: 4
+  validation_level: "basic"
+  auto_cleanup_days: 30
+  max_history_entries: 100
+
+transformers:
+  markdown:
+    enabled: true
+    extensions: [".md", ".markdown", ".mdown"]
+    validate_links: true
+    validate_headings: true
+    validate_frontmatter: true
+    auto_fix_links: false
+    
+  notebook:
+    enabled: true
+    extensions: [".ipynb"]
+    auto_upgrade_version: false
+    clean_outputs: false
+    validate_kernel_spec: true
+    validate_cell_structure: true
+
+  yaml:
+    enabled: true
+    extensions: [".yml", ".yaml"]
+    validate_schema: true
+    preserve_comments: true
+    
+  json:
+    enabled: true
+    extensions: [".json"]
+    validate_schema: true
+    pretty_print: true
+    sort_keys: false
+
+validation:
+  enabled: true
+  fail_on_validation_errors: false
+  max_validation_errors: 10
+  skip_validation_patterns:
+    - "*.tmp"
+    - "*.bak"
+    - ".git/**"
+    - "node_modules/**"
+
+backup:
+  enabled: true
+  compression: true
+  retention_days: 90
+  max_backup_size_mb: 100
+  backup_location: "validation/workflow/migrations/backups"
+
+# Migration Rules
+migration_rules:
+  frontmatter_update:
+    rule_id: "frontmatter_update_v2"
+    name: "Update Frontmatter Schema"
+    description: "Update YAML frontmatter to latest schema version"
+    migration_type: "metadata_update"
+    source_pattern: "chapters/**/*.md"
+    transformation_function: "update_frontmatter_schema"
+    conditions:
+      contains_text: "---"
+    validation_rules:
+      - "validate_yaml_syntax"
+      - "validate_required_fields"
+    rollback_function: "restore_original_frontmatter"
+    metadata:
+      schema_version: "2.0"
+      required_fields: ["title", "chapter_id", "author", "created_date", "status"]
+      optional_fields: ["tags", "platforms", "difficulty", "estimated_time"]
+      deprecated_fields: ["version", "last_updated"]
+
+  heading_restructure:
+    rule_id: "heading_restructure_v1"
+    name: "Restructure Heading Hierarchy"
+    description: "Update heading structure to match new content guidelines"
+    migration_type: "content_restructure"
+    source_pattern: "chapters/**/*.md"
+    transformation_function: "restructure_headings"
+    conditions:
+      min_size_bytes: 1000
+    validation_rules:
+      - "validate_heading_hierarchy"
+      - "check_heading_consistency"
+    metadata:
+      max_heading_level: 4
+      required_sections: ["Overview", "Learning Objectives", "Content", "Exercises"]
+
+  link_format_update:
+    rule_id: "link_format_update_v1"
+    name: "Update Link Formats"
+    description: "Convert relative links to new format"
+    migration_type: "link_update"
+    source_pattern: "**/*.md"
+    transformation_function: "update_link_formats"
+    validation_rules:
+      - "validate_link_targets"
+      - "check_broken_links"
+    metadata:
+      old_base_url: "../"
+      new_base_url: "../../"
+      update_internal_links: true
+      update_asset_links: true
+
+  notebook_metadata_update:
+    rule_id: "notebook_metadata_v2"
+    name: "Update Notebook Metadata"
+    description: "Update Jupyter notebook metadata to latest format"
+    migration_type: "metadata_update"
+    source_pattern: "chapters/**/*.ipynb"
+    transformation_function: "update_notebook_metadata"
+    validation_rules:
+      - "validate_notebook_format"
+      - "validate_kernel_spec"
+    metadata:
+      required_metadata:
+        - "handbook.title"
+        - "handbook.chapter_id"
+        - "handbook.author"
+      kernel_spec:
+        name: "python3"
+        display_name: "Python 3"
+
+  code_block_language_update:
+    rule_id: "code_block_lang_v1"
+    name: "Update Code Block Languages"
+    description: "Update code block language specifications"
+    migration_type: "format_conversion"
+    source_pattern: "**/*.md"
+    transformation_function: "update_code_block_languages"
+    validation_rules:
+      - "validate_code_syntax"
+    metadata:
+      language_mapping:
+        "py": "python"
+        "js": "javascript"
+        "sh": "bash"
+        "yml": "yaml"
+
+  asset_path_migration:
+    rule_id: "asset_path_migration_v1"
+    name: "Migrate Asset Paths"
+    description: "Update asset paths to new directory structure"
+    migration_type: "asset_migration"
+    source_pattern: "**/*.md"
+    transformation_function: "migrate_asset_paths"
+    validation_rules:
+      - "validate_asset_exists"
+    metadata:
+      old_asset_dir: "images"
+      new_asset_dir: "assets/images"
+      supported_extensions: [".png", ".jpg", ".jpeg", ".gif", ".svg"]
+
+# Migration Plans
+migration_plans:
+  chapter_modernization:
+    plan_id: "chapter_modernization_2024"
+    name: "Chapter Content Modernization"
+    description: "Modernize all chapter content to latest standards"
+    rules:
+      - "frontmatter_update_v2"
+      - "heading_restructure_v1"
+      - "link_format_update_v1"
+      - "code_block_lang_v1"
+    file_patterns:
+      - "chapters/**/*.md"
+      - "chapters/**/*.ipynb"
+    validation_level: "comprehensive"
+    dry_run: false
+    backup_strategy: "copy"
+    parallel_execution: true
+    max_workers: 4
+
+  template_update:
+    plan_id: "template_update_2024"
+    name: "Template Format Update"
+    description: "Update all template files to new format"
+    rules:
+      - "frontmatter_update_v2"
+      - "asset_path_migration_v1"
+    file_patterns:
+      - "templates/**/*.md"
+    validation_level: "basic"
+    dry_run: true
+    backup_strategy: "copy"
+
+  notebook_standardization:
+    plan_id: "notebook_standardization"
+    name: "Jupyter Notebook Standardization"
+    description: "Standardize all Jupyter notebooks"
+    rules:
+      - "notebook_metadata_v2"
+    file_patterns:
+      - "**/*.ipynb"
+    validation_level: "strict"
+    dry_run: false
+
+# Custom Transformation Functions
+transformations:
+  update_frontmatter_schema:
+    description: "Updates YAML frontmatter to schema v2.0"
+    parameters:
+      schema_version: "2.0"
+      add_fields:
+        created_date: "2024-01-01"
+        status: "draft"
+      rename_fields:
+        version: "schema_version"
+        last_updated: "modified_date"
+      remove_fields:
+        - "deprecated_field"
+
+  restructure_headings:
+    description: "Restructures heading hierarchy"
+    parameters:
+      level_shift: 0
+      required_sections:
+        - "Overview"
+        - "Learning Objectives"
+        - "Content"
+        - "Exercises"
+        - "Summary"
+
+  update_link_formats:
+    description: "Updates link formats and paths"
+    parameters:
+      base_url_change:
+        old: "../"
+        new: "../../"
+      link_patterns:
+        "\\[(.*?)\\]\\(images/(.*?)\\)": "[\\1](assets/images/\\2)"
+
+  update_notebook_metadata:
+    description: "Updates Jupyter notebook metadata"
+    parameters:
+      metadata_updates:
+        add_handbook_title: true
+        add_chapter_id: true
+        add_author: true
+      cell_metadata_updates:
+        code:
+          tags: []
+        markdown:
+          tags: []
+      kernel_updates:
+        name: "python3"
+        display_name: "Python 3"
+        language: "python"
+
+  update_code_block_languages:
+    description: "Updates code block language specifications"
+    parameters:
+      language_mapping:
+        py: "python"
+        js: "javascript"
+        sh: "bash"
+        yml: "yaml"
+        rb: "ruby"
+        go: "golang"
+
+  migrate_asset_paths:
+    description: "Migrates asset paths to new structure"
+    parameters:
+      path_mappings:
+        "images/": "assets/images/"
+        "files/": "assets/files/"
+        "data/": "assets/data/"
+      update_references: true
+
+# File Processing Settings
+processing:
+  chunk_size: 1000000  # 1MB chunks for large files
+  max_file_size_mb: 50
+  skip_binary_files: true
+  preserve_file_permissions: true
+  preserve_timestamps: false
+
+# Error Handling
+error_handling:
+  continue_on_error: true
+  log_all_errors: true
+  create_error_report: true
+  rollback_on_critical_error: false
+  max_errors_per_file: 5
+
+# Monitoring and Reporting
+monitoring:
+  track_performance_metrics: true
+  generate_progress_reports: true
+  progress_report_interval_seconds: 30
+  detailed_logging: true
+  log_file_changes: true
+
+# Integration Settings
+integration:
+  git_integration: true
+  commit_after_migration: false
+  create_migration_branch: true
+  tag_successful_migrations: true
+  webhook_notifications: true

@@ -1,0 +1,208 @@
+# Git Branching Strategy Configuration
+# ===================================
+
+repository:
+  main_branch: "main"
+  development_branch: "develop"
+  content_base_branch: "main"
+  auto_cleanup: true
+  max_concurrent_branches: 20
+
+naming:
+  content_prefix: "content"
+  review_prefix: "review"
+  hotfix_prefix: "hotfix"
+  release_prefix: "release"
+  separator: "/"
+
+protection:
+  enable_branch_protection: true
+  require_pr_reviews: true
+  require_status_checks: true
+  restrict_pushes: true
+  allow_administrators: true
+
+merge:
+  default_strategy: "squash"
+  auto_merge_threshold: 95.0
+  delete_after_merge: true
+  create_merge_commits: false
+
+versioning:
+  version_format: "v{major}.{minor}.{patch}"
+  auto_version_increment: true
+  track_file_versions: true
+  create_version_tags: true
+
+cleanup:
+  auto_cleanup_days: 30
+  cleanup_merged_branches: true
+  cleanup_abandoned_branches: true
+  preserve_tagged_branches: true
+
+# Branch Type Configurations
+branch_types:
+  content_draft:
+    naming_pattern: "content/{content_id}-draft-{timestamp}"
+    base_branch: "main"
+    merge_strategy: "squash"
+    auto_delete_after_merge: true
+    protection_rules:
+      required_reviews: 0
+      dismiss_stale_reviews: false
+      require_code_owner_reviews: false
+    required_reviews: 0
+    allow_force_push: true
+    max_lifetime_days: 7
+    content_patterns:
+      - "chapters/**/*.md"
+      - "chapters/**/*.ipynb"
+
+  technical_review:
+    naming_pattern: "review/{content_id}-technical-{timestamp}"
+    base_branch: "main"
+    merge_strategy: "merge"
+    auto_delete_after_merge: true
+    protection_rules:
+      required_reviews: 1
+      dismiss_stale_reviews: true
+      require_code_owner_reviews: true
+    required_reviews: 1
+    allow_force_push: false
+    max_lifetime_days: 14
+    content_patterns:
+      - "chapters/**/*.md"
+      - "chapters/**/*.ipynb"
+      - "code-examples/**/*"
+
+  educational_review:
+    naming_pattern: "review/{content_id}-educational-{timestamp}"
+    base_branch: "main"
+    merge_strategy: "merge"
+    auto_delete_after_merge: true
+    protection_rules:
+      required_reviews: 1
+      dismiss_stale_reviews: true
+      require_code_owner_reviews: false
+    required_reviews: 1
+    allow_force_push: false
+    max_lifetime_days: 10
+    content_patterns:
+      - "chapters/**/*.md"
+      - "chapters/**/*.ipynb"
+
+  bias_assessment:
+    naming_pattern: "review/{content_id}-bias-{timestamp}"
+    base_branch: "main"
+    merge_strategy: "merge"
+    auto_delete_after_merge: true
+    protection_rules:
+      required_reviews: 1
+      dismiss_stale_reviews: true
+      require_code_owner_reviews: true
+    required_reviews: 1
+    allow_force_push: false
+    max_lifetime_days: 5
+    content_patterns:
+      - "chapters/**/*.md"
+      - "chapters/**/*.ipynb"
+
+  security_review:
+    naming_pattern: "review/{content_id}-security-{timestamp}"
+    base_branch: "main"
+    merge_strategy: "merge"
+    auto_delete_after_merge: true
+    protection_rules:
+      required_reviews: 2
+      dismiss_stale_reviews: true
+      require_code_owner_reviews: true
+    required_reviews: 2
+    allow_force_push: false
+    max_lifetime_days: 7
+    content_patterns:
+      - "chapters/**/*.md"
+      - "chapters/**/*.ipynb"
+      - "security-compliance/**/*"
+
+  final_approval:
+    naming_pattern: "review/{content_id}-final-{timestamp}"
+    base_branch: "main"
+    merge_strategy: "squash"
+    auto_delete_after_merge: true
+    protection_rules:
+      required_reviews: 2
+      dismiss_stale_reviews: true
+      require_code_owner_reviews: true
+    required_reviews: 2
+    allow_force_push: false
+    max_lifetime_days: 3
+    content_patterns:
+      - "chapters/**/*"
+      - "templates/**/*"
+
+  hotfix:
+    naming_pattern: "hotfix/{issue}-{timestamp}"
+    base_branch: "main"
+    merge_strategy: "merge"
+    auto_delete_after_merge: true
+    protection_rules:
+      required_reviews: 1
+      dismiss_stale_reviews: false
+      require_code_owner_reviews: true
+    required_reviews: 1
+    allow_force_push: false
+    max_lifetime_days: 1
+    content_patterns:
+      - "**/*"
+
+  release:
+    naming_pattern: "release/{version}"
+    base_branch: "develop"
+    merge_strategy: "merge"
+    auto_delete_after_merge: false
+    protection_rules:
+      required_reviews: 2
+      dismiss_stale_reviews: true
+      require_code_owner_reviews: true
+    required_reviews: 2
+    allow_force_push: false
+    max_lifetime_days: null
+    content_patterns:
+      - "**/*"
+
+# Content Version Tracking
+content_versioning:
+  enable_content_versions: true
+  version_on_branch_creation: true
+  version_on_merge: true
+  track_file_changes: true
+  generate_change_summaries: true
+
+# Integration Settings
+integration:
+  webhook_notifications: true
+  slack_integration: false
+  teams_integration: false
+  jira_integration: false
+
+# Git Hooks Configuration
+git_hooks:
+  pre_commit:
+    enabled: true
+    checks:
+      - "lint_markdown"
+      - "validate_frontmatter"
+      - "check_file_size"
+    max_file_size_mb: 10
+
+  pre_push:
+    enabled: true
+    checks:
+      - "run_tests"
+      - "security_scan"
+    
+  post_merge:
+    enabled: true
+    actions:
+      - "update_content_index"
+      - "notify_stakeholders"

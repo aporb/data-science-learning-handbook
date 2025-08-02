@@ -1,0 +1,385 @@
+# Notification System Configuration
+# =================================
+
+channels:
+  email:
+    enabled: true
+    smtp_server: "smtp.gmail.com"
+    smtp_port: 587
+    username: null  # Set via environment variable
+    password: null  # Set via environment variable
+    from_email: "workflow@datascience-handbook.org"
+    from_name: "Data Science Handbook Workflow"
+    use_tls: true
+    use_ssl: false
+
+  webhook:
+    enabled: true
+    timeout: 30
+    retry_attempts: 3
+    default_headers:
+      Content-Type: "application/json"
+      User-Agent: "DataScienceHandbook-NotificationSystem/1.0"
+
+  slack:
+    enabled: false
+    bot_token: null  # Set via environment variable
+    webhook_url: null  # Set via environment variable
+    default_channel: "#content-workflow"
+    username: "Content Workflow Bot"
+    icon_emoji: ":gear:"
+
+  teams:
+    enabled: false
+    webhook_url: null  # Set via environment variable
+    card_theme_color: "0076D7"
+
+delivery:
+  max_retry_attempts: 3
+  retry_delay_minutes: [5, 15, 60]
+  batch_size: 10
+  rate_limit_per_minute: 60
+  queue_max_size: 1000
+  delivery_timeout_seconds: 30
+
+scheduling:
+  enabled: true
+  check_interval_seconds: 60
+  reminder_intervals_hours: [24, 6, 1]
+  digest_time: "09:00"
+  timezone: "UTC"
+
+templates:
+  auto_load: true
+  cache_templates: true
+  default_language: "en"
+  supported_languages: ["en"]
+  template_directory: "templates/notifications"
+
+reporting:
+  enabled: true
+  retention_days: 90
+  auto_cleanup: true
+  generate_daily_reports: true
+  generate_weekly_summaries: true
+
+# Notification Templates
+notification_templates:
+  assignment_created_email:
+    name: "Assignment Created - Email"
+    trigger: "assignment_created"
+    channel: "email"
+    priority: "normal"
+    subject_template: "New Review Assignment: {{ content_title }}"
+    body_template: |
+      Hello {{ reviewer_name }},
+
+      You have been assigned to review the following content:
+
+      Content: {{ content_title }}
+      Chapter: {{ chapter_id }}
+      Author: {{ author_name }}
+      Review Stage: {{ review_stage }}
+      Due Date: {{ due_date }}
+
+      Please log in to the system to begin your review.
+
+      Content Path: {{ content_path }}
+      Workflow Link: {{ workflow_url }}
+
+      Best regards,
+      Data Science Handbook Content Management System
+    variables:
+      - "reviewer_name"
+      - "content_title"
+      - "chapter_id"
+      - "author_name"
+      - "review_stage"
+      - "due_date"
+      - "content_path"
+      - "workflow_url"
+
+  deadline_approaching_email:
+    name: "Deadline Approaching - Email"
+    trigger: "deadline_approaching"
+    channel: "email"
+    priority: "high"
+    subject_template: "⚠️ Review Deadline Approaching: {{ content_title }}"
+    body_template: |
+      Hello {{ reviewer_name }},
+
+      This is a reminder that your review assignment is due soon:
+
+      Content: {{ content_title }}
+      Chapter: {{ chapter_id }}
+      Review Stage: {{ review_stage }}
+      Due Date: {{ due_date }}
+      Time Remaining: {{ time_remaining }}
+
+      Please complete your review as soon as possible to avoid delays in the publication process.
+
+      Workflow Link: {{ workflow_url }}
+
+      Best regards,
+      Data Science Handbook Content Management System
+    variables:
+      - "reviewer_name"
+      - "content_title"
+      - "chapter_id"
+      - "review_stage"
+      - "due_date"
+      - "time_remaining"
+      - "workflow_url"
+
+  review_submitted_email:
+    name: "Review Submitted - Email"
+    trigger: "review_submitted"
+    channel: "email"
+    priority: "normal"
+    subject_template: "Review Completed: {{ content_title }}"
+    body_template: |
+      Hello {{ author_name }},
+
+      A review has been completed for your content:
+
+      Content: {{ content_title }}
+      Chapter: {{ chapter_id }}
+      Reviewer: {{ reviewer_name }}
+      Review Stage: {{ review_stage }}
+      Action: {{ review_action }}
+      Score: {{ review_score }}/100
+
+      {% if review_comments %}
+      Comments:
+      {{ review_comments }}
+      {% endif %}
+
+      You can view the full review details in the workflow system.
+
+      Workflow Link: {{ workflow_url }}
+
+      Best regards,
+      Data Science Handbook Content Management System
+    variables:
+      - "author_name"
+      - "content_title"
+      - "chapter_id"
+      - "reviewer_name"
+      - "review_stage"
+      - "review_action"
+      - "review_score"
+      - "review_comments"
+      - "workflow_url"
+
+  workflow_completed_email:
+    name: "Workflow Completed - Email"
+    trigger: "workflow_completed"
+    channel: "email"
+    priority: "normal"
+    subject_template: "🎉 Content Published: {{ content_title }}"
+    body_template: |
+      Hello {{ author_name }},
+
+      Congratulations! Your content has completed the review process and has been published:
+
+      Content: {{ content_title }}
+      Chapter: {{ chapter_id }}
+      Final Score: {{ final_score }}/100
+      Publication Date: {{ publication_date }}
+
+      Summary of Reviews:
+      {% for review in reviews %}
+      - {{ review.stage }}: {{ review.score }}/100 by {{ review.reviewer }}
+      {% endfor %}
+
+      Your content is now available to learners!
+
+      Published Content Link: {{ published_url }}
+
+      Best regards,
+      Data Science Handbook Content Management System
+    variables:
+      - "author_name"
+      - "content_title"
+      - "chapter_id"
+      - "final_score"
+      - "publication_date"
+      - "reviews"
+      - "published_url"
+
+  escalation_triggered_email:
+    name: "Escalation Triggered - Email"
+    trigger: "escalation_triggered"
+    channel: "email"
+    priority: "urgent"
+    subject_template: "🚨 ESCALATION: {{ content_title }} - {{ escalation_reason }}"
+    body_template: |
+      Hello {{ manager_name }},
+
+      An escalation has been triggered for a review assignment:
+
+      Content: {{ content_title }}
+      Chapter: {{ chapter_id }}
+      Original Reviewer: {{ original_reviewer }}
+      Review Stage: {{ review_stage }}
+      Escalation Reason: {{ escalation_reason }}
+      Days Overdue: {{ days_overdue }}
+
+      This assignment requires immediate attention. Please reassign or take appropriate action.
+
+      Assignment Details:
+      - Assigned Date: {{ assigned_date }}
+      - Due Date: {{ due_date }}
+      - Current Status: {{ current_status }}
+
+      Workflow Link: {{ workflow_url }}
+
+      Best regards,
+      Data Science Handbook Content Management System
+    variables:
+      - "manager_name"
+      - "content_title"
+      - "chapter_id"
+      - "original_reviewer"
+      - "review_stage"
+      - "escalation_reason"
+      - "days_overdue"
+      - "assigned_date"
+      - "due_date"
+      - "current_status"
+      - "workflow_url"
+
+# Slack Templates
+slack_templates:
+  assignment_created_slack:
+    name: "Assignment Created - Slack"
+    trigger: "assignment_created"
+    channel: "slack"
+    priority: "normal"
+    message_format: |
+      :memo: *New Review Assignment*
+      
+      *Content:* {{ content_title }}
+      *Chapter:* {{ chapter_id }}
+      *Author:* {{ author_name }}
+      *Review Stage:* {{ review_stage }}
+      *Due Date:* {{ due_date }}
+      
+      <{{ workflow_url }}|View Assignment>
+
+  deadline_approaching_slack:
+    name: "Deadline Approaching - Slack"
+    trigger: "deadline_approaching"
+    channel: "slack"
+    priority: "high"
+    message_format: |
+      :warning: *Review Deadline Approaching*
+      
+      *Content:* {{ content_title }}
+      *Review Stage:* {{ review_stage }}
+      *Due Date:* {{ due_date }}
+      *Time Remaining:* {{ time_remaining }}
+      
+      <{{ workflow_url }}|Complete Review>
+
+# Default Recipients
+default_recipients:
+  admins:
+    - user_id: "admin_001"
+      name: "System Administrator"
+      email: "admin@datascience-handbook.org"
+      roles: ["administrator"]
+      preferences:
+        channels:
+          email: true
+          slack: true
+          webhook: false
+        triggers:
+          workflow_created: true
+          assignment_created: false
+          review_submitted: false
+          workflow_completed: true
+          escalation_triggered: true
+        priority_threshold: "normal"
+        quiet_hours: [22, 6]  # 10 PM to 6 AM
+        digest_frequency: "daily"
+
+  content_managers:
+    - user_id: "content_manager_001"
+      name: "Content Manager"
+      email: "content.manager@datascience-handbook.org"
+      roles: ["content_manager", "publisher"]
+      preferences:
+        channels:
+          email: true
+          slack: true
+          webhook: false
+        triggers:
+          workflow_created: true
+          assignment_created: true
+          review_submitted: true
+          workflow_completed: true
+          escalation_triggered: true
+        priority_threshold: "low"
+        digest_frequency: "none"
+
+# Notification Rules
+notification_rules:
+  auto_escalation:
+    enabled: true
+    conditions:
+      - type: "overdue_hours"
+        value: 48
+      - type: "no_response_hours"
+        value: 24
+    actions:
+      - type: "escalate_to_manager"
+      - type: "reassign_reviewer"
+      - type: "send_urgent_notification"
+
+  quality_gate_failures:
+    enabled: true
+    conditions:
+      - type: "quality_score_below"
+        value: 70.0
+      - type: "validation_errors_above"
+        value: 5
+    actions:
+      - type: "notify_quality_team"
+      - type: "block_progression"
+      - type: "request_immediate_review"
+
+  high_priority_content:
+    enabled: true
+    conditions:
+      - type: "content_priority"
+        value: "high"
+      - type: "content_tag"
+        value: "urgent"
+    actions:
+      - type: "expedite_review"
+      - type: "notify_all_stakeholders"
+      - type: "reduce_review_deadlines"
+
+# Integration Settings
+integrations:
+  jira:
+    enabled: false
+    base_url: null
+    username: null
+    api_token: null
+    project_key: "DSHB"
+    issue_type: "Task"
+
+  github:
+    enabled: true
+    create_issues_on_escalation: true
+    label_assignments: true
+    milestone_tracking: true
+
+  monitoring:
+    enabled: true
+    metrics_endpoint: "/metrics"
+    health_check_endpoint: "/health"
+    alert_on_queue_size: 100
+    alert_on_failure_rate: 0.1
