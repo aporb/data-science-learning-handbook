@@ -30,7 +30,7 @@ import base64
 from ..auth.cac_piv_integration import CACCredentials, CACPIVAuthenticator
 from ..auth.oauth_client import TokenResponse, DoD_OAuth_Client
 from ..rbac.models.classification import ClassificationLevel
-from ..multi-classification.models.dod_compliance_validator import ComplianceStandard, ViolationSeverity
+from ..multi_classification.models.dod_compliance_validator import ComplianceStandard, ViolationSeverity
 
 logger = logging.getLogger(__name__)
 

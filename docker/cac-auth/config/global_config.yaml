@@ -1,0 +1,9 @@
+# Global CAC/PIV Authentication Configuration
+
+middleware_preference: ACTIVCLIENT
+enable_pin_caching: true
+session_timeout: 3600
+max_retry_attempts: 3
+audit_enabled: true
+encryption_enabled: true
+auto_discover_middleware: true

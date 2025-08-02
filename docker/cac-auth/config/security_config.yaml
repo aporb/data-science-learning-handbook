@@ -1,0 +1,19 @@
+# Security Configuration for CAC/PIV Authentication
+
+require_certificate_validation: true
+enable_revocation_checking: true
+minimum_key_size: 2048
+
+allowed_certificate_authorities:
+  - "DoD Root CA 2"
+  - "DoD Root CA 3" 
+  - "DoD Root CA 4"
+  - "DoD Root CA 5"
+
+allowed_signature_algorithms:
+  - "SHA256withRSA"
+  - "SHA384withRSA" 
+  - "SHA256withECDSA"
+
+# Session encryption key (will be auto-generated if not provided)
+session_encryption_key: null
