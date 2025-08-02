@@ -1,0 +1,674 @@
+# Security Scanning Pipeline Configuration Templates
+# =================================================
+#
+# This file contains comprehensive configuration templates for different
+# deployment scenarios and CI/CD platform integrations.
+#
+# Classification: UNCLASSIFIED//FOR OFFICIAL USE ONLY
+# Version: 1.0 - Configuration Templates
+# Date: 2025-07-28
+
+# ==============================================================================
+# GITHUB ACTIONS INTEGRATION TEMPLATES
+# ==============================================================================
+
+github_basic_config: &github_basic
+  pipeline_name: "github_security_pipeline"
+  source_path: "."
+  ci_cd_system: "github"
+  enabled: true
+  auto_trigger: true
+  parallel_execution: true
+  max_concurrent_scans: 3
+  scan_timeout_minutes: 90
+  
+  triggers:
+    - "code_commit"
+    - "pull_request"
+    - "scheduled"
+  
+  stages_enabled:
+    sast: true
+    dast: true
+    dependency_scan: true
+    vulnerability_assessment: true
+    compliance_check: true
+    container_scan: false
+    infrastructure_scan: false
+  
+  quality_gates:
+    block_on_critical: true
+    block_on_high_threshold: 5
+    allow_medium_threshold: 20
+    security_score_threshold: 70
+  
+  notifications:
+    slack_webhook: "${SLACK_WEBHOOK_URL}"
+    email_recipients:
+      - "security-team@company.com"
+      - "devops-team@company.com"
+    teams_webhook: null
+    jira_integration: false
+  
+  schedule_cron: "0 2 * * *"  # Daily at 2 AM UTC
+  compliance_frameworks:
+    - "OWASP"
+    - "NIST"
+
+github_enterprise_config:
+  <<: *github_basic
+  pipeline_name: "github_enterprise_security_pipeline"
+  max_concurrent_scans: 10
+  scan_timeout_minutes: 180
+  
+  stages_enabled:
+    sast: true
+    dast: true
+    dependency_scan: true
+    vulnerability_assessment: true
+    compliance_check: true
+    container_scan: true
+    infrastructure_scan: true
+  
+  quality_gates:
+    block_on_critical: true
+    block_on_high_threshold: 3
+    allow_medium_threshold: 15
+    security_score_threshold: 60
+  
+  compliance_frameworks:
+    - "OWASP"
+    - "NIST"
+    - "DoD"
+    - "ISO27001"
+  
+  notifications:
+    slack_webhook: "${SLACK_WEBHOOK_URL}"
+    email_recipients:
+      - "security-team@company.com"
+      - "compliance-team@company.com"
+      - "devops-team@company.com"
+    teams_webhook: "${TEAMS_WEBHOOK_URL}"
+    jira_integration: true
+
+# ==============================================================================
+# JENKINS INTEGRATION TEMPLATES  
+# ==============================================================================
+
+jenkins_basic_config: &jenkins_basic
+  pipeline_name: "jenkins_security_pipeline"
+  source_path: "/var/jenkins_home/workspace"
+  ci_cd_system: "jenkins"
+  enabled: true
+  auto_trigger: true
+  parallel_execution: true
+  max_concurrent_scans: 5
+  scan_timeout_minutes: 120
+  
+  triggers:
+    - "deployment"
+    - "manual"
+  
+  stages_enabled:
+    sast: true
+    dast: false  # Skip DAST for Jenkins builds by default
+    dependency_scan: true
+    vulnerability_assessment: true
+    compliance_check: true
+    container_scan: true
+    infrastructure_scan: false
+  
+  quality_gates:
+    block_on_critical: true
+    block_on_high_threshold: 5
+    allow_medium_threshold: 25
+    security_score_threshold: 75
+  
+  notifications:
+    email_recipients:
+      - "jenkins-admin@company.com"
+      - "security-team@company.com"
+  
+  compliance_frameworks:
+    - "OWASP"
+
+jenkins_enterprise_config:
+  <<: *jenkins_basic
+  pipeline_name: "jenkins_enterprise_security_pipeline"
+  max_concurrent_scans: 15
+  scan_timeout_minutes: 240
+  
+  stages_enabled:
+    sast: true
+    dast: true
+    dependency_scan: true
+    vulnerability_assessment: true
+    compliance_check: true
+    container_scan: true
+    infrastructure_scan: true
+  
+  quality_gates:
+    block_on_critical: true
+    block_on_high_threshold: 2
+    allow_medium_threshold: 10
+    security_score_threshold: 65
+  
+  compliance_frameworks:
+    - "OWASP"
+    - "NIST"
+    - "DoD"
+
+# ==============================================================================
+# GITLAB CI INTEGRATION TEMPLATES
+# ==============================================================================
+
+gitlab_basic_config: &gitlab_basic
+  pipeline_name: "gitlab_security_pipeline"
+  source_path: "."
+  ci_cd_system: "gitlab"
+  enabled: true
+  auto_trigger: true
+  parallel_execution: true
+  max_concurrent_scans: 4
+  scan_timeout_minutes: 100
+  
+  triggers:
+    - "code_commit"
+    - "pull_request"
+    - "scheduled"
+  
+  stages_enabled:
+    sast: true
+    dast: true
+    dependency_scan: true
+    vulnerability_assessment: true
+    compliance_check: true
+    container_scan: true
+    infrastructure_scan: false
+  
+  quality_gates:
+    block_on_critical: true
+    block_on_high_threshold: 5
+    allow_medium_threshold: 20
+    security_score_threshold: 70
+  
+  notifications:
+    slack_webhook: "${SLACK_WEBHOOK_URL}"
+    email_recipients:
+      - "security-team@company.com"
+  
+  compliance_frameworks:
+    - "OWASP"
+    - "NIST"
+
+gitlab_enterprise_config:
+  <<: *gitlab_basic
+  pipeline_name: "gitlab_enterprise_security_pipeline"
+  max_concurrent_scans: 12
+  scan_timeout_minutes: 200
+  
+  quality_gates:
+    block_on_critical: true
+    block_on_high_threshold: 3
+    allow_medium_threshold: 15
+    security_score_threshold: 65
+  
+  compliance_frameworks:
+    - "OWASP"
+    - "NIST"
+    - "DoD"
+    - "ISO27001"
+
+# ==============================================================================
+# AZURE DEVOPS INTEGRATION TEMPLATES
+# ==============================================================================
+
+azure_basic_config: &azure_basic
+  pipeline_name: "azure_security_pipeline"
+  source_path: "."
+  ci_cd_system: "azure_devops"
+  enabled: true
+  auto_trigger: true
+  parallel_execution: true
+  max_concurrent_scans: 5
+  scan_timeout_minutes: 120
+  
+  triggers:
+    - "code_commit"
+    - "pull_request"
+    - "deployment"
+  
+  stages_enabled:
+    sast: true
+    dast: true
+    dependency_scan: true
+    vulnerability_assessment: true
+    compliance_check: true
+    container_scan: true
+    infrastructure_scan: false
+  
+  quality_gates:
+    block_on_critical: true
+    block_on_high_threshold: 5
+    allow_medium_threshold: 20
+    security_score_threshold: 70
+  
+  notifications:
+    teams_webhook: "${TEAMS_WEBHOOK_URL}"
+    email_recipients:
+      - "security-team@company.com"
+  
+  compliance_frameworks:
+    - "OWASP"
+    - "NIST"
+
+azure_enterprise_config:
+  <<: *azure_basic
+  pipeline_name: "azure_enterprise_security_pipeline"
+  max_concurrent_scans: 10
+  scan_timeout_minutes: 180
+  
+  stages_enabled:
+    sast: true
+    dast: true
+    dependency_scan: true
+    vulnerability_assessment: true
+    compliance_check: true
+    container_scan: true
+    infrastructure_scan: true
+  
+  quality_gates:
+    block_on_critical: true
+    block_on_high_threshold: 3
+    allow_medium_threshold: 15
+    security_score_threshold: 65
+  
+  compliance_frameworks:
+    - "OWASP"
+    - "NIST"
+    - "DoD"
+
+# ==============================================================================
+# ENVIRONMENT-SPECIFIC DEPLOYMENT POLICIES
+# ==============================================================================
+
+deployment_policies:
+  development:
+    require_approval: false
+    require_security_scan: true
+    require_penetration_test: false
+    max_critical_vulnerabilities: 10
+    max_high_vulnerabilities: 50
+    min_security_score: 50
+    min_compliance_score: 60
+    auto_remediation: true
+    notification_level: "warn"
+  
+  testing:
+    require_approval: false
+    require_security_scan: true
+    require_penetration_test: false
+    max_critical_vulnerabilities: 5
+    max_high_vulnerabilities: 25
+    min_security_score: 60
+    min_compliance_score: 70
+    auto_remediation: true
+    notification_level: "warn"
+  
+  staging:
+    require_approval: false
+    require_security_scan: true
+    require_penetration_test: true
+    max_critical_vulnerabilities: 2
+    max_high_vulnerabilities: 10
+    min_security_score: 70
+    min_compliance_score: 80
+    auto_remediation: false
+    notification_level: "alert"
+  
+  production:
+    require_approval: true
+    require_security_scan: true
+    require_penetration_test: true
+    max_critical_vulnerabilities: 0
+    max_high_vulnerabilities: 3
+    min_security_score: 85
+    min_compliance_score: 90
+    auto_remediation: false
+    notification_level: "critical"
+    
+    # Additional production requirements
+    additional_requirements:
+      - "security_review_approval"
+      - "compliance_sign_off"
+      - "penetration_test_passed"
+      - "vulnerability_assessment_completed"
+  
+  production_dod:
+    require_approval: true
+    require_security_scan: true
+    require_penetration_test: true
+    max_critical_vulnerabilities: 0
+    max_high_vulnerabilities: 0
+    min_security_score: 95
+    min_compliance_score: 98
+    auto_remediation: false
+    notification_level: "critical"
+    
+    additional_requirements:
+      - "security_review_approval"
+      - "compliance_sign_off"
+      - "penetration_test_passed"
+      - "vulnerability_assessment_completed"
+      - "dod_compliance_validation"
+      - "security_clearance_verification"
+
+# ==============================================================================
+# CUSTOM QUALITY GATE TEMPLATES
+# ==============================================================================
+
+quality_gate_templates:
+  
+  basic_security_gate:
+    name: "Basic Security Gate"
+    description: "Standard security quality gate for most applications"
+    enabled: true
+    rules:
+      - condition: "critical_vulnerabilities > 0"
+        action: "block"
+        message: "Critical vulnerabilities must be resolved before deployment"
+      - condition: "high_vulnerabilities > 5"
+        action: "block"
+        message: "Too many high-severity vulnerabilities (max: 5)"
+      - condition: "security_score > 70"
+        action: "warn"
+        message: "Security score indicates elevated risk"
+  
+  enterprise_security_gate:
+    name: "Enterprise Security Gate"
+    description: "Enhanced security gate for enterprise applications"
+    enabled: true
+    rules:
+      - condition: "critical_vulnerabilities > 0"
+        action: "block"
+        message: "Critical vulnerabilities violate enterprise policy"
+      - condition: "high_vulnerabilities > 3"
+        action: "block"
+        message: "High-severity vulnerability threshold exceeded (max: 3)"
+      - condition: "medium_vulnerabilities > 15"
+        action: "warn"
+        message: "Medium-severity vulnerabilities are elevated"
+      - condition: "security_score > 60"
+        action: "block"
+        message: "Security score exceeds enterprise risk tolerance"
+      - condition: "compliance_score < 85"
+        action: "block"
+        message: "Compliance score below enterprise requirement (85%)"
+  
+  dod_compliance_gate:
+    name: "DoD Compliance Gate"
+    description: "Department of Defense security requirements"
+    enabled: true
+    rules:
+      - condition: "critical_vulnerabilities > 0"
+        action: "block"
+        message: "DoD: Zero tolerance for critical vulnerabilities"
+      - condition: "high_vulnerabilities > 0"
+        action: "block"
+        message: "DoD: Zero tolerance for high-severity vulnerabilities"
+      - condition: "medium_vulnerabilities > 5"
+        action: "block"
+        message: "DoD: Medium vulnerabilities exceed threshold (max: 5)"
+      - condition: "security_score > 50"
+        action: "block"
+        message: "DoD: Security score exceeds acceptable risk"
+      - condition: "compliance_score < 95"
+        action: "block"
+        message: "DoD: Minimum 95% compliance score required"
+      - condition: "code_coverage < 90"
+        action: "warn"
+        message: "DoD: Code coverage below recommended 90%"
+  
+  financial_services_gate:
+    name: "Financial Services Compliance Gate"
+    description: "Financial industry security and compliance requirements"
+    enabled: true
+    rules:
+      - condition: "critical_vulnerabilities > 0"
+        action: "block"
+        message: "Financial services: Critical vulnerabilities prohibited"
+      - condition: "high_vulnerabilities > 2"
+        action: "block"
+        message: "Financial services: High vulnerability limit exceeded"
+      - condition: "vulnerable_dependencies > 0"
+        action: "block"
+        message: "Financial services: All dependencies must be secure"
+      - condition: "security_score > 65"
+        action: "block"
+        message: "Financial services: Security score exceeds risk tolerance"
+      - condition: "compliance_score < 90"
+        action: "block"
+        message: "Financial services: 90% compliance score required"
+  
+  healthcare_hipaa_gate:
+    name: "Healthcare HIPAA Compliance Gate"
+    description: "Healthcare industry HIPAA compliance requirements"
+    enabled: true
+    rules:
+      - condition: "critical_vulnerabilities > 0"
+        action: "block"
+        message: "HIPAA: Critical vulnerabilities risk patient data"
+      - condition: "high_vulnerabilities > 1"
+        action: "block"
+        message: "HIPAA: High vulnerabilities threaten data security"
+      - condition: "security_score > 60"
+        action: "block"
+        message: "HIPAA: Security score exceeds healthcare standards"
+      - condition: "compliance_score < 95"
+        action: "block"
+        message: "HIPAA: 95% compliance required for patient data protection"
+      - condition: "encryption_enabled == false"
+        action: "block"
+        message: "HIPAA: Data encryption is mandatory"
+
+# ==============================================================================
+# NOTIFICATION CONFIGURATION TEMPLATES
+# ==============================================================================
+
+notification_templates:
+  
+  basic_notifications:
+    slack_webhook: "${SLACK_WEBHOOK_URL}"
+    email_recipients:
+      - "security-team@company.com"
+    teams_webhook: null
+    jira_integration: false
+    notification_thresholds:
+      critical: "immediate"
+      high: "within_1_hour"
+      medium: "daily_digest"
+      low: "weekly_digest"
+  
+  enterprise_notifications:
+    slack_webhook: "${SLACK_WEBHOOK_URL}"
+    email_recipients:
+      - "security-team@company.com"
+      - "compliance-team@company.com"
+      - "devops-team@company.com"
+      - "management-team@company.com"
+    teams_webhook: "${TEAMS_WEBHOOK_URL}"
+    jira_integration: true
+    sms_alerts:
+      - "+1-555-SECURITY"
+    pagerduty_integration: true
+    notification_thresholds:
+      critical: "immediate"
+      high: "within_15_minutes"
+      medium: "within_1_hour"
+      low: "daily_digest"
+  
+  dod_notifications:
+    email_recipients:
+      - "security-officer@company.mil"
+      - "compliance-officer@company.mil"
+      - "system-administrator@company.mil"
+    secure_messaging: true
+    classification_handling: true
+    notification_thresholds:
+      critical: "immediate"
+      high: "immediate"
+      medium: "within_30_minutes"
+      low: "within_2_hours"
+    
+    escalation_procedures:
+      critical:
+        - "immediate_notification"
+        - "security_team_alert"
+        - "management_escalation"
+        - "incident_response_activation"
+      high:
+        - "immediate_notification"
+        - "security_team_alert"
+        - "management_notification"
+
+# ==============================================================================
+# COMPLIANCE FRAMEWORK CONFIGURATIONS
+# ==============================================================================
+
+compliance_frameworks:
+  
+  owasp_asvs:
+    name: "OWASP Application Security Verification Standard"
+    version: "4.0.3"
+    enabled: true
+    verification_levels:
+      level_1: "minimum_security_baseline"
+      level_2: "standard_security_verification"
+      level_3: "advanced_security_verification"
+    required_controls:
+      - "authentication_verification"
+      - "session_management"
+      - "access_control"
+      - "input_validation"
+      - "output_encoding"
+      - "cryptography"
+      - "error_handling"
+      - "data_protection"
+      - "communications"
+      - "malicious_code"
+      - "business_logic"
+      - "files_resources"
+      - "api_security"
+      - "configuration"
+  
+  nist_cybersecurity:
+    name: "NIST Cybersecurity Framework"
+    version: "1.1"
+    enabled: true
+    core_functions:
+      identify: "asset_management_governance_risk_assessment"
+      protect: "access_control_awareness_data_security"
+      detect: "anomalies_continuous_monitoring"
+      respond: "response_planning_communications_analysis"
+      recover: "recovery_planning_improvements"
+    implementation_tiers:
+      tier_1: "partial"
+      tier_2: "risk_informed"
+      tier_3: "repeatable"
+      tier_4: "adaptive"
+  
+  dod_srg:
+    name: "DoD Security Requirements Guide"
+    version: "latest"
+    enabled: true
+    classification_levels:
+      - "unclassified"
+      - "cui"
+      - "confidential"
+      - "secret"
+      - "top_secret"
+    security_controls:
+      - "access_control"
+      - "audit_accountability"
+      - "awareness_training"
+      - "configuration_management"
+      - "contingency_planning"
+      - "identification_authentication"
+      - "incident_response"
+      - "maintenance"
+      - "media_protection"
+      - "physical_protection"
+      - "personnel_security"
+      - "risk_assessment"
+      - "security_assessment"
+      - "system_communications_protection"
+      - "system_information_integrity"
+  
+  iso_27001:
+    name: "ISO/IEC 27001 Information Security Management"
+    version: "2013"
+    enabled: true
+    control_domains:
+      - "security_policy"
+      - "organization_information_security"
+      - "human_resource_security"
+      - "asset_management"
+      - "access_control"
+      - "cryptography"
+      - "physical_environmental_security"
+      - "operations_security"
+      - "communications_security"
+      - "system_acquisition_development_maintenance"
+      - "supplier_relationships"
+      - "information_security_incident_management"
+      - "business_continuity"
+      - "compliance"
+
+# ==============================================================================
+# SCAN SCHEDULING TEMPLATES
+# ==============================================================================
+
+scan_schedules:
+  
+  daily_security_scan:
+    schedule_cron: "0 2 * * *"  # 2 AM daily
+    schedule_timezone: "UTC"
+    scan_type: "comprehensive"
+    enabled: true
+    environments:
+      - "development"
+      - "testing"
+    notification_on_failure: true
+  
+  weekly_penetration_test:
+    schedule_cron: "0 3 * * 0"  # 3 AM every Sunday
+    schedule_timezone: "UTC"
+    scan_type: "penetration_test"
+    enabled: true
+    environments:
+      - "staging"
+      - "production"
+    notification_on_failure: true
+    require_approval: true
+  
+  monthly_compliance_audit:
+    schedule_cron: "0 4 1 * *"  # 4 AM on 1st of every month
+    schedule_timezone: "UTC"
+    scan_type: "compliance_audit"
+    enabled: true
+    environments:
+      - "production"
+    notification_on_failure: true
+    require_approval: true
+    generate_report: true
+  
+  quarterly_security_assessment:
+    schedule_cron: "0 5 1 */3 *"  # 5 AM on 1st of every quarter
+    schedule_timezone: "UTC"
+    scan_type: "full_security_assessment"
+    enabled: true
+    environments:
+      - "all"
+    notification_on_failure: true
+    require_approval: true
+    generate_executive_report: true
