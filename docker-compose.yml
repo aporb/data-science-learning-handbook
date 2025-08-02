@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # Jupyter Lab for development
   jupyter:
@@ -144,6 +142,41 @@ services:
       - ds-handbook
     restart: unless-stopped
 
+  # CAC/PIV Authentication Service
+  cac-auth:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.cac-auth
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./security-compliance/auth:/app/auth
+      - ./docker/cac-auth/config:/app/config
+      - cac_auth_logs:/app/logs
+      - cac_auth_certs:/app/certs
+    environment:
+      - CAC_CONFIG_DIR=/app/config
+      - CAC_LOG_LEVEL=INFO
+      - CAC_API_HOST=0.0.0.0
+      - CAC_API_PORT=8000
+      - ENABLE_SMART_CARD=false  # Set to true if smart card readers available
+      - USE_DATABASE=false
+      - CAC_RELOAD=false  # Set to true for development
+    depends_on:
+      - postgres
+      - redis
+      - vault
+    networks:
+      ds-handbook:
+        ipv4_address: 172.20.0.15
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
   # Consul for Vault HA backend
   consul:
     image: hashicorp/consul:1.16.1
@@ -232,6 +265,8 @@ volumes:
   vault_data:
   vault_logs:
   vault_tls:
+  cac_auth_logs:
+  cac_auth_certs:
 
 networks:
   ds-handbook:
