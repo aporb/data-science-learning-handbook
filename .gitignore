@@ -193,9 +193,9 @@ vault-backup-*.snap
 consul/data/
 
 # === AI ASSISTANT CONFIGS (Local Development) ===
-CLAUDE.md
+#CLAUDE.md
 GEMINI.md
-.claude/
+#.claude/
 .gemini/
 .clinerules/
 .cursor/
