@@ -403,7 +403,7 @@ Before your team builds its first production LLM system on a federal program, an
 
 **What to do Monday morning:** Pull up your current program's System Security Plan and find the section on authorized external services. Confirm whether any LLM API endpoint is listed. If it is not listed and your team is using one, that is a conversation you need to have with your ISSO before anything else. If you are evaluating a new GenAI component, reach out to your Palantir or Databricks account team and ask specifically about ATO documentation for their AI capabilities at your classification level — both vendors have dedicated federal teams who can accelerate that process.
 
-**What comes next:** This is the final technical chapter. Chapter 14 brings everything together — building a capstone project that takes a real government dataset from raw ingestion through wrangling, EDA, supervised modeling, and production deployment, applying the platform knowledge from every preceding chapter. If you have been reading linearly, you now have all the tools. The last chapter is about putting them to work.
+**What comes next:** This is the final chapter. You now have the full stack — from environment setup and data wrangling through supervised and unsupervised ML, deep learning, MLOps, visualization, deployment, governance, and now generative AI. The platform guides give you the specifics for Advana, Databricks, Qlik, Navy Jupiter, and Palantir AIP. Pick a real problem on your current contract, open the relevant chapter, and build something. The handbook was written for exactly that moment.
 
 ---
 

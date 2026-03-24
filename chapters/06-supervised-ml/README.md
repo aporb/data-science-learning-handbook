@@ -277,7 +277,7 @@ On Palantir Foundry, model training happens in Code Workspaces (interactive) or 
 # Foundry Transform: train and persist a scikit-learn classifier
 # This runs as a production pipeline inside Foundry
 from transforms.api import transform, Input, Output
-from foundry_ml import Model, Stage
+from palantir_models import Model, ModelVersion
 import pandas as pd
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.pipeline import Pipeline

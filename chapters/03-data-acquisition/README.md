@@ -131,7 +131,7 @@ Always check the response metadata for total record counts before deciding wheth
 
 ### Rate Limiting and Backoff
 
-Federal APIs are typically more conservative with rate limits than commercial APIs. The standard pattern for robust API clients: exponential backoff with jitter on HTTP 429 (Too Many Requests) responses.
+Federal APIs are typically more conservative with rate limits than commercial APIs. The standard pattern for production-grade API clients: exponential backoff with jitter on HTTP 429 (Too Many Requests) responses.
 
 ```python
 # See code-examples/python/01_api_connections.py for full implementation

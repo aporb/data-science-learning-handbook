@@ -1,6 +1,6 @@
 # Chapter 05: Exploratory Data Analysis
 
-The dataset landed in Priya Sharma's inbox on a Tuesday morning with a subject line that said "FY2022-2024 maintenance records — please analyze for anomalies." There was no data dictionary. There was no steward contact. There was a 40-million-row Parquet file in an S3 bucket she had read access to, and a meeting with the program manager scheduled for Friday.
+The dataset landed in Priya Menon's inbox on a Tuesday morning with a subject line that said "FY2022-2024 maintenance records — please analyze for anomalies." There was no data dictionary. There was no steward contact. There was a 40-million-row Parquet file in an S3 bucket she had read access to, and a meeting with the program manager scheduled for Friday.
 
 She had done EDA before. But she had done it on clean Kaggle datasets where someone had already decided what the columns meant. This was different. The column named `MAINT_CODE` had 847 unique values. The column named `DAYS_ELAPSED` had a minimum value of -14. The column named `UNIT_ID` mapped to approximately 2,400 distinct unit identifiers, none of which matched the unit roster she had been given separately.
 
