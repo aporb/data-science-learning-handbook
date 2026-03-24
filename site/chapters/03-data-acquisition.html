@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Chapter 03: Data Acquisition in the Federal Ecosystem — Federal Data Science Learning Handbook">
+  <title>Chapter 03: Data Acquisition in the Federal Ecosystem — Federal DS Handbook</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/prism-theme.css">
+</head>
+<body>
+<nav class="site-nav" role="navigation" aria-label="Main navigation">
+  <button class="btn-icon mobile-menu-btn" id="mobile-menu-btn" aria-label="Open menu" aria-expanded="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <a href="../index.html" class="nav-brand" aria-label="Home">
+    <img src="../assets/favicon.svg" class="nav-brand-icon" alt="" aria-hidden="true" width="28" height="28">
+    <span class="nav-brand-text">
+      <span class="nav-brand-title">Federal</span>
+      <span class="nav-brand-subtitle">Data Science Handbook</span>
+    </span>
+  </a>
+  <div class="nav-spacer"></div>
+  <ul class="nav-links" role="list">
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="01-introduction.html" class="active">Chapters</a></li>
+    <li><a href="../platforms/template.html">Platforms</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="btn-icon" id="theme-toggle" aria-label="Toggle dark mode">
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+  </div>
+</nav>
+<div class="sidebar-overlay" id="sidebar-overlay" aria-hidden="true"></div>
+<aside class="sidebar" id="sidebar" role="complementary" aria-label="Navigation">
+  <div class="sidebar-section">
+    <span class="sidebar-label">Chapters</span>
+    <nav aria-label="Chapter list"><ul class="sidebar-nav" role="list">
+      <li><a href="01-introduction.html"><span class="chapter-num">01</span> Introduction</a></li>
+      <li><a href="02-python-r-foundations.html"><span class="chapter-num">02</span> Python &amp; R Foundations</a></li>
+      <li><a href="03-data-acquisition.html"><span class="chapter-num">03</span> Data Acquisition</a></li>
+      <li><a href="04-data-wrangling.html"><span class="chapter-num">04</span> Data Wrangling</a></li>
+      <li><a href="05-exploratory-analysis.html"><span class="chapter-num">05</span> Exploratory Analysis</a></li>
+      <li><a href="06-supervised-ml.html"><span class="chapter-num">06</span> Supervised ML</a></li>
+      <li><a href="07-unsupervised-ml.html"><span class="chapter-num">07</span> Unsupervised ML</a></li>
+      <li><a href="08-deep-learning.html"><span class="chapter-num">08</span> Deep Learning</a></li>
+      <li><a href="09-mlops.html"><span class="chapter-num">09</span> MLOps</a></li>
+      <li><a href="10-visualization.html"><span class="chapter-num">10</span> Visualization</a></li>
+      <li><a href="11-deployment.html"><span class="chapter-num">11</span> Deployment</a></li>
+      <li><a href="12-ethics-governance.html"><span class="chapter-num">12</span> Ethics &amp; Governance</a></li>
+      <li><a href="13-advanced-topics.html"><span class="chapter-num">13</span> Advanced Topics</a></li>
+    </ul></nav>
+  </div>
+  <div class="sidebar-section">
+    <span class="sidebar-label">Platform Guides</span>
+    <nav aria-label="Platform guides"><ul class="sidebar-nav" role="list">
+      <li><a href="../platforms/advana.html"><span class="platform-dot" style="background:#C5A572"></span> Advana</a></li>
+      <li><a href="../platforms/databricks.html"><span class="platform-dot" style="background:#FF3621"></span> Databricks</a></li>
+      <li><a href="../platforms/qlik.html"><span class="platform-dot" style="background:#009845"></span> Qlik</a></li>
+      <li><a href="../platforms/navy-jupiter.html"><span class="platform-dot" style="background:#003B5C"></span> Navy Jupiter</a></li>
+      <li><a href="../platforms/palantir.html"><span class="platform-dot" style="background:#1B2A4A"></span> Palantir AIP/Foundry</a></li>
+    </ul></nav>
+  </div>
+</aside>
+<div class="page-wrapper">
+  <main class="main-content" id="main-content">
+    <div class="chapter-layout">
+      <article class="chapter-main">
+        <header class="chapter-header">
+          <nav class="chapter-breadcrumb" aria-label="Breadcrumb">
+            <a href="../index.html">Home</a>
+            <span class="chapter-breadcrumb-sep" aria-hidden="true">/</span>
+            <a href="01-introduction.html">Chapters</a>
+            <span class="chapter-breadcrumb-sep" aria-hidden="true">/</span>
+            <span aria-current="page">Chapter 03</span>
+          </nav>
+          <span class="chapter-number">Chapter 03</span>
+          <h1 class="chapter-title" id="chapter-title">Data Acquisition in the Federal Ecosystem</h1>
+          <p class="chapter-lede">Before you write a single query, you need to understand where the data lives, who owns it, what tier it has been assigned, and whether you have the access level required to touch it.</p>
+          <div class="chapter-meta-bar">
+            <span class="chapter-meta-item">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              ~30–45 min read
+            </span>
+            <span class="chapter-meta-item">Collibra · Advana · Jupiter</span>
+          </div>
+        </header>
+        <div class="prose" id="prose-content">
+          <p>This chapter covers Data Acquisition in the Federal Ecosystem in the context of federal data science work. The content draws directly from the source markdown and covers platform-specific patterns, compliance requirements, and production-ready code examples.</p>
+
+          <div class="callout callout-note">
+            <span class="callout-icon" aria-hidden="true">&#8505;</span>
+            <div class="callout-content">
+              <p>This chapter is ready for content conversion from the source markdown at <code>chapters/03-data-acquisition/README.md</code>. Use the chapter template pattern from <code>site/chapters/template.html</code>.</p>
+            </div>
+          </div>
+
+          <h2 id="source-content">Source Content Available</h2>
+          <p>The source markdown for this chapter is available at:</p>
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span class="code-block-lang">bash</span>
+              <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code class="language-bash">chapters/03-data-acquisition/README.md</code></pre>
+          </div>
+          <p>Convert using the patterns in <code>site/chapters/template.html</code> and the component reference within that file.</p>
+        </div>
+        <nav class="chapter-nav-footer" aria-label="Chapter navigation">
+          <a href="02-python-r-foundations.html" class="chapter-nav-link prev">
+            <span class="chapter-nav-direction">Previous</span>
+            <span class="chapter-nav-title">02 — Python & R Foundations</span>
+          </a>
+          <a href="04-data-wrangling.html" class="chapter-nav-link next">
+            <span class="chapter-nav-direction">Next Chapter</span>
+            <span class="chapter-nav-title">04 — Data Wrangling</span>
+          </a>
+        </nav>
+      </article>
+      <nav class="chapter-toc" aria-label="On this page">
+        <span class="toc-label">On this page</span>
+        <ul class="toc-list" id="toc-list" role="list"></ul>
+      </nav>
+    </div>
+    <footer class="site-footer" role="contentinfo">
+      <div class="footer-grid">
+        <div><p class="footer-brand">Federal Data Science<br>Learning Handbook</p><p class="footer-tagline">Open reference. No registration.</p></div>
+        <div><p class="footer-col-title">Chapters</p><ul class="footer-links" role="list"><li><a href="01-introduction.html">01 — Introduction</a></li><li><a href="09-mlops.html">09 — MLOps</a></li><li><a href="12-ethics-governance.html">12 — Ethics</a></li></ul></div>
+        <div><p class="footer-col-title">Platforms</p><ul class="footer-links" role="list"><li><a href="../platforms/advana.html">Advana</a></li><li><a href="../platforms/databricks.html">Databricks</a></li><li><a href="../platforms/qlik.html">Qlik</a></li><li><a href="../platforms/navy-jupiter.html">Navy Jupiter</a></li><li><a href="../platforms/palantir.html">Palantir</a></li></ul></div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-copy">Federal Data Science Learning Handbook &mdash; Open Reference</span>
+        <div class="footer-platform-dots" aria-hidden="true"><span class="footer-dot" style="background:#C5A572"></span><span class="footer-dot" style="background:#FF3621"></span><span class="footer-dot" style="background:#009845"></span><span class="footer-dot" style="background:#003B5C"></span><span class="footer-dot" style="background:#4A6FA5"></span></div>
+      </div>
+    </footer>
+  </main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script src="../js/mermaid-init.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="../js/main.js"></script>
+</body>
+</html>

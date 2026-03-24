@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Navy Jupiter Platform Guide — Federal Data Science Learning Handbook">
+  <title>Navy Jupiter Guide — Federal DS Handbook</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/prism-theme.css">
+  <style>
+    .platform-hero { background: #003B5C; color: white; padding: 4rem; position: relative; overflow: hidden; }
+    .platform-hero::before { content: ''; position: absolute; top: -40%; right: -10%; width: 500px; height: 500px; border-radius: 50%; background: rgba(255,255,255,0.04); pointer-events: none; }
+    .platform-eyebrow { display: flex; align-items: center; gap: 0.625rem; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.65); margin-bottom: 1rem; }
+    .platform-hero-title { font-family: var(--font-serif); font-size: clamp(2rem, 4vw, 3rem); font-weight: 400; line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 1rem; color: white; }
+    .platform-hero-desc { font-size: 1.125rem; line-height: 1.7; color: rgba(255,255,255,0.8); max-width: 56ch; margin-bottom: 2rem; }
+    .platform-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .platform-tag-pill { display: inline-block; padding: 0.3rem 0.75rem; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.04em; border-radius: 100px; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25); color: rgba(255,255,255,0.95); }
+    .platform-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); border-bottom: 1px solid var(--border-light); background: var(--bg-secondary); }
+    .platform-fact { padding: 1.25rem 1.5rem; border-right: 1px solid var(--border-light); }
+    .platform-fact:last-child { border-right: none; }
+    .platform-fact-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); display: block; margin-bottom: 0.3rem; }
+    .platform-fact-value { font-size: 0.9rem; font-weight: 600; color: var(--text-primary); }
+    @media (max-width: 900px) { .platform-hero { padding: 2.5rem 1.5rem; } .platform-facts { grid-template-columns: 1fr 1fr; } .platform-fact { border-right: none; border-bottom: 1px solid var(--border-light); } }
+  </style>
+</head>
+<body>
+<nav class="site-nav" role="navigation" aria-label="Main navigation">
+  <button class="btn-icon mobile-menu-btn" id="mobile-menu-btn" aria-label="Open menu" aria-expanded="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <a href="../index.html" class="nav-brand" aria-label="Home">
+    <img src="../assets/favicon.svg" class="nav-brand-icon" alt="" aria-hidden="true" width="28" height="28">
+    <span class="nav-brand-text"><span class="nav-brand-title">Federal</span><span class="nav-brand-subtitle">Data Science Handbook</span></span>
+  </a>
+  <div class="nav-spacer"></div>
+  <ul class="nav-links" role="list">
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="../chapters/01-introduction.html">Chapters</a></li>
+    <li><a href="template.html" class="active">Platforms</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="btn-icon" id="theme-toggle" aria-label="Toggle dark mode">
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+  </div>
+</nav>
+<div class="sidebar-overlay" id="sidebar-overlay" aria-hidden="true"></div>
+<aside class="sidebar" id="sidebar" role="complementary" aria-label="Navigation">
+  <div class="sidebar-section">
+    <span class="sidebar-label">Platform Guides</span>
+    <nav aria-label="Platform guides"><ul class="sidebar-nav" role="list">
+      <li><a href="advana.html"><span class="platform-dot" style="background:#C5A572"></span> Advana</a></li>
+      <li><a href="databricks.html"><span class="platform-dot" style="background:#FF3621"></span> Databricks</a></li>
+      <li><a href="qlik.html"><span class="platform-dot" style="background:#009845"></span> Qlik</a></li>
+      <li><a href="navy-jupiter.html"><span class="platform-dot" style="background:#003B5C"></span> Navy Jupiter</a></li>
+      <li><a href="palantir.html"><span class="platform-dot" style="background:#1B2A4A"></span> Palantir AIP/Foundry</a></li>
+    </ul></nav>
+  </div>
+  <div class="sidebar-section">
+    <span class="sidebar-label">Chapters</span>
+    <nav aria-label="Chapter list"><ul class="sidebar-nav" role="list">
+      <li><a href="../chapters/01-introduction.html"><span class="chapter-num">01</span> Introduction</a></li>
+      <li><a href="../chapters/02-python-r-foundations.html"><span class="chapter-num">02</span> Python &amp; R</a></li>
+      <li><a href="../chapters/09-mlops.html"><span class="chapter-num">09</span> MLOps</a></li>
+      <li><a href="../chapters/12-ethics-governance.html"><span class="chapter-num">12</span> Ethics</a></li>
+    </ul></nav>
+  </div>
+</aside>
+<div class="page-wrapper">
+  <main class="main-content" id="main-content">
+    <div class="platform-hero">
+      <div class="platform-eyebrow"><span style="width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.5);display:inline-block" aria-hidden="true"></span> Platform Guide</div>
+      <h1 class="platform-hero-title">Navy Jupiter</h1>
+      <p class="platform-hero-desc">The Department of the Navy's enterprise data environment. Jupiter is the DON subtenant of Advana — a layer that provides Navy- and Marine Corps-specific data governance, tooling, and community spaces on top of Advana's infrastructure.</p>
+      <div class="platform-tags"><span class="platform-tag-pill">NIPR/SIPR/JWICS</span><span class="platform-tag-pill">PII/PHI Approved</span><span class="platform-tag-pill">Bronze/Silver/Gold</span><span class="platform-tag-pill">DON</span></div>
+    </div>
+    <div class="platform-facts" role="list">
+      <div class="platform-fact" role="listitem"><span class="platform-fact-label">Authorization</span><span class="platform-fact-value">DoD ATO (tri-network)</span></div>
+      <div class="platform-fact" role="listitem"><span class="platform-fact-label">Networks</span><span class="platform-fact-value">NIPRNET, SIPRNET, JWICS</span></div>
+      <div class="platform-fact" role="listitem"><span class="platform-fact-label">Managed By</span><span class="platform-fact-value">DON CIO/CDO</span></div>
+      <div class="platform-fact" role="listitem"><span class="platform-fact-label">Access</span><span class="platform-fact-value">CAC/PIV + DON_Data@navy.mil</span></div>
+      <div class="platform-fact" role="listitem"><span class="platform-fact-label">PII/PHI</span><span class="platform-fact-value">Yes (explicit approval)</span></div>
+      <div class="platform-fact" role="listitem"><span class="platform-fact-label">Users</span><span class="platform-fact-value">4,000+</span></div>
+    </div>
+    <div class="chapter-layout">
+      <article class="chapter-main">
+        <div class="prose" id="prose-content">
+          <h2 id="overview">Overview</h2>
+          <p>This guide covers Navy Jupiter in depth. The source material is available at <code>platform-guides/navy-jupiter/README.md</code> in the handbook repository. Use the <code>site/platforms/template.html</code> pattern to expand this page with the full platform guide content.</p>
+          <div class="callout callout-note">
+            <span class="callout-icon" aria-hidden="true">&#8505;</span>
+            <div class="callout-content">
+              <p>Full content conversion from the source README is ready to be done. The source file at <code>platform-guides/navy-jupiter/README.md</code> contains the complete platform guide. See Chapter 01 for platform overview coverage.</p>
+            </div>
+          </div>
+          <h2 id="key-facts">Key Facts at a Glance</h2>
+          <p>Authorization level: <strong>DoD ATO (tri-network)</strong>. Networks: <strong>NIPRNET, SIPRNET, JWICS</strong>. Managed by: <strong>DON CIO/CDO</strong>. Access mechanism: <strong>CAC/PIV + DON_Data@navy.mil</strong>.</p>
+          <h2 id="getting-started">Getting Started</h2>
+          <p>See Chapter 01 — Introduction for an overview of this platform's role in the DoD data ecosystem and how to request access. The full platform guide with code examples, API reference, and architecture diagrams is sourced from <code>platform-guides/navy-jupiter/README.md</code>.</p>
+        </div>
+        <nav class="chapter-nav-footer" aria-label="Platform navigation">
+          <a href="qlik.html" class="chapter-nav-link prev">
+            <span class="chapter-nav-direction">Previous Platform</span>
+            <span class="chapter-nav-title">Qlik</span>
+          </a>
+          <a href="palantir.html" class="chapter-nav-link next">
+            <span class="chapter-nav-direction">Next Platform</span>
+            <span class="chapter-nav-title">Palantir AIP/Foundry</span>
+          </a>
+        </nav>
+      </article>
+      <nav class="chapter-toc" aria-label="On this page">
+        <span class="toc-label">On this page</span>
+        <ul class="toc-list" id="toc-list" role="list"></ul>
+      </nav>
+    </div>
+    <footer class="site-footer" role="contentinfo">
+      <div class="footer-grid">
+        <div><p class="footer-brand">Federal Data Science<br>Learning Handbook</p><p class="footer-tagline">Open reference. No registration.</p></div>
+        <div><p class="footer-col-title">Platforms</p><ul class="footer-links" role="list"><li><a href="advana.html">Advana</a></li><li><a href="databricks.html">Databricks</a></li><li><a href="qlik.html">Qlik</a></li><li><a href="navy-jupiter.html">Navy Jupiter</a></li><li><a href="palantir.html">Palantir</a></li></ul></div>
+        <div><p class="footer-col-title">Chapters</p><ul class="footer-links" role="list"><li><a href="../chapters/01-introduction.html">01 — Introduction</a></li><li><a href="../chapters/09-mlops.html">09 — MLOps</a></li><li><a href="../chapters/12-ethics-governance.html">12 — Ethics</a></li></ul></div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-copy">Federal Data Science Learning Handbook &mdash; Open Reference</span>
+        <div class="footer-platform-dots" aria-hidden="true"><span class="footer-dot" style="background:#C5A572"></span><span class="footer-dot" style="background:#FF3621"></span><span class="footer-dot" style="background:#009845"></span><span class="footer-dot" style="background:#003B5C"></span><span class="footer-dot" style="background:#4A6FA5"></span></div>
+      </div>
+    </footer>
+  </main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script src="../js/mermaid-init.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="../js/main.js"></script>
+</body>
+</html>
