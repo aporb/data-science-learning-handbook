@@ -460,9 +460,9 @@ This software is developed for the U.S. Government and is subject to government 
 ## Version History
 
 - **1.0.0** (2025-07-17): Initial release with full MAC enforcement
-- **1.0.1** (TBD): Bug fixes and performance improvements
-- **1.1.0** (TBD): Enhanced ML classification capabilities
-- **2.0.0** (TBD): Multi-domain support and advanced analytics
+- **1.0.1** (Planned): Bug fixes and performance improvements
+- **1.1.0** (Planned): Enhanced ML classification capabilities
+- **2.0.0** (Planned): Multi-domain support and advanced analytics
 
 ---
 

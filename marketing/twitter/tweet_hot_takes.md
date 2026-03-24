@@ -29,14 +29,14 @@ Fix the environment first.
 ```
 Every data science bootcamp in 2025 trains you to work at a tech startup.
 
-Almost none of them train you to work in an environment where:
+Almost none train you for:
 - You can't pip install
 - Your data is on a shared drive from 2016
 - Your boss needs an Excel report, not a Streamlit app
 
 Federal data scientists are on their own.
 ```
-**Character count: ~270**
+**Character count: ~266**
 **Target reaction:** Bootcamp grads who hit this wall immediately, federal practitioners who feel seen
 **Engagement prompt follow-up reply:** "This is what we tried to fix with the handbook. 96K words, free, built for this exact environment."
 
@@ -63,15 +63,13 @@ The model worked perfectly. The system failed it.
 ```
 Unpopular opinion: security clearances are becoming a data science skill.
 
-If you're serious about working in the most consequential data environments
-in the country — DoD, IC, federal agencies —
+If you work in DoD, IC, or federal agencies — understanding classification, access controls, and data handling IS part of the job.
 
-understanding classification, access controls, and data handling
-IS part of the job.
+Not a soft skill. Not optional.
 
 No one teaches this. They should.
 ```
-**Character count: ~270**
+**Character count: 272**
 **Target reaction:** Strong agreement in the MilTech/DefenseTech community, skepticism from academic/commercial data scientists
 
 ---
@@ -79,17 +77,16 @@ No one teaches this. They should.
 ## HOT TAKE #5 — The Open Source Contradiction
 
 ```
-The federal government is one of the largest producers of data in the world.
+The federal government is the largest data producer in the world.
 
-It's also one of the least equipped to use it.
+Also one of the least equipped to use it.
 
-That's not a funding problem.
-That's a knowledge distribution problem.
+Not a funding problem. A knowledge distribution problem.
 
 Open source education is the fastest fix.
-Nobody wants to hear that because it doesn't fit in a budget line.
+Nobody wants to hear that — it doesn't fit in a budget line.
 ```
-**Character count: ~268**
+**Character count: 265**
 **Target reaction:** Policy-adjacent people, GovTech advocates, open source community
 
 ---
@@ -97,19 +94,17 @@ Nobody wants to hear that because it doesn't fit in a budget line.
 ## HOT TAKE #6 — The Consultant Racket
 
 ```
-The consulting industrial complex charges federal agencies $500/hour to explain
-pandas DataFrames.
+The consulting industrial complex charges federal agencies $500/hour to explain pandas DataFrames.
 
 Not an exaggeration.
 
-The knowledge exists. The documentation exists. The practitioners exist.
+The knowledge exists. The docs exist. The practitioners exist.
 
-The ecosystem just never prioritized getting that knowledge to the people
-actually inside agencies.
+The ecosystem never prioritized getting it inside agencies.
 
 That's the gap.
 ```
-**Character count: ~263**
+**Character count: 262**
 **Target reaction:** Controversial — will draw fire from consultants, strong agreement from government workers and reformers. High engagement potential.
 **Note:** Be ready to defend this with specifics.
 
@@ -118,16 +113,16 @@ That's the gap.
 ## HOT TAKE #7 — The Veterans Angle
 
 ```
-Veterans entering data science get told they have "no relevant experience."
+Veterans entering data science get told: "no relevant experience."
 
-Meanwhile they've:
+They've:
 - Managed intelligence data under pressure
-- Built informal analytics tools with zero resources
-- Made decisions from incomplete, messy data in high-stakes environments
+- Built analytics tools with zero resources
+- Made decisions from incomplete data in high-stakes environments
 
-That's not "no experience." That's the hardest kind.
+Wrong. That's the hardest kind of experience.
 ```
-**Character count: ~267**
+**Character count: 271**
 **Target reaction:** Strong resonance in #VeteransInTech community, potentially viral in mil/gov circles. High bookmark potential.
 **Hashtag to add:** `#VeteransInTech`
 
@@ -154,18 +149,16 @@ We're building AI palaces on data infrastructure that looks like it survived a f
 ## HOT TAKE #9 — The Certification Trap
 
 ```
-A data scientist at a federal agency spent $3,000 on cloud certifications.
+A data scientist spent $3,000 on cloud certifications.
 
 Her agency doesn't allow direct cloud access.
 She uses a COTS tool from 2018 and SharePoint.
 
-The certs are on her resume.
-The skills are inapplicable.
+The certs are on her resume. The skills are useless.
 
-Federal data science education needs to start from the actual environment.
-Not the theoretical one.
+Federal data science education must start from the actual environment.
 ```
-**Character count: ~272**
+**Character count: 247**
 **Target reaction:** Maximum resonance with federal practitioners, debate from certification vendors/advocates
 
 ---
@@ -173,16 +166,16 @@ Not the theoretical one.
 ## HOT TAKE #10 — The Mission Argument
 
 ```
-Here's why federal data science matters more than commercial data science:
+Federal data science matters more than commercial data science.
 
-The decisions informed by it aren't about conversion rates.
+The decisions aren't about conversion rates.
 They're about veterans' benefits, disaster response, national security.
 
 The stakes are incomparably higher.
 
 So why does the practitioner get incomparably less support?
 ```
-**Character count: ~260**
+**Character count: 268**
 **Target reaction:** Mission-driven audience (military, veterans, public servants). Lower controversy, high bookmark/share rate. Good for reach outside usual bubble.
 
 ---

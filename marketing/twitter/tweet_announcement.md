@@ -12,46 +12,45 @@
 ### Tweet 1 — HOOK (Pin this to profile after launch)
 
 ```
-I spent years watching brilliant analysts in federal agencies do data science
+Years watching brilliant analysts in federal agencies do data science
 with their hands tied behind their backs.
 
-No good docs. No clear path. No one explaining what actually works on .gov infrastructure.
+No good docs. No clear path. Nothing explaining what works on .gov infrastructure.
 
-So I wrote the handbook that should have existed years ago. 96,000 words. Free.
+I wrote the handbook that should have existed years ago. 96,000 words. Free.
 
 🧵
 ```
-**Character count: ~270**
+**Character count: 279**
 
 ---
 
 ### Tweet 2 — THE PROBLEM
 
 ```
-Here's the dirty secret about federal data science:
+The dirty secret about federal data science:
 
 The talent is there. The tools often aren't.
 The intent is there. The approval process kills it.
 The data exists. The access controls bury it.
 
-Nobody writes about this honestly. Most resources assume you're at Google, not an agency.
+Nobody writes about this honestly. Most resources assume you're at Google, not a .gov.
 ```
-**Character count: ~258**
+**Character count: 278**
 
 ---
 
 ### Tweet 3 — WHAT IT IS
 
 ```
-The Federal Data Science Learning Handbook is a 96,000-word open-source resource
-built specifically for:
+The Federal Data Science Learning Handbook — 96,000 words, open source — built for:
 
 → Data scientists inside federal agencies
 → Contractors supporting government programs
-→ Veterans transitioning into federal tech roles
-→ Anyone trying to do serious ML on infrastructure you don't control
+→ Veterans transitioning into federal tech
+→ Anyone doing serious ML on infrastructure you don't control
 ```
-**Character count: ~268**
+**Character count: 275**
 
 ---
 
@@ -62,13 +61,13 @@ What's covered:
 
 📊 Python + data tools on federal platforms
 🔐 Working within security constraints (for real)
-🤖 ML/AI workflows that survive the accreditation process
-📋 The bureaucracy of data governance (and how to navigate it)
+🤖 ML/AI workflows that survive accreditation
+📋 Data governance — and how to navigate it
 📡 Platform-specific guidance you won't find anywhere else
 
 No paywalls. No fluff.
 ```
-**Character count: ~268**
+**Character count: ~278**
 
 ---
 
@@ -78,12 +77,12 @@ No paywalls. No fluff.
 I'm a USMC veteran and Director of Innovation.
 
 I've lived the gap between "here's what the textbook says"
-and "here's what happens when your environment is locked down,
+and "here's what happens when your env is locked down,
 your toolchain is 3 versions behind, and your timeline is a congressional mandate."
 
-This handbook bridges that gap.
+This handbook closes that gap.
 ```
-**Character count: ~272**
+**Character count: 278**
 
 ---
 
@@ -107,16 +106,16 @@ That's enough. The knowledge should meet them where they are.
 ```
 The Federal Data Science Learning Handbook is live.
 
-96,000 words. Free. Open source. Built for the people actually doing the work.
+96,000 words. Free. Open source. Built for the people doing the work.
 
 [LINK TO HANDBOOK/GITHUB]
 
-If you know someone in federal service trying to level up their data skills —
-share this thread. They need this more than they know.
+Know someone in federal service trying to level up their data skills?
+Share this. They need it.
 
 #GovTech #DataScience
 ```
-**Character count: ~272**
+**Character count: 276**
 
 ---
 

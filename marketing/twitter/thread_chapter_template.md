@@ -76,12 +76,12 @@ It's built around them.
 ```
 In most federal environments, you're dealing with:
 
-- Software whitelisting. Your package manager is not your friend.
+- Software whitelisting — pip install is not your friend
 - Air-gapped or semi-isolated networks
-- Shared computing resources you don't control
-- IT approval processes measured in months
+- Shared compute you don't control
+- IT approvals measured in months
 
-Chapter 3 doesn't pretend these don't exist. It's built around them.
+Chapter 3 is built around this reality.
 ```
 
 ---
@@ -107,10 +107,10 @@ The insight most practitioners miss:
 
 The bottleneck in federal ML pipelines isn't compute. It's data lineage.
 
-If you can't document where every data point came from,
-the model doesn't matter — it won't get approved.
+Can't document where every data point came from?
+The model doesn't matter — it won't get approved.
 
-This is what you learn after 2 years on the job. Or you read Chapter 5.
+Learn this after 2 years on the job. Or read Chapter 5.
 ```
 
 ---
@@ -143,11 +143,11 @@ That's the experience baked into this chapter. Not theory. Practice.
 
 **Example:**
 ```
-One thing I've seen in both USMC roles and civilian federal assignments:
+One thing I've seen across USMC and civilian federal roles:
 
-The people doing the best data work in agencies are almost never
-the ones with the fanciest degrees. They're the ones who learned
-how to work within the system without getting crushed by it.
+The best data work in agencies comes from people who learned
+to work within the system without getting crushed by it.
+Not the ones with the fanciest degrees.
 
 That's the approach in this chapter.
 ```
@@ -164,7 +164,7 @@ Part of the Federal Data Science Learning Handbook —
 
 Full handbook: [LINK]
 
-If you found this useful, bookmark it. Share it with someone in federal service
+Bookmark it. Share it with someone in federal service
 who's been doing this the hard way.
 
 #GovTech #DataScience

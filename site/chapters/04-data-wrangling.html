@@ -3,29 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Chapter 04: Data Wrangling at Scale — Federal Data Science Learning Handbook">
-  <title>Chapter 04: Data Wrangling at Scale — Federal DS Handbook</title>
+  <meta name="description" content="Data wrangling and cleaning for government datasets — Federal Data Science Learning Handbook">
+  <title>Chapter 04: Data Wrangling — Federal DS Handbook</title>
   <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/prism-theme.css">
 </head>
 <body>
+
 <nav class="site-nav" role="navigation" aria-label="Main navigation">
   <button class="btn-icon mobile-menu-btn" id="mobile-menu-btn" aria-label="Open menu" aria-expanded="false">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
   </button>
   <a href="../index.html" class="nav-brand" aria-label="Home">
     <img src="../assets/favicon.svg" class="nav-brand-icon" alt="" aria-hidden="true" width="28" height="28">
-    <span class="nav-brand-text">
-      <span class="nav-brand-title">Federal</span>
-      <span class="nav-brand-subtitle">Data Science Handbook</span>
-    </span>
+    <span class="nav-brand-text"><span class="nav-brand-title">Federal</span><span class="nav-brand-subtitle">Data Science Handbook</span></span>
   </a>
   <div class="nav-spacer"></div>
   <ul class="nav-links" role="list">
     <li><a href="../index.html">Home</a></li>
     <li><a href="01-introduction.html" class="active">Chapters</a></li>
-    <li><a href="../platforms/template.html">Platforms</a></li>
+    <li><a href="../index.html#platforms">Platforms</a></li>
   </ul>
   <div class="nav-actions">
     <button class="btn-icon" id="theme-toggle" aria-label="Toggle dark mode">
@@ -34,41 +32,49 @@
     </button>
   </div>
 </nav>
+
 <div class="sidebar-overlay" id="sidebar-overlay" aria-hidden="true"></div>
+
 <aside class="sidebar" id="sidebar" role="complementary" aria-label="Navigation">
   <div class="sidebar-section">
     <span class="sidebar-label">Chapters</span>
-    <nav aria-label="Chapter list"><ul class="sidebar-nav" role="list">
-      <li><a href="01-introduction.html"><span class="chapter-num">01</span> Introduction</a></li>
-      <li><a href="02-python-r-foundations.html"><span class="chapter-num">02</span> Python &amp; R Foundations</a></li>
-      <li><a href="03-data-acquisition.html"><span class="chapter-num">03</span> Data Acquisition</a></li>
-      <li><a href="04-data-wrangling.html"><span class="chapter-num">04</span> Data Wrangling</a></li>
-      <li><a href="05-exploratory-analysis.html"><span class="chapter-num">05</span> Exploratory Analysis</a></li>
-      <li><a href="06-supervised-ml.html"><span class="chapter-num">06</span> Supervised ML</a></li>
-      <li><a href="07-unsupervised-ml.html"><span class="chapter-num">07</span> Unsupervised ML</a></li>
-      <li><a href="08-deep-learning.html"><span class="chapter-num">08</span> Deep Learning</a></li>
-      <li><a href="09-mlops.html"><span class="chapter-num">09</span> MLOps</a></li>
-      <li><a href="10-visualization.html"><span class="chapter-num">10</span> Visualization</a></li>
-      <li><a href="11-deployment.html"><span class="chapter-num">11</span> Deployment</a></li>
-      <li><a href="12-ethics-governance.html"><span class="chapter-num">12</span> Ethics &amp; Governance</a></li>
-      <li><a href="13-advanced-topics.html"><span class="chapter-num">13</span> Advanced Topics</a></li>
-    </ul></nav>
+    <nav aria-label="Chapter list">
+      <ul class="sidebar-nav" role="list">
+        <li><a href="01-introduction.html"><span class="chapter-num">01</span> Introduction</a></li>
+        <li><a href="02-python-r-foundations.html"><span class="chapter-num">02</span> Python &amp; R Foundations</a></li>
+        <li><a href="03-data-acquisition.html"><span class="chapter-num">03</span> Data Acquisition</a></li>
+        <li><a href="04-data-wrangling.html" class="active"><span class="chapter-num">04</span> Data Wrangling</a></li>
+        <li><a href="05-exploratory-analysis.html"><span class="chapter-num">05</span> Exploratory Analysis</a></li>
+        <li><a href="06-supervised-ml.html"><span class="chapter-num">06</span> Supervised ML</a></li>
+        <li><a href="07-unsupervised-ml.html"><span class="chapter-num">07</span> Unsupervised ML</a></li>
+        <li><a href="08-deep-learning.html"><span class="chapter-num">08</span> Deep Learning</a></li>
+        <li><a href="09-mlops.html"><span class="chapter-num">09</span> MLOps</a></li>
+        <li><a href="10-visualization.html"><span class="chapter-num">10</span> Visualization</a></li>
+        <li><a href="11-deployment.html"><span class="chapter-num">11</span> Deployment</a></li>
+        <li><a href="12-ethics-governance.html"><span class="chapter-num">12</span> Ethics &amp; Governance</a></li>
+        <li><a href="13-advanced-topics.html"><span class="chapter-num">13</span> Advanced Topics</a></li>
+      </ul>
+    </nav>
   </div>
   <div class="sidebar-section">
     <span class="sidebar-label">Platform Guides</span>
-    <nav aria-label="Platform guides"><ul class="sidebar-nav" role="list">
-      <li><a href="../platforms/advana.html"><span class="platform-dot" style="background:#C5A572"></span> Advana</a></li>
-      <li><a href="../platforms/databricks.html"><span class="platform-dot" style="background:#FF3621"></span> Databricks</a></li>
-      <li><a href="../platforms/qlik.html"><span class="platform-dot" style="background:#009845"></span> Qlik</a></li>
-      <li><a href="../platforms/navy-jupiter.html"><span class="platform-dot" style="background:#003B5C"></span> Navy Jupiter</a></li>
-      <li><a href="../platforms/palantir.html"><span class="platform-dot" style="background:#1B2A4A"></span> Palantir AIP/Foundry</a></li>
-    </ul></nav>
+    <nav aria-label="Platform guides">
+      <ul class="sidebar-nav" role="list">
+        <li><a href="../platforms/advana.html"><span class="platform-dot" style="background:#C5A572"></span> Advana</a></li>
+        <li><a href="../platforms/databricks.html"><span class="platform-dot" style="background:#FF3621"></span> Databricks</a></li>
+        <li><a href="../platforms/qlik.html"><span class="platform-dot" style="background:#009845"></span> Qlik</a></li>
+        <li><a href="../platforms/navy-jupiter.html"><span class="platform-dot" style="background:#003B5C"></span> Navy Jupiter</a></li>
+        <li><a href="../platforms/palantir.html"><span class="platform-dot" style="background:#1B2A4A"></span> Palantir AIP/Foundry</a></li>
+      </ul>
+    </nav>
   </div>
 </aside>
+
 <div class="page-wrapper">
   <main class="main-content" id="main-content">
     <div class="chapter-layout">
       <article class="chapter-main">
+
         <header class="chapter-header">
           <nav class="chapter-breadcrumb" aria-label="Breadcrumb">
             <a href="../index.html">Home</a>
@@ -78,71 +84,472 @@
             <span aria-current="page">Chapter 04</span>
           </nav>
           <span class="chapter-number">Chapter 04</span>
-          <h1 class="chapter-title" id="chapter-title">Data Wrangling at Scale</h1>
-          <p class="chapter-lede">DoD data does not arrive clean. It arrives from dozens of legacy systems that were never designed to interoperate, carrying decades of inconsistent encoding decisions, duplicate records, and null fields.</p>
+          <h1 class="chapter-title" id="chapter-title">Data Wrangling and Cleaning</h1>
+          <p class="chapter-lede">
+            Government data is not dirty by accident — it reflects decades of incompatible systems, agency-specific conventions, and evolving federal standards. Cleaning it correctly requires knowing the domain as much as knowing the tools. This chapter covers pandas, PySpark, CAGE codes, NAICS standardization, PII handling, and the Bronze/Silver/Gold tier pattern.
+          </p>
           <div class="chapter-meta-bar">
             <span class="chapter-meta-item">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              ~30–45 min read
+              ~50 min read
             </span>
-            <span class="chapter-meta-item">Databricks · PySpark · Delta Lake</span>
+            <span class="chapter-meta-item">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              Databricks, Advana, Navy Jupiter, Palantir Foundry
+            </span>
           </div>
         </header>
+
         <div class="prose" id="prose-content">
-          <p>This chapter covers Data Wrangling at Scale in the context of federal data science work. The content draws directly from the source markdown and covers platform-specific patterns, compliance requirements, and production-ready code examples.</p>
+
+          <h2 id="the-problem">The Problem with Government Data</h2>
+          <p>General-purpose data cleaning tutorials use toy datasets. The government context introduces problems you won't find there: DUNS-to-UEI transitions mid-dataset, NAICS code version changes every five years, agency names in 47 variants across source systems, and PII embedded in datasets labelled as procurement records.</p>
+          <p>This chapter covers the specific cleaning patterns for each major problem type, with the platform implementations on Databricks (pandas and PySpark) and Palantir Foundry (Pipeline Builder and Code Repositories).</p>
+
+          <h2 id="pandas-cleaning">Cleaning with pandas</h2>
+
+          <h3 id="null-handling">Null Handling</h3>
+          <p>Federal datasets have structured missingness — specific columns are null for specific record types. Obligation amounts are null for task order modifications. Agency codes are null for records from legacy systems that used a different coding scheme. Treat nulls as domain knowledge, not errors to fill blindly.</p>
+
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code class="language-python">import pandas as pd
+import numpy as np
+
+# Profile nulls before treating them
+null_profile = pd.DataFrame({
+    "null_count": df.isnull().sum(),
+    "null_pct": (df.isnull().mean() * 100).round(2),
+    "dtype": df.dtypes,
+}).sort_values("null_pct", ascending=False)
+
+print("Null profile (columns with > 5% null):")
+print(null_profile[null_profile["null_pct"] > 5])
+
+# Domain-informed fills
+# Federal action obligation: null on modifications is intentional — fill 0
+df["federal_action_obligation"] = df["federal_action_obligation"].fillna(0)
+
+# Period of performance end: null on IDIQs is legitimate — keep null, don't fill
+# (Filling with a date would corrupt analyses of open-ended contracts)
+
+# Agency code: null often means "same as parent" in hierarchical contracts
+# Fill with the awarding agency code rather than a placeholder
+df["funding_agency_code"] = df["funding_agency_code"].fillna(
+    df["awarding_agency_code"]
+)</code></pre>
+          </div>
+
+          <h3 id="deduplication">Deduplication</h3>
+          <p>Government contract data has a critical deduplication nuance: modifications are not duplicates. A contract action with <code>modification_number = "0"</code> is the base award. <code>modification_number = "P00001"</code> is the first modification. Both are legitimate records — deduplicating on contract ID alone destroys the history of changes.</p>
+
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code class="language-python"># When you want the current state of each contract (latest modification)
+df_current = (
+    df
+    .sort_values(["contract_award_unique_key", "action_date"], ascending=[True, False])
+    .groupby("contract_award_unique_key", as_index=False)
+    .first()
+)
+print(f"Original: {len(df):,} rows | Deduplicated to current state: {len(df_current):,} rows")
+
+# When you want the full modification history (all actions)
+# No deduplication needed — the full table IS the history
+# Just ensure your primary key is (contract_award_unique_key, modification_number)
+dupes = df.duplicated(subset=["contract_award_unique_key", "modification_number"])
+if dupes.any():
+    print(f"WARNING: {dupes.sum():,} duplicate (key, modification) pairs found")
+    df = df[~dupes]</code></pre>
+          </div>
+
+          <h2 id="pyspark-cleaning">PySpark at Scale on Databricks</h2>
+          <p>When the dataset is too large for pandas (typically over 5M rows on Advana and Jupiter), PySpark handles the same operations distributed across the cluster. The Bronze/Silver/Gold lakehouse pattern structures this work: Bronze is raw ingested data, Silver is cleaned and standardized, Gold is validated and business-rule-enforced.</p>
+
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code class="language-python">from pyspark.sql import functions as F, Window
+
+# Read Bronze tier (raw)
+df_bronze = spark.table("procurement_catalog.bronze.usaspending_fy2024")
+
+# Clean and standardize for Silver tier
+df_silver = (
+    df_bronze
+    # Standardize NAICS to 6 digits
+    .withColumn("naics_code",
+        F.lpad(F.regexp_replace(F.col("naics_code").cast("string"), r"[^0-9]", ""), 6, "0")
+    )
+    # Standardize obligation as double
+    .withColumn("federal_action_obligation",
+        F.col("federal_action_obligation").cast("double")
+    )
+    # Derive fiscal year (Oct–Sep)
+    .withColumn("fiscal_year",
+        F.when(F.month("action_date") >= 10, F.year("action_date") + 1)
+         .otherwise(F.year("action_date"))
+    )
+    # Flag data quality issues rather than silently dropping
+    .withColumn("dq_flag",
+        F.when(F.col("naics_code").rlike(r"^0{6}$"), "INVALID_NAICS")
+         .when(F.col("recipient_uei").isNull(), "MISSING_UEI")
+         .otherwise(None)
+    )
+    # Remove true duplicates using window function
+    .withColumn("row_rank",
+        F.row_number().over(
+            Window.partitionBy("contract_award_unique_key", "modification_number")
+                  .orderBy(F.col("action_date").desc())
+        )
+    )
+    .filter(F.col("row_rank") == 1)
+    .drop("row_rank")
+)
+
+# Write to Silver tier
+(
+    df_silver
+    .write.format("delta").mode("overwrite")
+    .option("overwriteSchema", "true")
+    .saveAsTable("procurement_catalog.silver.usaspending_fy2024_clean")
+)</code></pre>
+          </div>
+
+          <h2 id="government-identifiers">Government-Specific Identifier Standardization</h2>
+
+          <h3 id="cage-uei">CAGE Codes and UEI/DUNS</h3>
+          <p>In April 2022, the federal government replaced DUNS (Dun &amp; Bradstreet's proprietary identifier) with UEI (Unique Entity Identifier) via SAM.gov. Datasets spanning pre- and post-2022 will have both, inconsistently. CAGE codes (5-character alphanumeric DoD identifiers) are separate from UEIs — a contractor will have multiple CAGE codes for different divisions but one UEI per legal entity.</p>
+
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code class="language-python">def standardize_vendor_identifiers(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Standardize CAGE codes, UEI, and legacy DUNS numbers.
+    Handles the April 2022 SAM.gov UEI transition period.
+    """
+    # CAGE codes: always uppercase, 5 chars, alphanumeric
+    # First char cannot be I, O, or Q (reserved)
+    df["cage_code"] = (
+        df["cage_code"].astype(str).str.upper().str.strip()
+        .str.replace(r"[^A-Z0-9]", "", regex=True)
+    )
+    valid_cage = df["cage_code"].str.match(r"^[A-HJ-NP-Z0-9][A-Z0-9]{4}$")
+    df.loc[~valid_cage & (df["cage_code"] != ""), "data_quality_flag"] = "INVALID_CAGE_FORMAT"
+
+    # UEI: 12-character alphanumeric (SAM.gov)
+    df["recipient_uei"] = (
+        df["recipient_uei"].astype(str).str.upper().str.strip()
+        .str.replace(r"[^A-Z0-9]", "", regex=True)
+    )
+    valid_uei = df["recipient_uei"].str.match(r"^[A-Z0-9]{12}$")
+    post_2022 = df["action_date"] >= "2022-04-04"
+    df.loc[post_2022 & ~valid_uei & (df["recipient_uei"].str.len() > 0),
+           "data_quality_flag"] = "INVALID_UEI_FORMAT"
+
+    # DUNS: 9-digit numeric, zero-padded (legacy, pre-2022)
+    df["recipient_duns_number"] = (
+        df["recipient_duns_number"].astype(str).str.strip()
+        .str.replace(r"[^0-9]", "", regex=True)
+        .str.zfill(9)
+    )
+    return df</code></pre>
+          </div>
+
+          <h3 id="naics-standardization">NAICS Code Standardization</h3>
+
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code class="language-python">NAICS_SECTORS = {
+    "11": "Agriculture/Forestry/Fishing/Hunting",
+    "21": "Mining/Quarrying/Oil/Gas",
+    "23": "Construction",
+    "31": "Manufacturing", "32": "Manufacturing", "33": "Manufacturing",
+    "42": "Wholesale Trade",
+    "44": "Retail Trade", "45": "Retail Trade",
+    "48": "Transportation/Warehousing", "49": "Transportation/Warehousing",
+    "51": "Information",
+    "52": "Finance/Insurance",
+    "54": "Professional/Scientific/Technical Services",
+    "56": "Administrative/Support/Waste Services",
+    "61": "Educational Services",
+    "62": "Health Care/Social Assistance",
+    "92": "Public Administration",
+}
+
+def standardize_naics(df: pd.DataFrame) -> pd.DataFrame:
+    df["naics_code"] = (
+        df["naics_code"].astype(str).str.strip()
+        .str.replace(r"[^0-9]", "", regex=True)
+        .str.zfill(6)
+    )
+    df.loc[df["naics_code"].str.len() != 6, "data_quality_flag"] = "INVALID_NAICS_LENGTH"
+    df["naics_sector_code"] = df["naics_code"].str[:2]
+    df["naics_sector_desc"] = df["naics_sector_code"].map(NAICS_SECTORS).fillna("Unknown")
+    return df</code></pre>
+          </div>
+
+          <h2 id="palantir-pipeline-builder">Palantir Foundry: Pipeline Builder vs. Code Repositories</h2>
+          <p>On Foundry, you have two tools for building data transforms. Choosing between them is a real decision that shapes how your team maintains the pipeline.</p>
+          <p><strong>Pipeline Builder</strong> is a visual, node-based interface — drag, connect, configure. No Python required. A business analyst can maintain it. Use Pipeline Builder for standard joins, filters, casts, and renames; when the business owner needs to modify without a developer; and when visual lineage matters for non-engineers.</p>
+          <p><strong>Code Repositories</strong> are Git-backed Python environments using the <code>@transform_df</code> decorator. Use Code Repositories when you need complex conditional logic, ML model inference inside the pipeline, unit tests against transform logic, or edge case handling that a GUI can't express.</p>
 
           <div class="callout callout-note">
             <span class="callout-icon" aria-hidden="true">&#8505;</span>
-            <div class="callout-content">
-              <p>This chapter is ready for content conversion from the source markdown at <code>chapters/04-data-wrangling/README.md</code>. Use the chapter template pattern from <code>site/chapters/template.html</code>.</p>
-            </div>
+            <div class="callout-content"><p>The most common mistake on Foundry: reaching for Code Repositories by default because you're an engineer who prefers code. Pipeline Builder is the right choice for standard cleaning tasks in production — lower maintenance cost, visible to non-engineers, and less likely to break silently when a junior analyst inherits it.</p></div>
           </div>
 
-          <h2 id="source-content">Source Content Available</h2>
-          <p>The source markdown for this chapter is available at:</p>
+          <h2 id="data-quality-metrics">Data Quality Metrics</h2>
+
           <div class="code-block-wrapper">
             <div class="code-block-header">
-              <span class="code-block-lang">bash</span>
+              <span class="code-block-lang">python</span>
               <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
             </div>
-            <pre><code class="language-bash">chapters/04-data-wrangling/README.md</code></pre>
+            <pre><code class="language-python">import mlflow
+
+def compute_quality_metrics(df: pd.DataFrame, table_name: str) -> dict:
+    """Log data quality metrics to MLflow for timestamped audit trail."""
+    n_rows = len(df)
+    metrics = {"table_name": table_name, "row_count": n_rows}
+
+    critical_cols = ["contract_award_unique_key", "recipient_uei",
+                     "federal_action_obligation", "action_date"]
+    for col in critical_cols:
+        if col in df.columns:
+            completeness = (1 - df[col].isnull().mean()) * 100
+            metrics[f"completeness_{col}"] = round(completeness, 2)
+
+    if "naics_code" in df.columns:
+        valid_naics = df["naics_code"].str.match(r"^\d{6}$").mean() * 100
+        metrics["validity_naics_6digit_pct"] = round(valid_naics, 2)
+
+    pk = ["contract_award_unique_key", "modification_number"]
+    if all(c in df.columns for c in pk):
+        dup_pct = df.duplicated(subset=pk).mean() * 100
+        metrics["uniqueness_pk_dup_pct"] = round(dup_pct, 2)
+
+    return metrics
+
+
+metrics = compute_quality_metrics(df_cleaned, "usaspending_fy2024_clean")
+
+with mlflow.start_run(run_name="procurement_data_quality_check"):
+    mlflow.log_param("source_table", "procurement_catalog.raw.usaspending_fy2024")
+    for key, val in metrics.items():
+        if isinstance(val, (int, float)):
+            mlflow.log_metric(key, val)</code></pre>
           </div>
-          <p>Convert using the patterns in <code>site/chapters/template.html</code> and the component reference within that file.</p>
-        </div>
+
+          <h2 id="pii-handling">Handling PII and PHI</h2>
+          <p>Government datasets routinely contain PII. Sole-source contracts with individual consultants often include SSNs in place of EINs. Veteran-owned small business certifications include personal background information. Run a pattern-match scan before assuming you're clean.</p>
+
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code class="language-python">import re, hashlib, hmac
+
+def scan_for_pii_patterns(df: pd.DataFrame) -> pd.DataFrame:
+    """Scan string columns for likely PII patterns."""
+    patterns = {
+        "SSN":         r"\b\d{3}-\d{2}-\d{4}\b",
+        "phone":       r"\b\d{3}[-.\s]\d{3}[-.\s]\d{4}\b",
+        "email":       r"\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b",
+        "credit_card": r"\b(?:\d{4}[-\s]?){3}\d{4}\b",
+    }
+    results = []
+    for col in df.select_dtypes(include="object").columns:
+        sample = df[col].dropna().astype(str).head(10000)
+        for label, pattern in patterns.items():
+            matches = sample.str.contains(pattern, regex=True).sum()
+            if matches > 0:
+                results.append({"column": col, "pattern": label,
+                                 "matches_in_sample": int(matches)})
+    return pd.DataFrame(results)
+
+
+TOKENIZATION_KEY = b"use_a_real_secret_from_your_vault_here"
+
+def tokenize_field(value: str, key: bytes = TOKENIZATION_KEY) -> str:
+    """HMAC-SHA256 tokenization — deterministic but not reversible without the key."""
+    if pd.isnull(value) or str(value).strip() == "":
+        return ""
+    token = hmac.new(key, str(value).encode("utf-8"), hashlib.sha256).hexdigest()[:16]
+    return f"TKN_{token}"
+
+
+pii_scan = scan_for_pii_patterns(df_raw)
+if len(pii_scan) > 0:
+    print("PII patterns detected — review before proceeding:")
+    print(pii_scan)
+    # Tokenize all flagged columns before loading to shared workspace
+    for col in pii_scan["column"].unique():
+        df_raw[f"{col}_token"] = df_raw[col].apply(tokenize_field)
+        df_raw = df_raw.drop(columns=[col])</code></pre>
+          </div>
+
+          <h2 id="failure-modes">Where This Goes Wrong</h2>
+
+          <div class="failure-card">
+            <h4>Failure Mode 1: Treating Cleaning as a One-Time Event</h4>
+            <p>Cleaning the dataset once, saving a Parquet file, and moving on. Six months later the pipeline updates with new records that have new formatting quirks. Fix: treat the cleaning pipeline as production code with unit tests. Run quality metric checks on every new data load. Set thresholds — if completeness on <code>recipient_uei</code> drops below 92%, fail the pipeline and alert someone.</p>
+          </div>
+
+          <div class="failure-card">
+            <h4>Failure Mode 2: Normalizing Away Real Signal</h4>
+            <p>"Boeing" and "Boeing Defense Space and Security" are separate legal entities with different contract vehicles and performance histories. Collapsing them to "BOEING" for normalization destroys this distinction. Fix: normalize for display, preserve the original field. Join against SAM.gov's entity hierarchy data to get official parent/child relationships.</p>
+          </div>
+
+          <div class="failure-card">
+            <h4>Failure Mode 3: Skipping PII Review on "Non-Sensitive" Datasets</h4>
+            <p>The dataset is labelled "procurement data" so you assume it's clean of PII and load it into a shared workspace accessible to 200 analysts. Fix: run <code>scan_for_pii_patterns()</code> before loading any new dataset into a shared workspace. This is not optional, and getting it wrong has career consequences.</p>
+          </div>
+
+          <h2 id="platform-comparison">Platform Comparison</h2>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Capability</th>
+                <th>Advana (Databricks)</th>
+                <th>Navy Jupiter</th>
+                <th>Palantir Foundry</th>
+                <th>Qlik</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Primary cleaning interface</td>
+                <td>PySpark notebooks</td>
+                <td>PySpark notebooks</td>
+                <td>Pipeline Builder + Code Repositories</td>
+                <td>Qlik Data Manager</td>
+              </tr>
+              <tr>
+                <td>No-code ETL</td>
+                <td>Limited</td>
+                <td>Limited</td>
+                <td>Strong (Pipeline Builder)</td>
+                <td>Strong (Data Manager)</td>
+              </tr>
+              <tr>
+                <td>Handles 100M+ rows</td>
+                <td>Yes (Spark clusters)</td>
+                <td>Yes (Spark clusters)</td>
+                <td>Yes (Spark-backed)</td>
+                <td>No (memory-bound)</td>
+              </tr>
+              <tr>
+                <td>Data lineage</td>
+                <td>Unity Catalog</td>
+                <td>Collibra + Unity Catalog</td>
+                <td>Native Ontology lineage</td>
+                <td>Partial</td>
+              </tr>
+              <tr>
+                <td>Quality metric tracking</td>
+                <td>MLflow</td>
+                <td>MLflow</td>
+                <td>Pipeline health dashboards</td>
+                <td>Built-in data profiling</td>
+              </tr>
+              <tr>
+                <td>Semantic entity layer</td>
+                <td>No</td>
+                <td>No</td>
+                <td>Yes (Ontology)</td>
+                <td>No</td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div><!-- /prose -->
+
         <nav class="chapter-nav-footer" aria-label="Chapter navigation">
           <a href="03-data-acquisition.html" class="chapter-nav-link prev">
-            <span class="chapter-nav-direction">Previous</span>
-            <span class="chapter-nav-title">03 — Data Acquisition</span>
+            <span class="chapter-nav-direction">Previous Chapter</span>
+            <span class="chapter-nav-title">Data Acquisition and Government Data Sources</span>
           </a>
           <a href="05-exploratory-analysis.html" class="chapter-nav-link next">
             <span class="chapter-nav-direction">Next Chapter</span>
-            <span class="chapter-nav-title">05 — Exploratory Analysis</span>
+            <span class="chapter-nav-title">Exploratory Data Analysis</span>
           </a>
         </nav>
+
       </article>
+
       <nav class="chapter-toc" aria-label="On this page">
         <span class="toc-label">On this page</span>
         <ul class="toc-list" id="toc-list" role="list"></ul>
       </nav>
-    </div>
+
+    </div><!-- /chapter-layout -->
+
     <footer class="site-footer" role="contentinfo">
       <div class="footer-grid">
-        <div><p class="footer-brand">Federal Data Science<br>Learning Handbook</p><p class="footer-tagline">Open reference. No registration.</p></div>
-        <div><p class="footer-col-title">Chapters</p><ul class="footer-links" role="list"><li><a href="01-introduction.html">01 — Introduction</a></li><li><a href="09-mlops.html">09 — MLOps</a></li><li><a href="12-ethics-governance.html">12 — Ethics</a></li></ul></div>
-        <div><p class="footer-col-title">Platforms</p><ul class="footer-links" role="list"><li><a href="../platforms/advana.html">Advana</a></li><li><a href="../platforms/databricks.html">Databricks</a></li><li><a href="../platforms/qlik.html">Qlik</a></li><li><a href="../platforms/navy-jupiter.html">Navy Jupiter</a></li><li><a href="../platforms/palantir.html">Palantir</a></li></ul></div>
+        <div>
+          <p class="footer-brand">Federal Data Science<br>Learning Handbook</p>
+          <p class="footer-tagline">A practical guide to data science in the federal government. Open reference.</p>
+        </div>
+        <div>
+          <p class="footer-col-title">Chapters</p>
+          <ul class="footer-links" role="list">
+            <li><a href="01-introduction.html">01 — Introduction</a></li>
+            <li><a href="02-python-r-foundations.html">02 — Python &amp; R</a></li>
+            <li><a href="03-data-acquisition.html">03 — Data Acquisition</a></li>
+            <li><a href="09-mlops.html">09 — MLOps</a></li>
+            <li><a href="12-ethics-governance.html">12 — Ethics</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="footer-col-title">Platforms</p>
+          <ul class="footer-links" role="list">
+            <li><a href="../platforms/advana.html">Advana</a></li>
+            <li><a href="../platforms/databricks.html">Databricks</a></li>
+            <li><a href="../platforms/qlik.html">Qlik</a></li>
+            <li><a href="../platforms/navy-jupiter.html">Navy Jupiter</a></li>
+            <li><a href="../platforms/palantir.html">Palantir</a></li>
+          </ul>
+        </div>
       </div>
       <div class="footer-bottom">
         <span class="footer-copy">Federal Data Science Learning Handbook &mdash; Open Reference</span>
-        <div class="footer-platform-dots" aria-hidden="true"><span class="footer-dot" style="background:#C5A572"></span><span class="footer-dot" style="background:#FF3621"></span><span class="footer-dot" style="background:#009845"></span><span class="footer-dot" style="background:#003B5C"></span><span class="footer-dot" style="background:#4A6FA5"></span></div>
+        <div class="footer-platform-dots" aria-hidden="true">
+          <span class="footer-dot" style="background:#C5A572"></span>
+          <span class="footer-dot" style="background:#FF3621"></span>
+          <span class="footer-dot" style="background:#009845"></span>
+          <span class="footer-dot" style="background:#003B5C"></span>
+          <span class="footer-dot" style="background:#4A6FA5"></span>
+        </div>
       </div>
     </footer>
+
   </main>
-</div>
+</div><!-- /page-wrapper -->
+
 <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
 <script src="../js/mermaid-init.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-r.min.js"></script>
 <script src="../js/main.js"></script>
 </body>
 </html>

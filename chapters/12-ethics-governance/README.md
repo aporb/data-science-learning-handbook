@@ -470,7 +470,7 @@ def check_pii_column_policies(table_full_name: str) -> list:
 
 Foundry's data governance model is built into the Ontology. Every dataset in Foundry has an owner, a steward, and a set of access policies defined at the Ontology layer — not enforced by table-level permissions that can be worked around, but at the semantic object level.
 
-For ethics and compliance work, Foundry's most relevant feature is **data lineage through Transforms**. Every Transform declares its inputs and outputs explicitly (see Chapter 02). This means Foundry's data catalog automatically knows which datasets fed your training data, which Transforms cleaned them, and which model artifacts were produced from them. You don't have to reconstruct this manually for a RAI assessment — it's already captured in the platform.
+For ethics and compliance work, Foundry's most relevant feature is **data lineage through Transforms**. Every Transform declares its inputs and outputs explicitly (see Chapter 04). This means Foundry's data catalog automatically knows which datasets fed your training data, which Transforms cleaned them, and which model artifacts were produced from them. You don't have to reconstruct this manually for a RAI assessment — it's already captured in the platform.
 
 The tradeoff: Foundry's governance model is tightly coupled to the Ontology. Data that isn't modeled in the Ontology (external files, ad-hoc imports, data brought in outside the connector framework) doesn't get the same lineage guarantees. If your training data includes anything imported outside the standard pipeline, document it separately.
 

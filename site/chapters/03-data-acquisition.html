@@ -3,29 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Chapter 03: Data Acquisition in the Federal Ecosystem — Federal Data Science Learning Handbook">
-  <title>Chapter 03: Data Acquisition in the Federal Ecosystem — Federal DS Handbook</title>
+  <meta name="description" content="Data acquisition and government data sources — Federal Data Science Learning Handbook">
+  <title>Chapter 03: Data Acquisition — Federal DS Handbook</title>
   <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/prism-theme.css">
 </head>
 <body>
+
 <nav class="site-nav" role="navigation" aria-label="Main navigation">
   <button class="btn-icon mobile-menu-btn" id="mobile-menu-btn" aria-label="Open menu" aria-expanded="false">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
   </button>
   <a href="../index.html" class="nav-brand" aria-label="Home">
     <img src="../assets/favicon.svg" class="nav-brand-icon" alt="" aria-hidden="true" width="28" height="28">
-    <span class="nav-brand-text">
-      <span class="nav-brand-title">Federal</span>
-      <span class="nav-brand-subtitle">Data Science Handbook</span>
-    </span>
+    <span class="nav-brand-text"><span class="nav-brand-title">Federal</span><span class="nav-brand-subtitle">Data Science Handbook</span></span>
   </a>
   <div class="nav-spacer"></div>
   <ul class="nav-links" role="list">
     <li><a href="../index.html">Home</a></li>
     <li><a href="01-introduction.html" class="active">Chapters</a></li>
-    <li><a href="../platforms/template.html">Platforms</a></li>
+    <li><a href="../index.html#platforms">Platforms</a></li>
   </ul>
   <div class="nav-actions">
     <button class="btn-icon" id="theme-toggle" aria-label="Toggle dark mode">
@@ -34,41 +32,49 @@
     </button>
   </div>
 </nav>
+
 <div class="sidebar-overlay" id="sidebar-overlay" aria-hidden="true"></div>
+
 <aside class="sidebar" id="sidebar" role="complementary" aria-label="Navigation">
   <div class="sidebar-section">
     <span class="sidebar-label">Chapters</span>
-    <nav aria-label="Chapter list"><ul class="sidebar-nav" role="list">
-      <li><a href="01-introduction.html"><span class="chapter-num">01</span> Introduction</a></li>
-      <li><a href="02-python-r-foundations.html"><span class="chapter-num">02</span> Python &amp; R Foundations</a></li>
-      <li><a href="03-data-acquisition.html"><span class="chapter-num">03</span> Data Acquisition</a></li>
-      <li><a href="04-data-wrangling.html"><span class="chapter-num">04</span> Data Wrangling</a></li>
-      <li><a href="05-exploratory-analysis.html"><span class="chapter-num">05</span> Exploratory Analysis</a></li>
-      <li><a href="06-supervised-ml.html"><span class="chapter-num">06</span> Supervised ML</a></li>
-      <li><a href="07-unsupervised-ml.html"><span class="chapter-num">07</span> Unsupervised ML</a></li>
-      <li><a href="08-deep-learning.html"><span class="chapter-num">08</span> Deep Learning</a></li>
-      <li><a href="09-mlops.html"><span class="chapter-num">09</span> MLOps</a></li>
-      <li><a href="10-visualization.html"><span class="chapter-num">10</span> Visualization</a></li>
-      <li><a href="11-deployment.html"><span class="chapter-num">11</span> Deployment</a></li>
-      <li><a href="12-ethics-governance.html"><span class="chapter-num">12</span> Ethics &amp; Governance</a></li>
-      <li><a href="13-advanced-topics.html"><span class="chapter-num">13</span> Advanced Topics</a></li>
-    </ul></nav>
+    <nav aria-label="Chapter list">
+      <ul class="sidebar-nav" role="list">
+        <li><a href="01-introduction.html"><span class="chapter-num">01</span> Introduction</a></li>
+        <li><a href="02-python-r-foundations.html"><span class="chapter-num">02</span> Python &amp; R Foundations</a></li>
+        <li><a href="03-data-acquisition.html" class="active"><span class="chapter-num">03</span> Data Acquisition</a></li>
+        <li><a href="04-data-wrangling.html"><span class="chapter-num">04</span> Data Wrangling</a></li>
+        <li><a href="05-exploratory-analysis.html"><span class="chapter-num">05</span> Exploratory Analysis</a></li>
+        <li><a href="06-supervised-ml.html"><span class="chapter-num">06</span> Supervised ML</a></li>
+        <li><a href="07-unsupervised-ml.html"><span class="chapter-num">07</span> Unsupervised ML</a></li>
+        <li><a href="08-deep-learning.html"><span class="chapter-num">08</span> Deep Learning</a></li>
+        <li><a href="09-mlops.html"><span class="chapter-num">09</span> MLOps</a></li>
+        <li><a href="10-visualization.html"><span class="chapter-num">10</span> Visualization</a></li>
+        <li><a href="11-deployment.html"><span class="chapter-num">11</span> Deployment</a></li>
+        <li><a href="12-ethics-governance.html"><span class="chapter-num">12</span> Ethics &amp; Governance</a></li>
+        <li><a href="13-advanced-topics.html"><span class="chapter-num">13</span> Advanced Topics</a></li>
+      </ul>
+    </nav>
   </div>
   <div class="sidebar-section">
     <span class="sidebar-label">Platform Guides</span>
-    <nav aria-label="Platform guides"><ul class="sidebar-nav" role="list">
-      <li><a href="../platforms/advana.html"><span class="platform-dot" style="background:#C5A572"></span> Advana</a></li>
-      <li><a href="../platforms/databricks.html"><span class="platform-dot" style="background:#FF3621"></span> Databricks</a></li>
-      <li><a href="../platforms/qlik.html"><span class="platform-dot" style="background:#009845"></span> Qlik</a></li>
-      <li><a href="../platforms/navy-jupiter.html"><span class="platform-dot" style="background:#003B5C"></span> Navy Jupiter</a></li>
-      <li><a href="../platforms/palantir.html"><span class="platform-dot" style="background:#1B2A4A"></span> Palantir AIP/Foundry</a></li>
-    </ul></nav>
+    <nav aria-label="Platform guides">
+      <ul class="sidebar-nav" role="list">
+        <li><a href="../platforms/advana.html"><span class="platform-dot" style="background:#C5A572"></span> Advana</a></li>
+        <li><a href="../platforms/databricks.html"><span class="platform-dot" style="background:#FF3621"></span> Databricks</a></li>
+        <li><a href="../platforms/qlik.html"><span class="platform-dot" style="background:#009845"></span> Qlik</a></li>
+        <li><a href="../platforms/navy-jupiter.html"><span class="platform-dot" style="background:#003B5C"></span> Navy Jupiter</a></li>
+        <li><a href="../platforms/palantir.html"><span class="platform-dot" style="background:#1B2A4A"></span> Palantir AIP/Foundry</a></li>
+      </ul>
+    </nav>
   </div>
 </aside>
+
 <div class="page-wrapper">
   <main class="main-content" id="main-content">
     <div class="chapter-layout">
       <article class="chapter-main">
+
         <header class="chapter-header">
           <nav class="chapter-breadcrumb" aria-label="Breadcrumb">
             <a href="../index.html">Home</a>
@@ -78,71 +84,574 @@
             <span aria-current="page">Chapter 03</span>
           </nav>
           <span class="chapter-number">Chapter 03</span>
-          <h1 class="chapter-title" id="chapter-title">Data Acquisition in the Federal Ecosystem</h1>
-          <p class="chapter-lede">Before you write a single query, you need to understand where the data lives, who owns it, what tier it has been assigned, and whether you have the access level required to touch it.</p>
+          <h1 class="chapter-title" id="chapter-title">Data Acquisition and Government Data Sources</h1>
+          <p class="chapter-lede">
+            Federal data is classified, catalogued, and controlled. Getting the right data to the right analyst on the right platform requires navigating classification authorities, data catalog systems, and API authentication schemes that exist nowhere outside government. This chapter covers how to actually get the data.
+          </p>
           <div class="chapter-meta-bar">
             <span class="chapter-meta-item">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              ~30–45 min read
+              ~45 min read
             </span>
-            <span class="chapter-meta-item">Collibra · Advana · Jupiter</span>
+            <span class="chapter-meta-item">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              Advana, Navy Jupiter, Palantir Foundry, Databricks
+            </span>
           </div>
         </header>
-        <div class="prose" id="prose-content">
-          <p>This chapter covers Data Acquisition in the Federal Ecosystem in the context of federal data science work. The content draws directly from the source markdown and covers platform-specific patterns, compliance requirements, and production-ready code examples.</p>
 
-          <div class="callout callout-note">
-            <span class="callout-icon" aria-hidden="true">&#8505;</span>
-            <div class="callout-content">
-              <p>This chapter is ready for content conversion from the source markdown at <code>chapters/03-data-acquisition/README.md</code>. Use the chapter template pattern from <code>site/chapters/template.html</code>.</p>
+        <div class="prose" id="prose-content">
+
+          <h2 id="data-classification">Data Classification First</h2>
+          <p>Before you write a single line of code to acquire data, you need to know its classification level. This is not a compliance formality — it determines which platform you can use, who can see the results, and whether you can even describe the data in a status update.</p>
+
+          <div class="mermaid-wrapper">
+            <div class="mermaid">
+graph TD
+    A[Identify Data Source] --> B{Classification Level?}
+    B -->|Unclassified - Public| C[data.gov, USASpending,\nCensus API, SAM.gov]
+    B -->|CUI / FOUO| D[Agency intranet,\nAdvana IL4/IL5,\nJupiter NIPRNET]
+    B -->|Secret| E[SIPRNET systems,\nJupiter SIPRNET tier]
+    B -->|Top Secret / SCI| F[JWICS-connected\nplatforms only]
+    C --> G[Standard API calls\nover public internet]
+    D --> H[Requires VPN or\nplatform access + authorization]
+    E --> I[Separate network,\nno cross-domain without XDS]
+    F --> J[Air-gapped environment,\nno cloud ML platforms]
             </div>
+            <p class="mermaid-caption">Data classification determines the acquisition path and authorized platforms.</p>
           </div>
 
-          <h2 id="source-content">Source Content Available</h2>
-          <p>The source markdown for this chapter is available at:</p>
+          <h3 id="classification-levels">Classification Levels That Matter</h3>
+          <p><strong>CUI (Controlled Unclassified Information)</strong> is the catch-all for sensitive but unclassified data. FOUO (For Official Use Only) is a legacy CUI sub-category still in widespread use. CUI requires access controls, markings, and authorized platforms — it cannot live in a shared Google Drive or a personal laptop without encryption.</p>
+          <p><strong>PII (Personally Identifiable Information)</strong> and <strong>PHI (Protected Health Information)</strong> may be CUI or may have additional handling requirements under Privacy Act, HIPAA, or DoD 5400.11. The classification level of a dataset does not tell you whether it contains PII — you must scan for it explicitly (see Chapter 04).</p>
+
+          <div class="callout callout-warning">
+            <span class="callout-icon" aria-hidden="true">&#9888;</span>
+            <div class="callout-content"><p>If you're not sure about a dataset's classification, ask the data owner — not a colleague who also isn't sure. Mishandling classified data is a federal crime, and "I didn't know" is not a defense. The data owner or your agency's information security officer (ISSO) is the authoritative source.</p></div>
+          </div>
+
+          <h2 id="federal-open-data">Federal Open Data APIs</h2>
+          <p>A substantial amount of useful federal data is publicly available via APIs that require no clearance — only an API key or no authentication at all. These are the starting points for procurement analysis, budget research, demographic work, and economic analysis.</p>
+
+          <h3 id="usaspending">USASpending.gov API</h3>
+          <p>USASpending.gov provides the public interface to FPDS (Federal Procurement Data System) data — all federal contract awards, grants, loans, and other financial assistance. No authentication required for public endpoints. Rate limits apply: the API allows up to 1,000 requests per hour without a key.</p>
+
           <div class="code-block-wrapper">
             <div class="code-block-header">
-              <span class="code-block-lang">bash</span>
+              <span class="code-block-lang">python</span>
               <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
             </div>
-            <pre><code class="language-bash">chapters/03-data-acquisition/README.md</code></pre>
+            <pre><code class="language-python">import requests
+import pandas as pd
+import time
+
+def fetch_usaspending_awards(
+    fiscal_year: int,
+    naics_codes: list,
+    min_amount: float = 1_000_000,
+    max_pages: int = 10,
+) -> pd.DataFrame:
+    """
+    Fetch contract awards from USASpending.gov API.
+    Returns a DataFrame of awards matching the filters.
+
+    Rate limit: 1,000 requests/hour unauthenticated.
+    Use time.sleep(0.1) between pages to stay well under the limit.
+    """
+    url = "https://api.usaspending.gov/api/v2/search/spending_by_award/"
+    all_records = []
+
+    for page in range(1, max_pages + 1):
+        payload = {
+            "filters": {
+                "time_period": [{"start_date": f"{fiscal_year - 1}-10-01",
+                                 "end_date": f"{fiscal_year}-09-30"}],
+                "naics_codes": naics_codes,
+                "award_type_codes": ["A", "B", "C", "D"],  # contract types
+                "award_amounts": [{"lower_bound": min_amount}],
+            },
+            "fields": [
+                "Award ID", "Recipient Name", "Award Amount",
+                "NAICS Code", "NAICS Description",
+                "Period of Performance Start Date",
+                "Period of Performance Current End Date",
+                "Awarding Agency", "Awarding Sub Agency",
+            ],
+            "page": page,
+            "limit": 100,
+            "sort": "Award Amount",
+            "order": "desc",
+        }
+
+        resp = requests.post(url, json=payload, timeout=30)
+        resp.raise_for_status()
+        data = resp.json()
+
+        results = data.get("results", [])
+        if not results:
+            break
+
+        all_records.extend(results)
+        print(f"Page {page}: fetched {len(results)} records "
+              f"(total so far: {len(all_records):,})")
+
+        if page < data.get("page_metadata", {}).get("total_pages", 1):
+            time.sleep(0.1)  # stay under rate limit
+        else:
+            break
+
+    return pd.DataFrame(all_records)
+
+
+# Example: IT services (NAICS 54) contracts over $1M in FY2024
+df_it_contracts = fetch_usaspending_awards(
+    fiscal_year=2024,
+    naics_codes=["541511", "541512", "541513", "541519"],
+    min_amount=1_000_000,
+)
+print(f"\nFetched {len(df_it_contracts):,} IT services contracts")</code></pre>
           </div>
-          <p>Convert using the patterns in <code>site/chapters/template.html</code> and the component reference within that file.</p>
-        </div>
+
+          <h3 id="sam-api">SAM.gov API</h3>
+          <p>SAM.gov (System for Award Management) is the authoritative source for vendor registration data — UEI numbers, CAGE codes, business size certifications, and exclusion lists. An API key is required and free to obtain at api.sam.gov.</p>
+
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code class="language-python">import requests
+import os
+
+SAM_API_KEY = os.environ["SAM_API_KEY"]  # free, register at api.sam.gov
+
+def lookup_vendor_by_uei(uei: str) -> dict:
+    """
+    Look up a vendor's SAM.gov registration by UEI.
+    Returns registration data including business type, certifications,
+    and registration status.
+    """
+    url = "https://api.sam.gov/entity-information/v3/entities"
+    params = {
+        "api_key": SAM_API_KEY,
+        "ueiSAM": uei,
+        "includeSections": "entityRegistration,coreData,assertions",
+    }
+
+    resp = requests.get(url, params=params, timeout=30)
+    resp.raise_for_status()
+    data = resp.json()
+
+    entities = data.get("entityData", [])
+    if not entities:
+        return {}
+
+    entity = entities[0]
+    reg = entity.get("entityRegistration", {})
+    core = entity.get("coreData", {})
+
+    return {
+        "uei":                reg.get("ueiSAM"),
+        "legal_name":         reg.get("legalBusinessName"),
+        "registration_status": reg.get("registrationStatus"),
+        "cage_code":          reg.get("cageCode"),
+        "expiration_date":    reg.get("registrationExpirationDate"),
+        "entity_type":        core.get("entityInformation", {}).get("entityTypeDesc"),
+        "business_types":     core.get("businessTypes", {}).get("businessTypeList", []),
+    }
+
+
+# Check a vendor before awarding a contract
+vendor = lookup_vendor_by_uei("ABCDE1234567")
+print(f"Vendor: {vendor.get('legal_name')}")
+print(f"Status: {vendor.get('registration_status')}")  # Must be "Active"
+print(f"CAGE: {vendor.get('cage_code')}")</code></pre>
+          </div>
+
+          <h3 id="census-api">Census Bureau API</h3>
+          <p>The Census API provides demographic, economic, and geographic data. Essential for workforce analysis, program area demographics, and any model requiring population denominators. Free API key at api.census.gov.</p>
+
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code class="language-python">import requests
+import pandas as pd
+import os
+
+CENSUS_KEY = os.environ["CENSUS_API_KEY"]  # free at api.census.gov
+
+def fetch_acs_demographics(state_fips: str, year: int = 2022) -> pd.DataFrame:
+    """
+    Fetch American Community Survey 5-year estimates by county.
+    Returns population, median age, education, and income by county.
+    """
+    url = f"https://api.census.gov/data/{year}/acs/acs5"
+    variables = [
+        "B01003_001E",  # Total population
+        "B01002_001E",  # Median age
+        "B15003_022E",  # Bachelor's degree (25+)
+        "B15003_023E",  # Master's degree (25+)
+        "B19013_001E",  # Median household income
+        "NAME",
+    ]
+
+    params = {
+        "get": ",".join(variables),
+        "for": "county:*",
+        "in": f"state:{state_fips}",
+        "key": CENSUS_KEY,
+    }
+
+    resp = requests.get(url, params=params, timeout=30)
+    resp.raise_for_status()
+    data = resp.json()
+
+    df = pd.DataFrame(data[1:], columns=data[0])
+    df = df.rename(columns={
+        "B01003_001E": "total_population",
+        "B01002_001E": "median_age",
+        "B15003_022E": "bachelors_degree",
+        "B15003_023E": "masters_degree",
+        "B19013_001E": "median_household_income",
+    })
+
+    # Convert numeric columns from strings
+    numeric_cols = ["total_population", "median_age", "bachelors_degree",
+                    "masters_degree", "median_household_income"]
+    df[numeric_cols] = df[numeric_cols].apply(pd.to_numeric, errors="coerce")
+
+    return df
+
+
+# Virginia county demographics (FIPS 51)
+va_demographics = fetch_acs_demographics("51", year=2022)
+print(va_demographics.head())</code></pre>
+          </div>
+
+          <h2 id="data-catalogs">Data Catalogs on Federal Platforms</h2>
+          <p>Once inside a federal platform, you don't acquire data by calling external APIs — you query internal data catalogs. Each platform has its own catalog system.</p>
+
+          <h3 id="unity-catalog">Unity Catalog on Databricks</h3>
+          <p>Unity Catalog is Databricks' centralized governance layer. On Advana and Jupiter, all authorized datasets are registered in Unity Catalog with three-part names: <code>catalog.schema.table</code>. You don't need to know where the data physically lives — query it by name.</p>
+
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span class="code-block-lang">sql</span>
+              <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code class="language-sql">-- Discover what's available in Unity Catalog
+SHOW CATALOGS;
+
+-- Browse schemas in a catalog
+SHOW SCHEMAS IN advana_procurement;
+
+-- List tables in a schema
+SHOW TABLES IN advana_procurement.silver;
+
+-- Examine a table's structure and metadata
+DESCRIBE TABLE EXTENDED advana_procurement.silver.fpds_contract_actions;
+
+-- Search the catalog for tables related to a topic
+SELECT table_catalog, table_schema, table_name, comment
+FROM system.information_schema.tables
+WHERE lower(table_name) LIKE '%procurement%'
+  AND table_type = 'MANAGED'
+ORDER BY table_catalog, table_schema, table_name;</code></pre>
+          </div>
+
+          <h3 id="collibra-jupiter">Collibra on Navy Jupiter</h3>
+          <p>Navy Jupiter uses Collibra as its primary data catalog alongside Unity Catalog. Collibra provides the business glossary, data stewardship workflows, and Bronze/Silver/Gold tier designations. When looking for an authoritative dataset on Jupiter, start in Collibra — it tells you which Unity Catalog table is the Gold-tier approved source for a given subject area, who the data steward is, and what access request form to submit.</p>
+
+          <h3 id="foundry-ontology">Palantir Foundry Ontology</h3>
+          <p>On Foundry, data discovery happens through the Ontology — the semantic layer that maps raw datasets to Object Types. Rather than looking for a table called <code>usaspending_awards</code>, you navigate to the <code>Contract</code> Object Type in the Ontology Browser and see all the underlying data, linked objects, and available properties. The data model is the catalog.</p>
+
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code class="language-python"># Foundry: query objects through the Ontology SDK
+from foundry import FoundryClient
+from foundry.ontology import Contract
+
+client = FoundryClient(auth_token=os.environ["FOUNDRY_TOKEN"],
+                       hostname=os.environ["FOUNDRY_HOSTNAME"])
+
+# Load contracts over $5M from the Ontology
+contracts = (
+    client.ontology.objects.Contract
+    .filter(Contract.obligation_amount.gt(5_000_000))
+    .filter(Contract.fiscal_year.eq(2024))
+    .select(["contract_id", "vendor_name", "obligation_amount",
+             "naics_code", "period_of_performance_end_date"])
+    .take(1000)
+)
+
+df = pd.DataFrame([c.as_dict() for c in contracts])
+print(f"Fetched {len(df):,} high-value contracts from Foundry Ontology")</code></pre>
+          </div>
+
+          <h2 id="messy-formats">Messy File Formats in Government Data</h2>
+          <p>Government data arrives in formats that reflect decades of incompatible systems: fixed-width text files from mainframes, FOIA-produced PDFs, Excel files with merged cells used as headers, and CSV exports with inconsistent encodings.</p>
+
+          <h3 id="fixed-width">Fixed-Width Files</h3>
+          <p>Many legacy government systems export data in fixed-width format — each field occupies a fixed column position, no delimiters. The format specification is usually in a separate data dictionary document.</p>
+
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code class="language-python">import pandas as pd
+
+# Fixed-width specification from data dictionary
+# Format: (field_name, start_col, end_col) — 0-indexed, end is exclusive
+FIELD_SPEC = [
+    ("record_type",          0,   2),
+    ("agency_code",          2,   6),
+    ("bureau_code",          6,  10),
+    ("program_code",        10,  16),
+    ("obligation_amount",   16,  30),
+    ("fiscal_year",         30,  34),
+    ("action_date",         34,  42),   # YYYYMMDD
+    ("award_type",          42,  44),
+]
+
+colspecs   = [(start, end) for _, start, end in FIELD_SPEC]
+col_names  = [name for name, _, _ in FIELD_SPEC]
+
+df = pd.read_fwf(
+    "financial_transactions_fy2024.dat",
+    colspecs=colspecs,
+    names=col_names,
+    dtype=str,           # Read everything as string first
+    encoding="latin-1",  # Many legacy government files use latin-1, not UTF-8
+    skiprows=1,          # Skip header record
+)
+
+# Parse dates and amounts after initial load
+df["action_date"] = pd.to_datetime(df["action_date"], format="%Y%m%d", errors="coerce")
+df["obligation_amount"] = pd.to_numeric(
+    df["obligation_amount"].str.strip(), errors="coerce"
+) / 100  # Often stored as integer cents
+
+print(f"Loaded {len(df):,} financial transactions")</code></pre>
+          </div>
+
+          <h3 id="foia-pdfs">Processing FOIA-Released PDFs</h3>
+          <p>FOIA responses often arrive as PDFs — sometimes searchable, often not. For searchable PDFs, <code>pdfplumber</code> can extract tables directly. For scanned PDFs, you need OCR.</p>
+
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code class="language-python">import pdfplumber
+import pandas as pd
+
+def extract_tables_from_pdf(pdf_path: str) -> list[pd.DataFrame]:
+    """
+    Extract all tables from a searchable PDF using pdfplumber.
+    Returns a list of DataFrames, one per detected table per page.
+    Works on native PDFs; scanned PDFs require OCR preprocessing.
+    """
+    tables = []
+
+    with pdfplumber.open(pdf_path) as pdf:
+        for page_num, page in enumerate(pdf.pages, 1):
+            page_tables = page.extract_tables()
+            for t_idx, table in enumerate(page_tables):
+                if not table or len(table) < 2:
+                    continue
+                df = pd.DataFrame(table[1:], columns=table[0])
+                df["_source_page"] = page_num
+                df["_table_index"] = t_idx
+                tables.append(df)
+                print(f"  Page {page_num}, Table {t_idx}: "
+                      f"{len(df)} rows x {len(df.columns)} columns")
+
+    return tables
+
+
+tables = extract_tables_from_pdf("foia_response_contracts.pdf")
+print(f"Extracted {len(tables)} tables from PDF")</code></pre>
+          </div>
+
+          <h2 id="platform-data-ingestion">Ingesting External Data into Platforms</h2>
+          <p>Once you have data from an API or file, you need to ingest it into your platform's storage layer for analysis at scale.</p>
+
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code class="language-python">from pyspark.sql import functions as F
+
+# Write a pandas DataFrame to a Delta table in Unity Catalog
+# After fetching from an external API, this is the standard ingestion pattern
+
+# Convert to Spark DataFrame
+df_spark = spark.createDataFrame(df_it_contracts)
+
+# Write to Bronze tier — raw data, minimally transformed
+(
+    df_spark
+    .write
+    .format("delta")
+    .mode("overwrite")
+    .option("overwriteSchema", "true")
+    .saveAsTable("procurement_catalog.bronze.usaspending_it_fy2024")
+)
+
+print("Written to Bronze tier — raw, minimally processed")
+
+# Add ingestion metadata
+spark.sql("""
+    ALTER TABLE procurement_catalog.bronze.usaspending_it_fy2024
+    SET TBLPROPERTIES (
+        'delta.enableChangeDataFeed' = 'true',
+        'source_system' = 'USASpending.gov API v2',
+        'ingestion_date' = current_date(),
+        'classification' = 'Unclassified/Public'
+    )
+""")</code></pre>
+          </div>
+
+          <h2 id="failure-modes">Where This Goes Wrong</h2>
+
+          <div class="failure-card">
+            <h4>Failure Mode 1: Skipping the Classification Check</h4>
+            <p>Loading a dataset without confirming its classification level. A dataset labelled "procurement" may include sole-source awards with SSNs, personnel records, or data elements that bump it from unclassified to CUI. Run a classification review and a PII scan before loading to any shared analytics workspace. Not optional.</p>
+          </div>
+
+          <div class="failure-card">
+            <h4>Failure Mode 2: Treating API Results as Authoritative Without Reconciliation</h4>
+            <p>The USASpending.gov API reflects FPDS data, but FPDS itself has known data quality issues — late reporting, missing modifications, and vendor name inconsistencies. For any analysis that will be presented to a contracting officer or program manager, reconcile against the official contracting system of record, not just the API. Note this limitation explicitly in your analysis.</p>
+          </div>
+
+          <div class="failure-card">
+            <h4>Failure Mode 3: Acquiring Data You're Not Authorized to Use</h4>
+            <p>Just because you can query a table in Unity Catalog does not mean you are authorized to use it for your specific analysis purpose. Data authorization on federal platforms is often role-based but purpose-limited — your credentials may grant read access for operational reporting purposes but not for building ML training datasets. When in doubt, get written authorization from the data steward. This protects both the data and your contract.</p>
+          </div>
+
+          <h2 id="platform-comparison">Platform Comparison</h2>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Dimension</th>
+                <th>Advana (Databricks)</th>
+                <th>Navy Jupiter</th>
+                <th>Palantir Foundry</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Data catalog</td>
+                <td>Unity Catalog</td>
+                <td>Collibra + Unity Catalog</td>
+                <td>Ontology (Object Types)</td>
+              </tr>
+              <tr>
+                <td>Data tiers</td>
+                <td>Bronze / Silver / Gold (Delta)</td>
+                <td>Bronze / Silver / Gold (Delta + Collibra)</td>
+                <td>Raw datasets → Foundry Objects</td>
+              </tr>
+              <tr>
+                <td>External API ingestion</td>
+                <td>Notebooks + Delta write</td>
+                <td>Notebooks + Delta write</td>
+                <td>Foundry Connectors or Code Repositories</td>
+              </tr>
+              <tr>
+                <td>Classification ceiling</td>
+                <td>IL5 (ITAR/CUI)</td>
+                <td>IL5 (Navy NIPRNET + SIPRNET)</td>
+                <td>IL5 (FedRAMP High)</td>
+              </tr>
+              <tr>
+                <td>Access request path</td>
+                <td>CDAO access request + PKI</td>
+                <td>DD 2875 + CAC access</td>
+                <td>Foundry data access request</td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div><!-- /prose -->
+
         <nav class="chapter-nav-footer" aria-label="Chapter navigation">
           <a href="02-python-r-foundations.html" class="chapter-nav-link prev">
-            <span class="chapter-nav-direction">Previous</span>
-            <span class="chapter-nav-title">02 — Python & R Foundations</span>
+            <span class="chapter-nav-direction">Previous Chapter</span>
+            <span class="chapter-nav-title">Python and R Foundations</span>
           </a>
           <a href="04-data-wrangling.html" class="chapter-nav-link next">
             <span class="chapter-nav-direction">Next Chapter</span>
-            <span class="chapter-nav-title">04 — Data Wrangling</span>
+            <span class="chapter-nav-title">Data Wrangling and Cleaning</span>
           </a>
         </nav>
+
       </article>
+
       <nav class="chapter-toc" aria-label="On this page">
         <span class="toc-label">On this page</span>
         <ul class="toc-list" id="toc-list" role="list"></ul>
       </nav>
-    </div>
+
+    </div><!-- /chapter-layout -->
+
     <footer class="site-footer" role="contentinfo">
       <div class="footer-grid">
-        <div><p class="footer-brand">Federal Data Science<br>Learning Handbook</p><p class="footer-tagline">Open reference. No registration.</p></div>
-        <div><p class="footer-col-title">Chapters</p><ul class="footer-links" role="list"><li><a href="01-introduction.html">01 — Introduction</a></li><li><a href="09-mlops.html">09 — MLOps</a></li><li><a href="12-ethics-governance.html">12 — Ethics</a></li></ul></div>
-        <div><p class="footer-col-title">Platforms</p><ul class="footer-links" role="list"><li><a href="../platforms/advana.html">Advana</a></li><li><a href="../platforms/databricks.html">Databricks</a></li><li><a href="../platforms/qlik.html">Qlik</a></li><li><a href="../platforms/navy-jupiter.html">Navy Jupiter</a></li><li><a href="../platforms/palantir.html">Palantir</a></li></ul></div>
+        <div>
+          <p class="footer-brand">Federal Data Science<br>Learning Handbook</p>
+          <p class="footer-tagline">A practical guide to data science in the federal government. Open reference.</p>
+        </div>
+        <div>
+          <p class="footer-col-title">Chapters</p>
+          <ul class="footer-links" role="list">
+            <li><a href="01-introduction.html">01 — Introduction</a></li>
+            <li><a href="02-python-r-foundations.html">02 — Python &amp; R</a></li>
+            <li><a href="03-data-acquisition.html">03 — Data Acquisition</a></li>
+            <li><a href="09-mlops.html">09 — MLOps</a></li>
+            <li><a href="12-ethics-governance.html">12 — Ethics</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="footer-col-title">Platforms</p>
+          <ul class="footer-links" role="list">
+            <li><a href="../platforms/advana.html">Advana</a></li>
+            <li><a href="../platforms/databricks.html">Databricks</a></li>
+            <li><a href="../platforms/qlik.html">Qlik</a></li>
+            <li><a href="../platforms/navy-jupiter.html">Navy Jupiter</a></li>
+            <li><a href="../platforms/palantir.html">Palantir</a></li>
+          </ul>
+        </div>
       </div>
       <div class="footer-bottom">
         <span class="footer-copy">Federal Data Science Learning Handbook &mdash; Open Reference</span>
-        <div class="footer-platform-dots" aria-hidden="true"><span class="footer-dot" style="background:#C5A572"></span><span class="footer-dot" style="background:#FF3621"></span><span class="footer-dot" style="background:#009845"></span><span class="footer-dot" style="background:#003B5C"></span><span class="footer-dot" style="background:#4A6FA5"></span></div>
+        <div class="footer-platform-dots" aria-hidden="true">
+          <span class="footer-dot" style="background:#C5A572"></span>
+          <span class="footer-dot" style="background:#FF3621"></span>
+          <span class="footer-dot" style="background:#009845"></span>
+          <span class="footer-dot" style="background:#003B5C"></span>
+          <span class="footer-dot" style="background:#4A6FA5"></span>
+        </div>
       </div>
     </footer>
+
   </main>
-</div>
+</div><!-- /page-wrapper -->
+
 <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
 <script src="../js/mermaid-init.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-r.min.js"></script>
 <script src="../js/main.js"></script>
 </body>
 </html>
