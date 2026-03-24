@@ -185,6 +185,11 @@ Pull requests that introduce placeholder text, banned phrases from the style gui
 
 ## License
 
-MIT License. See [LICENSE](LICENSE) for full terms.
+This repository uses a dual license structure:
+
+- **Code** (`.py`, `.sh`, `.yml`, `.yaml`, `Dockerfile*`): [MIT License](LICENSE)
+- **Written content** (`chapters/`, `platform-guides/`, `docs/` — `.md` files): [Creative Commons Attribution 4.0 International (CC BY 4.0)](LICENSE)
+
+In short: you can use the code in your own projects freely; you can share, adapt, and build on the written content as long as you give attribution. See [LICENSE](LICENSE) for full terms and the complete text of both licenses.
 
 Content in this handbook is based on publicly available information about the platforms it covers. Nothing in this repository is classified or export-controlled. Platform-specific implementation details reflect publicly documented capabilities as of early 2026.
