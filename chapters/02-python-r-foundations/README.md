@@ -1,6 +1,6 @@
 # Chapter 02: Python and R Foundations for Federal Platforms
 
-Priya had been waiting three weeks to get her Python environment set up.
+Priya Menon had been waiting three weeks to get her Python environment set up.
 
 Not three weeks for IT to provision a machine — she'd had the laptop since week one. Three weeks to get approval for `pandas`, `scikit-learn`, and `matplotlib`. Three packages. The standard data science trifecta. The kind of thing a junior analyst in fintech installs in fifteen seconds with `pip install`. On the Navy Jupiter platform she'd been assigned to, package installation requests went through a software authorization request process reviewed by the platform security office. The queue was long. Nobody had told her that during onboarding.
 

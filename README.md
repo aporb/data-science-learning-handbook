@@ -120,8 +120,8 @@ Every chapter includes working Python code examples and a hands-on exercises dir
 |--------|------:|
 | Chapters | 13 |
 | Platform guides | 5 |
-| Total words (chapters) | 67,826 |
-| Total words (platform guides) | 28,392 |
+| Total words (chapters) | 67,946 |
+| Total words (platform guides) | 28,430 |
 | Exercise / solution content | included |
 | **Total words** | **96,376** |
 | Python files | 41 |
