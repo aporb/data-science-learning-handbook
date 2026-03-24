@@ -3,29 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Chapter 11: Deploying Models to Production — Federal Data Science Learning Handbook">
-  <title>Chapter 11: Deploying Models to Production — Federal DS Handbook</title>
+  <meta name="description" content="Deployment and scaling for federal AI systems — Federal Data Science Learning Handbook">
+  <title>Chapter 11: Deployment — Federal DS Handbook</title>
   <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/prism-theme.css">
 </head>
 <body>
+
 <nav class="site-nav" role="navigation" aria-label="Main navigation">
   <button class="btn-icon mobile-menu-btn" id="mobile-menu-btn" aria-label="Open menu" aria-expanded="false">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
   </button>
   <a href="../index.html" class="nav-brand" aria-label="Home">
     <img src="../assets/favicon.svg" class="nav-brand-icon" alt="" aria-hidden="true" width="28" height="28">
-    <span class="nav-brand-text">
-      <span class="nav-brand-title">Federal</span>
-      <span class="nav-brand-subtitle">Data Science Handbook</span>
-    </span>
+    <span class="nav-brand-text"><span class="nav-brand-title">Federal</span><span class="nav-brand-subtitle">Data Science Handbook</span></span>
   </a>
   <div class="nav-spacer"></div>
   <ul class="nav-links" role="list">
     <li><a href="../index.html">Home</a></li>
     <li><a href="01-introduction.html" class="active">Chapters</a></li>
-    <li><a href="../platforms/template.html">Platforms</a></li>
+    <li><a href="../index.html#platforms">Platforms</a></li>
   </ul>
   <div class="nav-actions">
     <button class="btn-icon" id="theme-toggle" aria-label="Toggle dark mode">
@@ -34,41 +32,49 @@
     </button>
   </div>
 </nav>
+
 <div class="sidebar-overlay" id="sidebar-overlay" aria-hidden="true"></div>
+
 <aside class="sidebar" id="sidebar" role="complementary" aria-label="Navigation">
   <div class="sidebar-section">
     <span class="sidebar-label">Chapters</span>
-    <nav aria-label="Chapter list"><ul class="sidebar-nav" role="list">
-      <li><a href="01-introduction.html"><span class="chapter-num">01</span> Introduction</a></li>
-      <li><a href="02-python-r-foundations.html"><span class="chapter-num">02</span> Python &amp; R Foundations</a></li>
-      <li><a href="03-data-acquisition.html"><span class="chapter-num">03</span> Data Acquisition</a></li>
-      <li><a href="04-data-wrangling.html"><span class="chapter-num">04</span> Data Wrangling</a></li>
-      <li><a href="05-exploratory-analysis.html"><span class="chapter-num">05</span> Exploratory Analysis</a></li>
-      <li><a href="06-supervised-ml.html"><span class="chapter-num">06</span> Supervised ML</a></li>
-      <li><a href="07-unsupervised-ml.html"><span class="chapter-num">07</span> Unsupervised ML</a></li>
-      <li><a href="08-deep-learning.html"><span class="chapter-num">08</span> Deep Learning</a></li>
-      <li><a href="09-mlops.html"><span class="chapter-num">09</span> MLOps</a></li>
-      <li><a href="10-visualization.html"><span class="chapter-num">10</span> Visualization</a></li>
-      <li><a href="11-deployment.html"><span class="chapter-num">11</span> Deployment</a></li>
-      <li><a href="12-ethics-governance.html"><span class="chapter-num">12</span> Ethics &amp; Governance</a></li>
-      <li><a href="13-advanced-topics.html"><span class="chapter-num">13</span> Advanced Topics</a></li>
-    </ul></nav>
+    <nav aria-label="Chapter list">
+      <ul class="sidebar-nav" role="list">
+        <li><a href="01-introduction.html"><span class="chapter-num">01</span> Introduction</a></li>
+        <li><a href="02-python-r-foundations.html"><span class="chapter-num">02</span> Python &amp; R Foundations</a></li>
+        <li><a href="03-data-acquisition.html"><span class="chapter-num">03</span> Data Acquisition</a></li>
+        <li><a href="04-data-wrangling.html"><span class="chapter-num">04</span> Data Wrangling</a></li>
+        <li><a href="05-exploratory-analysis.html"><span class="chapter-num">05</span> Exploratory Analysis</a></li>
+        <li><a href="06-supervised-ml.html"><span class="chapter-num">06</span> Supervised ML</a></li>
+        <li><a href="07-unsupervised-ml.html"><span class="chapter-num">07</span> Unsupervised ML</a></li>
+        <li><a href="08-deep-learning.html"><span class="chapter-num">08</span> Deep Learning</a></li>
+        <li><a href="09-mlops.html"><span class="chapter-num">09</span> MLOps</a></li>
+        <li><a href="10-visualization.html"><span class="chapter-num">10</span> Visualization</a></li>
+        <li><a href="11-deployment.html" class="active"><span class="chapter-num">11</span> Deployment</a></li>
+        <li><a href="12-ethics-governance.html"><span class="chapter-num">12</span> Ethics &amp; Governance</a></li>
+        <li><a href="13-advanced-topics.html"><span class="chapter-num">13</span> Advanced Topics</a></li>
+      </ul>
+    </nav>
   </div>
   <div class="sidebar-section">
     <span class="sidebar-label">Platform Guides</span>
-    <nav aria-label="Platform guides"><ul class="sidebar-nav" role="list">
-      <li><a href="../platforms/advana.html"><span class="platform-dot" style="background:#C5A572"></span> Advana</a></li>
-      <li><a href="../platforms/databricks.html"><span class="platform-dot" style="background:#FF3621"></span> Databricks</a></li>
-      <li><a href="../platforms/qlik.html"><span class="platform-dot" style="background:#009845"></span> Qlik</a></li>
-      <li><a href="../platforms/navy-jupiter.html"><span class="platform-dot" style="background:#003B5C"></span> Navy Jupiter</a></li>
-      <li><a href="../platforms/palantir.html"><span class="platform-dot" style="background:#1B2A4A"></span> Palantir AIP/Foundry</a></li>
-    </ul></nav>
+    <nav aria-label="Platform guides">
+      <ul class="sidebar-nav" role="list">
+        <li><a href="../platforms/advana.html"><span class="platform-dot" style="background:#C5A572"></span> Advana</a></li>
+        <li><a href="../platforms/databricks.html"><span class="platform-dot" style="background:#FF3621"></span> Databricks</a></li>
+        <li><a href="../platforms/qlik.html"><span class="platform-dot" style="background:#009845"></span> Qlik</a></li>
+        <li><a href="../platforms/navy-jupiter.html"><span class="platform-dot" style="background:#003B5C"></span> Navy Jupiter</a></li>
+        <li><a href="../platforms/palantir.html"><span class="platform-dot" style="background:#1B2A4A"></span> Palantir AIP/Foundry</a></li>
+      </ul>
+    </nav>
   </div>
 </aside>
+
 <div class="page-wrapper">
   <main class="main-content" id="main-content">
     <div class="chapter-layout">
       <article class="chapter-main">
+
         <header class="chapter-header">
           <nav class="chapter-breadcrumb" aria-label="Breadcrumb">
             <a href="../index.html">Home</a>
@@ -78,71 +84,377 @@
             <span aria-current="page">Chapter 11</span>
           </nav>
           <span class="chapter-number">Chapter 11</span>
-          <h1 class="chapter-title" id="chapter-title">Deploying Models to Production</h1>
-          <p class="chapter-lede">Getting a model to production in a DoD environment. ATO requirements, security scans, approval chains, and what changes once a model is live.</p>
+          <h1 class="chapter-title" id="chapter-title">Deployment and Scaling</h1>
+          <p class="chapter-lede">
+            Getting a model through ATO is a different skill set than building the model. This chapter covers the ATO process for ML systems, batch vs. real-time deployment patterns, MLflow model packaging, the FastAPI pattern for IL4 endpoints, Dockerizing for GovCloud, Foundry batch scoring transforms, and the deployment readiness checklist that actually gets models to production.
+          </p>
           <div class="chapter-meta-bar">
             <span class="chapter-meta-item">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              ~30–45 min read
+              ~55 min read
             </span>
-            <span class="chapter-meta-item">Databricks · Palantir · Qlik SSE</span>
+            <span class="chapter-meta-item">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              Databricks, Advana, Navy Jupiter, Palantir Foundry
+            </span>
           </div>
         </header>
-        <div class="prose" id="prose-content">
-          <p>This chapter covers Deploying Models to Production in the context of federal data science work. The content draws directly from the source markdown and covers platform-specific patterns, compliance requirements, and production-ready code examples.</p>
 
-          <div class="callout callout-note">
-            <span class="callout-icon" aria-hidden="true">&#8505;</span>
-            <div class="callout-content">
-              <p>This chapter is ready for content conversion from the source markdown at <code>chapters/11-deployment/README.md</code>. Use the chapter template pattern from <code>site/chapters/template.html</code>.</p>
-            </div>
+        <div class="prose" id="prose-content">
+
+          <h2 id="ato-requirements">ATO Requirements for ML Systems</h2>
+          <p>Every ML system deployed in a federal operational environment requires an Authority to Operate (ATO) — a formal authorization from the system's Authorizing Official (AO) that the security risks are acceptable. For ML-specific systems, the ATO package includes standard security controls (NIST SP 800-53) plus AI-specific documentation: the model card, the RAI assessment, the training data provenance record, and the monitoring plan.</p>
+
+          <table>
+            <thead>
+              <tr>
+                <th>ATO Consideration</th>
+                <th>What It Means for the Data Scientist</th>
+                <th>Lead Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>System boundary definition</td>
+                <td>Is your model a new system or part of an existing authorized system?</td>
+                <td>3–6 months if new system</td>
+              </tr>
+              <tr>
+                <td>Security controls documentation</td>
+                <td>All technical controls (encryption, access, logging) must be documented</td>
+                <td>4–8 weeks</td>
+              </tr>
+              <tr>
+                <td>Penetration testing</td>
+                <td>Required for systems at Moderate impact and above</td>
+                <td>4–6 weeks</td>
+              </tr>
+              <tr>
+                <td>AI/ML-specific documentation</td>
+                <td>Model card, RAI assessment, training data provenance</td>
+                <td>2–4 weeks</td>
+              </tr>
+              <tr>
+                <td>Continuous monitoring plan</td>
+                <td>Defines who monitors, what metrics, and retraining triggers</td>
+                <td>1–2 weeks to write</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="callout callout-warning">
+            <span class="callout-icon" aria-hidden="true">&#9888;</span>
+            <div class="callout-content"><p>Start the ATO process the day you start development. Not when the model is done. An ATO application that arrives after six months of model development with a "we need this deployed next week" timeline will sit in the queue for months. ATO reviewers cannot be rushed. Plan for 3–6 months minimum for a new system at Moderate or High impact.</p></div>
           </div>
 
-          <h2 id="source-content">Source Content Available</h2>
-          <p>The source markdown for this chapter is available at:</p>
+          <h2 id="deployment-patterns">Deployment Patterns</h2>
+
+          <h3 id="batch-scoring">Batch Scoring</h3>
+          <p>Batch scoring runs on a schedule — nightly, weekly, or triggered by new data arrivals. It produces a scored table that analysts query rather than calling a live model endpoint. For most federal ML use cases (readiness prediction, procurement risk, anomaly detection), batch scoring is the right pattern: it produces a defensible audit trail of every prediction and doesn't require low-latency infrastructure.</p>
+
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code class="language-python">import mlflow.pyfunc
+from pyspark.sql import functions as F
+from datetime import date
+
+# Production batch scoring — runs as a Databricks Workflow job (scheduled)
+# Always load by stage alias, never by version number
+model_name = "maintenance_overrun_classifier"
+model      = mlflow.pyfunc.load_model(f"models:/{model_name}/Production")
+
+# Score all open work orders from the last 90 days
+pending = (
+    spark.table("jupiter_catalog.silver.maintenance_work_orders")
+    .filter(F.col("completion_date").isNull())
+    .filter(F.col("start_date") >= F.date_sub(F.current_date(), 90))
+    .join(
+        spark.table("jupiter_catalog.reference.ship_registry")
+             .select("hull_number", "hull_class", "commission_year"),
+        "hull_number", "left"
+    )
+    .withColumn("ship_age_years", F.year(F.current_date()) - F.col("commission_year"))
+    .withColumn("start_month", F.month("start_date"))
+    .toPandas()
+)
+
+print(f"Scoring {len(pending):,} pending work orders as of {date.today()}")
+
+feature_cols = ["labor_hours_estimated", "estimated_completion_days", "ship_age_years",
+                "prior_work_order_count", "start_month", "data_quality_score",
+                "hull_class", "maintenance_category"]
+
+scores = model.predict(pending[feature_cols])
+pending["overrun_probability"] = scores
+pending["overrun_flag"]        = (scores >= 0.65).astype(int)
+pending["scored_date"]         = date.today().isoformat()
+pending["model_version"]       = "Production"
+
+output_spark = spark.createDataFrame(
+    pending[["work_order_id", "overrun_probability", "overrun_flag",
+             "scored_date", "model_version"]]
+)
+(
+    output_spark
+    .write.format("delta").mode("overwrite")
+    .option("replaceWhere", f"scored_date = '{date.today().isoformat()}'")
+    .saveAsTable("jupiter_catalog.gold.maintenance_overrun_scores")
+)
+print(f"Written {len(pending):,} scores | Flagged: {pending['overrun_flag'].sum():,}")</code></pre>
+          </div>
+
+          <h3 id="real-time-api">Real-Time API with FastAPI for IL4</h3>
+          <p>When latency matters — an analyst needs a score within 200ms to make a decision — deploy a FastAPI endpoint in a containerized service. At IL4, this runs in AWS GovCloud behind the agency's SSO. Every request is logged to an audit table.</p>
+
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code class="language-python">from fastapi import FastAPI, HTTPException, Depends
+from fastapi.security import HTTPBearer
+from pydantic import BaseModel
+import mlflow.pyfunc
+import pandas as pd
+import uuid
+from datetime import datetime
+
+app    = FastAPI(title="Maintenance Overrun Risk API", version="1.0.0")
+bearer = HTTPBearer()
+
+# Load model at startup — not per request
+model = mlflow.pyfunc.load_model("models:/maintenance_overrun_classifier/Production")
+
+
+class ScoringRequest(BaseModel):
+    work_order_id:              str
+    labor_hours_estimated:      float
+    estimated_completion_days:  float
+    ship_age_years:             float
+    prior_work_order_count:     int
+    start_month:                int
+    data_quality_score:         float
+    hull_class:                 str
+    maintenance_category:       str
+
+
+class ScoringResponse(BaseModel):
+    work_order_id:       str
+    overrun_probability: float
+    overrun_flag:        int
+    model_version:       str
+    request_id:          str
+    scored_at:           str
+
+
+@app.post("/score", response_model=ScoringResponse)
+async def score_work_order(request: ScoringRequest,
+                           credentials=Depends(bearer)) -> ScoringResponse:
+    request_id = str(uuid.uuid4())
+
+    try:
+        features = pd.DataFrame([request.dict()])
+        proba    = float(model.predict(features)[0])
+        flag     = int(proba >= 0.65)
+
+        result = ScoringResponse(
+            work_order_id=request.work_order_id,
+            overrun_probability=round(proba, 4),
+            overrun_flag=flag,
+            model_version="Production",
+            request_id=request_id,
+            scored_at=datetime.utcnow().isoformat(),
+        )
+
+        # Log to audit table (Delta table append, not log file)
+        _log_inference(request, result)
+        return result
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+def _log_inference(request: ScoringRequest, response: ScoringResponse) -> None:
+    """Write inference record to audit Delta table. Never skip this."""
+    audit_record = {**request.dict(), **response.dict()}
+    # Append to audit table via Databricks REST API or direct write
+    pass</code></pre>
+          </div>
+
+          <h3 id="dockerfile">Dockerfile for GovCloud</h3>
+
           <div class="code-block-wrapper">
             <div class="code-block-header">
               <span class="code-block-lang">bash</span>
               <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
             </div>
-            <pre><code class="language-bash">chapters/11-deployment/README.md</code></pre>
+            <pre><code class="language-bash">FROM python:3.10-slim
+
+WORKDIR /app
+
+# Install only production dependencies — no dev tools in production image
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application code
+COPY src/ .
+
+# Non-root user — required for FedRAMP High hardening
+RUN adduser --disabled-password --gecos "" appuser
+USER appuser
+
+# Health check — required for container orchestration (ECS, EKS)
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+EXPOSE 8000
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2"]</code></pre>
           </div>
-          <p>Convert using the patterns in <code>site/chapters/template.html</code> and the component reference within that file.</p>
-        </div>
+
+          <h2 id="foundry-batch-scoring">Foundry Batch Scoring Transform</h2>
+
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code class="language-python">from transforms.api import transform, Input, Output
+from palantir_models.transforms import ModelInput
+
+@transform(
+    scores=Output("/analytics/gold/maintenance_overrun_scores"),
+    pending_work_orders=Input("/analytics/silver/maintenance_work_orders"),
+    model=ModelInput("/models/maintenance_overrun_v2"),
+)
+def score_work_orders(pending_work_orders, model, scores):
+    """
+    Foundry scheduled transform: score all pending work orders nightly.
+    Output is promoted to Gold tier and surfaced in Workshop dashboards.
+    Foundry automatically tracks lineage: these scores derive from
+    pending_work_orders via model version X.
+    """
+    df = pending_work_orders.dataframe().toPandas()
+
+    feature_cols = ["labor_hours_estimated", "estimated_completion_days",
+                    "ship_age_years", "prior_work_order_count", "start_month",
+                    "data_quality_score", "hull_class", "maintenance_category"]
+
+    results = model.api().predict(df[feature_cols])
+    df["overrun_probability"] = results["overrun_probability"]
+    df["overrun_flag"]        = results["overrun_flag"]
+
+    output_df = df[["work_order_id", "overrun_probability", "overrun_flag"]]
+    scores.write_dataframe(spark.createDataFrame(output_df))</code></pre>
+          </div>
+
+          <h2 id="deployment-readiness">Deployment Readiness Checklist</h2>
+          <ul class="task-list">
+            <li><input type="checkbox" disabled> ATO process started at development kickoff (not model completion)</li>
+            <li><input type="checkbox" disabled> Model card completed with all 9 required sections (see Chapter 12)</li>
+            <li><input type="checkbox" disabled> RAI assessment completed or in progress with approver identified</li>
+            <li><input type="checkbox" disabled> Training data provenance documented in Unity Catalog or Foundry</li>
+            <li><input type="checkbox" disabled> All credentials stored in secrets manager — zero hardcoded values in code</li>
+            <li><input type="checkbox" disabled> Audit logging implemented — every prediction captured to a durable store</li>
+            <li><input type="checkbox" disabled> Confidence threshold defined and documented</li>
+            <li><input type="checkbox" disabled> Human-in-the-loop path defined for low-confidence predictions</li>
+            <li><input type="checkbox" disabled> Monitoring owner named (a person, not a team)</li>
+            <li><input type="checkbox" disabled> Retraining trigger defined as a specific metric threshold</li>
+            <li><input type="checkbox" disabled> Rollback procedure documented and tested</li>
+            <li><input type="checkbox" disabled> Post-deployment performance review scheduled at 30, 90, and 180 days</li>
+          </ul>
+
+          <h2 id="failure-modes">Where This Goes Wrong</h2>
+
+          <div class="failure-card">
+            <h4>Failure Mode 1: Starting ATO at Model Completion</h4>
+            <p>"The model is done — we just need to get it approved." The ATO queue is 4 months long. The program manager is expecting deployment next month. The data scientist who built the model rolls off the contract before deployment. Fix: ATO process starts on Day 1, concurrent with model development. The documentation isn't a post-hoc task.</p>
+          </div>
+
+          <div class="failure-card">
+            <h4>Failure Mode 2: No Rollback Plan</h4>
+            <p>The new model version deploys and produces a systematic bias on a specific vessel class that nobody noticed in staging. Fix: always maintain the previous Production model version in the MLflow Registry (do not archive it immediately). Define the rollback procedure — a one-command version stage transition — and test it before the deployment. The ability to revert in 10 minutes is worth more than a perfect release process.</p>
+          </div>
+
+          <div class="failure-card">
+            <h4>Failure Mode 3: Deploying Without Audit Logging</h4>
+            <p>A model scores 50,000 work orders per week. Three months later an analyst questions a specific score from six weeks ago. Without an audit table capturing every prediction, there is no answer. Fix: every inference writes to an audit table — the work order ID, the feature values, the prediction, the model version, the timestamp, and the requesting user. This is non-negotiable for any federal deployment.</p>
+          </div>
+
+        </div><!-- /prose -->
+
         <nav class="chapter-nav-footer" aria-label="Chapter navigation">
           <a href="10-visualization.html" class="chapter-nav-link prev">
-            <span class="chapter-nav-direction">Previous</span>
-            <span class="chapter-nav-title">10 — Visualization</span>
+            <span class="chapter-nav-direction">Previous Chapter</span>
+            <span class="chapter-nav-title">Visualization and Dashboards</span>
           </a>
           <a href="12-ethics-governance.html" class="chapter-nav-link next">
             <span class="chapter-nav-direction">Next Chapter</span>
-            <span class="chapter-nav-title">12 — Ethics & Governance</span>
+            <span class="chapter-nav-title">Ethics, Governance, and Compliance</span>
           </a>
         </nav>
+
       </article>
+
       <nav class="chapter-toc" aria-label="On this page">
         <span class="toc-label">On this page</span>
         <ul class="toc-list" id="toc-list" role="list"></ul>
       </nav>
-    </div>
+
+    </div><!-- /chapter-layout -->
+
     <footer class="site-footer" role="contentinfo">
       <div class="footer-grid">
-        <div><p class="footer-brand">Federal Data Science<br>Learning Handbook</p><p class="footer-tagline">Open reference. No registration.</p></div>
-        <div><p class="footer-col-title">Chapters</p><ul class="footer-links" role="list"><li><a href="01-introduction.html">01 — Introduction</a></li><li><a href="09-mlops.html">09 — MLOps</a></li><li><a href="12-ethics-governance.html">12 — Ethics</a></li></ul></div>
-        <div><p class="footer-col-title">Platforms</p><ul class="footer-links" role="list"><li><a href="../platforms/advana.html">Advana</a></li><li><a href="../platforms/databricks.html">Databricks</a></li><li><a href="../platforms/qlik.html">Qlik</a></li><li><a href="../platforms/navy-jupiter.html">Navy Jupiter</a></li><li><a href="../platforms/palantir.html">Palantir</a></li></ul></div>
+        <div>
+          <p class="footer-brand">Federal Data Science<br>Learning Handbook</p>
+          <p class="footer-tagline">A practical guide to data science in the federal government. Open reference.</p>
+        </div>
+        <div>
+          <p class="footer-col-title">Chapters</p>
+          <ul class="footer-links" role="list">
+            <li><a href="01-introduction.html">01 — Introduction</a></li>
+            <li><a href="02-python-r-foundations.html">02 — Python &amp; R</a></li>
+            <li><a href="03-data-acquisition.html">03 — Data Acquisition</a></li>
+            <li><a href="09-mlops.html">09 — MLOps</a></li>
+            <li><a href="12-ethics-governance.html">12 — Ethics</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="footer-col-title">Platforms</p>
+          <ul class="footer-links" role="list">
+            <li><a href="../platforms/advana.html">Advana</a></li>
+            <li><a href="../platforms/databricks.html">Databricks</a></li>
+            <li><a href="../platforms/qlik.html">Qlik</a></li>
+            <li><a href="../platforms/navy-jupiter.html">Navy Jupiter</a></li>
+            <li><a href="../platforms/palantir.html">Palantir</a></li>
+          </ul>
+        </div>
       </div>
       <div class="footer-bottom">
         <span class="footer-copy">Federal Data Science Learning Handbook &mdash; Open Reference</span>
-        <div class="footer-platform-dots" aria-hidden="true"><span class="footer-dot" style="background:#C5A572"></span><span class="footer-dot" style="background:#FF3621"></span><span class="footer-dot" style="background:#009845"></span><span class="footer-dot" style="background:#003B5C"></span><span class="footer-dot" style="background:#4A6FA5"></span></div>
+        <div class="footer-platform-dots" aria-hidden="true">
+          <span class="footer-dot" style="background:#C5A572"></span>
+          <span class="footer-dot" style="background:#FF3621"></span>
+          <span class="footer-dot" style="background:#009845"></span>
+          <span class="footer-dot" style="background:#003B5C"></span>
+          <span class="footer-dot" style="background:#4A6FA5"></span>
+        </div>
       </div>
     </footer>
+
   </main>
-</div>
+</div><!-- /page-wrapper -->
+
 <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
 <script src="../js/mermaid-init.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-r.min.js"></script>
 <script src="../js/main.js"></script>
 </body>
 </html>

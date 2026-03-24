@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Advana Platform Guide — Federal Data Science Learning Handbook">
+  <meta name="description" content="Advana Platform Guide — DoD enterprise data analytics platform, Databricks ML, Qlik dashboards, and the War Data Platform restructuring.">
   <title>Advana Guide — Federal DS Handbook</title>
   <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/prism-theme.css">
   <style>
-    .platform-hero { background: #C5911A; color: white; padding: 4rem; position: relative; overflow: hidden; }
+    .platform-hero { background: #8B6914; color: white; padding: 4rem; position: relative; overflow: hidden; }
     .platform-hero::before { content: ''; position: absolute; top: -40%; right: -10%; width: 500px; height: 500px; border-radius: 50%; background: rgba(255,255,255,0.04); pointer-events: none; }
     .platform-eyebrow { display: flex; align-items: center; gap: 0.625rem; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.65); margin-bottom: 1rem; }
     .platform-hero-title { font-family: var(--font-serif); font-size: clamp(2rem, 4vw, 3rem); font-weight: 400; line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 1rem; color: white; }
@@ -37,7 +37,7 @@
   <ul class="nav-links" role="list">
     <li><a href="../index.html">Home</a></li>
     <li><a href="../chapters/01-introduction.html">Chapters</a></li>
-    <li><a href="template.html" class="active">Platforms</a></li>
+    <li><a href="../index.html#platforms" class="active">Platforms</a></li>
   </ul>
   <div class="nav-actions">
     <button class="btn-icon" id="theme-toggle" aria-label="Toggle dark mode">
@@ -51,7 +51,7 @@
   <div class="sidebar-section">
     <span class="sidebar-label">Platform Guides</span>
     <nav aria-label="Platform guides"><ul class="sidebar-nav" role="list">
-      <li><a href="advana.html"><span class="platform-dot" style="background:#C5A572"></span> Advana</a></li>
+      <li><a href="advana.html" class="active"><span class="platform-dot" style="background:#C5A572"></span> Advana</a></li>
       <li><a href="databricks.html"><span class="platform-dot" style="background:#FF3621"></span> Databricks</a></li>
       <li><a href="qlik.html"><span class="platform-dot" style="background:#009845"></span> Qlik</a></li>
       <li><a href="navy-jupiter.html"><span class="platform-dot" style="background:#003B5C"></span> Navy Jupiter</a></li>
@@ -63,64 +63,292 @@
     <nav aria-label="Chapter list"><ul class="sidebar-nav" role="list">
       <li><a href="../chapters/01-introduction.html"><span class="chapter-num">01</span> Introduction</a></li>
       <li><a href="../chapters/02-python-r-foundations.html"><span class="chapter-num">02</span> Python &amp; R</a></li>
+      <li><a href="../chapters/04-data-wrangling.html"><span class="chapter-num">04</span> Data Wrangling</a></li>
       <li><a href="../chapters/09-mlops.html"><span class="chapter-num">09</span> MLOps</a></li>
-      <li><a href="../chapters/12-ethics-governance.html"><span class="chapter-num">12</span> Ethics</a></li>
     </ul></nav>
   </div>
 </aside>
 <div class="page-wrapper">
   <main class="main-content" id="main-content">
+
     <div class="platform-hero">
       <div class="platform-eyebrow"><span style="width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.5);display:inline-block" aria-hidden="true"></span> Platform Guide</div>
       <h1 class="platform-hero-title">Advana</h1>
-      <p class="platform-hero-desc">The Pentagon's enterprise analytics platform. DoD-wide data, 100,000+ users, financial and logistics data from 3,000+ NIPRNET sources. The CDAO's foundation for DoD-wide AI application development.</p>
-      <div class="platform-tags"><span class="platform-tag-pill">DoD ATO</span><span class="platform-tag-pill">NIPR/SIPR</span><span class="platform-tag-pill">100K+ Users</span><span class="platform-tag-pill">CDAO</span></div>
+      <p class="platform-hero-desc">The DoD's single authoritative enterprise data analytics platform — 100,000+ users, 400+ connected Pentagon business systems, Databricks for ML, Qlik for dashboards, and a significant restructuring underway.</p>
+      <div class="platform-tags">
+        <span class="platform-tag-pill">DoD Enterprise</span>
+        <span class="platform-tag-pill">NIPRNET / SIPRNET</span>
+        <span class="platform-tag-pill">IL4 / IL5</span>
+        <span class="platform-tag-pill">CDAO</span>
+        <span class="platform-tag-pill">War Data Platform</span>
+      </div>
     </div>
+
     <div class="platform-facts" role="list">
-      <div class="platform-fact" role="listitem"><span class="platform-fact-label">Authorization</span><span class="platform-fact-value">DoD ATO (NIPR/SIPR)</span></div>
-      <div class="platform-fact" role="listitem"><span class="platform-fact-label">Networks</span><span class="platform-fact-value">NIPRNET, SIPRNET</span></div>
-      <div class="platform-fact" role="listitem"><span class="platform-fact-label">Managed By</span><span class="platform-fact-value">CDAO</span></div>
+      <div class="platform-fact" role="listitem"><span class="platform-fact-label">Prime Contractor</span><span class="platform-fact-value">Booz Allen Hamilton</span></div>
+      <div class="platform-fact" role="listitem"><span class="platform-fact-label">Users</span><span class="platform-fact-value">80,000–100,000+</span></div>
+      <div class="platform-fact" role="listitem"><span class="platform-fact-label">Data Sources</span><span class="platform-fact-value">400+ connected systems</span></div>
+      <div class="platform-fact" role="listitem"><span class="platform-fact-label">Networks</span><span class="platform-fact-value">NIPRNET (IL4) + SIPRNET</span></div>
       <div class="platform-fact" role="listitem"><span class="platform-fact-label">Access</span><span class="platform-fact-value">CAC + DD Form 2875</span></div>
-      <div class="platform-fact" role="listitem"><span class="platform-fact-label">PII/PHI</span><span class="platform-fact-value">Yes</span></div>
-      <div class="platform-fact" role="listitem"><span class="platform-fact-label">Users</span><span class="platform-fact-value">100,000+</span></div>
+      <div class="platform-fact" role="listitem"><span class="platform-fact-label">Status</span><span class="platform-fact-value">Restructuring (Jan 2026)</span></div>
     </div>
+
     <div class="chapter-layout">
       <article class="chapter-main">
         <div class="prose" id="prose-content">
-          <h2 id="overview">Overview</h2>
-          <p>This guide covers Advana in depth. The source material is available at <code>platform-guides/advana/README.md</code> in the handbook repository. Use the <code>site/platforms/template.html</code> pattern to expand this page with the full platform guide content.</p>
+
+          <h2 id="overview">Platform Overview</h2>
+          <p>Advana — short for Advancing Analytics — is the Department of Defense's enterprise-wide data, analytics, and artificial intelligence platform. It started inside the Office of the Secretary of Defense Comptroller as a financial audit tool. The DoD had been failing independent audits for years, and the root cause kept coming back to the same problem: DoD data lived in thousands of incompatible systems, and no one could pull a consistent picture of anything. Advana was the attempt to fix that.</p>
+          <p>It grew fast. By 2024, it had grown to somewhere between 80,000 and 100,000 users, 400-plus connected Pentagon business systems, over 3,000 NIPRNET data sources ingested, and 250-plus applications in production across 55-plus DoD organizations.</p>
+          <p><strong>The organizational home matters.</strong> Advana lives under the Chief Digital and Artificial Intelligence Office (CDAO), which reports up through the DoD chain. The Deputy Secretary of Defense formally designated Advana as "the single enterprise authoritative data management and analytics platform" for OSD and all DoD components. When a program office tells you they want analytics built on authoritative DoD data, Advana is what that phrase typically points to.</p>
+          <p>The original prime contractor is Booz Allen Hamilton, working under a five-year, $674 million GSA contract awarded in 2021. The planned $15 billion follow-on recompete (AAMAC) was canceled in July 2025.</p>
+
+          <h2 id="getting-access">Getting Access</h2>
+          <p>Access to Advana is not complicated, but it has real prerequisites: a CAC or PIV card, a sponsor who can justify your access, and patience with a form.</p>
+          <p>You will need a DD Form 2875, the System Authorization Access Request form. This requires a government sponsor — typically your contracting officer representative (COR) or the program office point of contact — to sign off on the business need and appropriate access level.</p>
+
+          <h3 id="access-process">The Process</h3>
+          <ol>
+            <li>Navigate to <code>https://advana.data.mil</code></li>
+            <li>Authenticate with your CAC certificate when prompted</li>
+            <li>If first access, the portal routes you to submit a Help Desk ticket</li>
+            <li>Attach your completed DD Form 2875 to that ticket</li>
+            <li>Wait — typical provisioning runs one to three weeks</li>
+          </ol>
+
           <div class="callout callout-note">
             <span class="callout-icon" aria-hidden="true">&#8505;</span>
             <div class="callout-content">
-              <p>Full content conversion from the source README is ready to be done. The source file at <code>platform-guides/advana/README.md</code> contains the complete platform guide. See Chapter 01 for platform overview coverage.</p>
+              <strong>Contractor access is available.</strong> You don't need to be military or a civilian government employee. What you do need is a valid CAC, a signed 2875, and a government sponsor. Finding that sponsor is usually the actual bottleneck, not the paperwork.
             </div>
           </div>
-          <h2 id="key-facts">Key Facts at a Glance</h2>
-          <p>Authorization level: <strong>DoD ATO (NIPR/SIPR)</strong>. Networks: <strong>NIPRNET, SIPRNET</strong>. Managed by: <strong>CDAO</strong>. Access mechanism: <strong>CAC + DD Form 2875</strong>.</p>
-          <h2 id="getting-started">Getting Started</h2>
-          <p>See Chapter 01 — Introduction for an overview of this platform's role in the DoD data ecosystem and how to request access. The full platform guide with code examples, API reference, and architecture diagrams is sourced from <code>platform-guides/advana/README.md</code>.</p>
-        </div>
-        <nav class="chapter-nav-footer" aria-label="Platform navigation">
-          <a href="template.html" class="chapter-nav-link prev">
-            <span class="chapter-nav-direction">Previous Platform</span>
-            <span class="chapter-nav-title">Platform Guides</span>
-          </a>
-          <a href="databricks.html" class="chapter-nav-link next">
-            <span class="chapter-nav-direction">Next Platform</span>
-            <span class="chapter-nav-title">Databricks</span>
-          </a>
-        </nav>
+
+          <p>Advana is organized into ten community spaces — functional groupings of data and applications for specific mission areas. Your access request should specify which space or spaces you need. Requesting access to everything is not how this works; you need a justified business need for each space.</p>
+
+          <h2 id="available-tools">Available Tools</h2>
+
+          <h3 id="tools-visualization">Visualization and Business Intelligence</h3>
+          <p><strong>Qlik Sense</strong> is the primary BI and visualization layer on Advana. Most of the pre-built dashboards that consumers and analysts use are built in Qlik. The platform supports Qlik's Server-Side Extensions (SSE), which lets the analytics layer simultaneously run Python, C++, or Java code, embedding statistical computations or ML inference calls directly into a Qlik dashboard without exporting data to a separate environment.</p>
+          <p><strong>Tableau</strong> and <strong>Power BI</strong> are also available within the Advana ecosystem, though Qlik is the platform's native BI layer.</p>
+
+          <h3 id="tools-ml">Data Science and Machine Learning</h3>
+          <p><strong>Databricks</strong> is the data lakehouse and ML platform within Advana. This is where data scientists doing serious modeling work will spend most of their time — Python and PySpark notebooks, Spark-based distributed processing, and access to the Unity Catalog data governance layer.</p>
+          <p><strong>MLflow</strong> comes packaged with Databricks and handles experiment tracking, model registry, and deployment management. <strong>DataRobot</strong> and <strong>C3 AI</strong> provide automated ML capabilities. <strong>Amazon SageMaker</strong> is available for model training and deployment at scale.</p>
+
+          <h3 id="tools-governance">Data Governance</h3>
+          <p><strong>Collibra</strong> is the data catalog and governance layer. Before you start pulling datasets, Collibra is where you verify what a field actually means, who owns it, when it was last updated, and whether the definition has changed. This is not optional discipline — DoD data has a persistent labeling problem, and Collibra is the official place to resolve ambiguity.</p>
+
+          <h3 id="tools-development">Development and Source Control</h3>
+          <p><strong>GitLab</strong> handles source code management and CI/CD pipelines within the Advana environment. Your model code, pipeline scripts, and dashboard configurations should live in GitLab, not on your local machine or an ad-hoc shared drive.</p>
+
+          <h2 id="data-access">Data Access</h2>
+
+          <h3 id="connected-systems">What's Connected</h3>
+          <p>Over 400 Pentagon business systems feed into Advana. The major ones data scientists encounter regularly:</p>
+          <ul>
+            <li><strong>GFEBS</strong> (General Fund Enterprise Business System) — Army financial management. Real-time streaming feeds with millisecond-level latency.</li>
+            <li><strong>GCSS-Army</strong> (Global Combat Support System — Army) — Army logistics. Same real-time streaming pipeline as GFEBS.</li>
+            <li><strong>DMDC</strong> — Defense Manpower Data Center. Personnel and human resources data.</li>
+            <li><strong>FPDS-NG</strong> — Federal Procurement Data System. Contract and procurement data across all DoD components.</li>
+          </ul>
+
+          <h3 id="classification-levels">Classification Levels</h3>
+
+          <div class="table-wrapper">
+            <table>
+              <thead><tr><th>Network</th><th>Level</th><th>What Lives There</th></tr></thead>
+              <tbody>
+                <tr><td>NIPRNET</td><td>Unclassified (CUI/FOUO)</td><td>Business operations data; 3,000+ sources</td></tr>
+                <tr><td>SIPRNET</td><td>Secret</td><td>Classified analytics and force planning data</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>Most financial, logistics, procurement, and personnel analytics work happens on NIPRNET at the CUI or FOUO sensitivity level, which maps to Impact Level 4. SIPRNET access requires a Secret clearance and a separate access request.</p>
+
+          <h2 id="data-science-workflows">Data Science Workflows</h2>
+
+          <h3 id="four-tiers">The Four Tiers</h3>
+          <p><strong>Consumers</strong> get pre-built Qlik dashboards for their functional area. <strong>Analysts</strong> build custom dashboards in Qlik, combine data across sources using the Qlik mashup API. <strong>Data scientists</strong> work in Databricks notebooks — Python, PySpark, SQL, with MLflow for experiment tracking. <strong>Data engineers</strong> build and maintain pipelines, set up real-time replication feeds, manage data quality monitoring.</p>
+
+          <div class="code-block-wrapper">
+            <div class="code-block-header"><span class="code-block-lang">python</span><button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button></div>
+            <pre><code class="language-python"># Querying procurement data from Advana's Databricks environment
+# Authentication happens via CAC-backed session token
+from pyspark.sql import SparkSession
+from pyspark.sql import functions as F
+
+spark = SparkSession.builder.appName("procurement_analysis").getOrCreate()
+
+# Read from the Unity Catalog — data is organized by domain
+df = spark.sql("""
+    SELECT
+        contract_id,
+        vendor_name,
+        obligation_amount,
+        award_date,
+        naics_code,
+        reporting_agency
+    FROM advana_catalog.procurement.fpds_awards_fy2024
+    WHERE reporting_agency = 'DEPARTMENT OF THE ARMY'
+      AND obligation_amount > 1000000
+""")
+
+# Basic sanity check — procurement data has duplicate records
+print(f"Total rows: {df.count():,}")
+print(f"Unique contracts: {df.select('contract_id').distinct().count():,}")
+
+# Check for the most common data quality issue: obligation amount sign errors
+negative_obligations = df.filter(F.col("obligation_amount") < 0).count()
+print(f"Negative obligations (deobligations or errors): {negative_obligations:,}")</code></pre>
+          </div>
+
+          <div class="code-block-wrapper">
+            <div class="code-block-header"><span class="code-block-lang">python</span><button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button></div>
+            <pre><code class="language-python"># MLflow experiment tracking example — readiness model development
+import mlflow
+import mlflow.sklearn
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report
+
+df = spark.table("advana_catalog.readiness.unit_readiness_daily").toPandas()
+
+features = ["equipment_pct_mc", "personnel_fill_rate", "training_completion_pct",
+            "parts_availability_score", "days_since_last_assessment"]
+target = "c_rating"  # C1/C2/C3/C4 readiness rating
+
+X = df[features].fillna(df[features].median())
+y = (df[target].isin(["C1", "C2"])).astype(int)  # Binary: ready vs. degraded
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+with mlflow.start_run(run_name="readiness_rf_v1"):
+    mlflow.log_param("n_estimators", 100)
+    mlflow.log_param("max_depth", 8)
+    mlflow.log_param("features", features)
+
+    model = RandomForestClassifier(n_estimators=100, max_depth=8, random_state=42)
+    model.fit(X_train, y_train)
+
+    preds = model.predict(X_test)
+    report = classification_report(y_test, preds, output_dict=True)
+
+    mlflow.log_metric("precision_ready", report["1"]["precision"])
+    mlflow.log_metric("recall_ready", report["1"]["recall"])
+    mlflow.log_metric("f1_ready", report["1"]["f1-score"])
+
+    mlflow.sklearn.log_model(model, "readiness_classifier")
+    print(f"F1 (ready): {report['1']['f1-score']:.3f}")</code></pre>
+          </div>
+
+          <div class="callout callout-note">
+            <span class="callout-icon" aria-hidden="true">&#8505;</span>
+            <div class="callout-content">
+              <strong>Approved packages:</strong> You cannot <code>pip install</code> arbitrary packages from the internet in an IL4/IL5 environment. The Databricks environment has a curated list of approved packages. If you need something not on that list, the process involves submitting a request through the platform's software approval chain, which can take weeks. Build it into your project timeline.
+            </div>
+          </div>
+
+          <h2 id="classification-diagram">Data Flow by Classification Level</h2>
+
+          <div class="mermaid-wrapper">
+            <div class="mermaid">
+graph TD
+    A[Data Source Systems] --> B[Advana Ingestion Layer]
+    B --> C{Classification Level?}
+    C -->|Unclassified CUI/FOUO| D[NIPRNET - IL4]
+    C -->|Secret| E[SIPRNET - IL5]
+    D --> F[Databricks Notebooks]
+    D --> G[Qlik Dashboards]
+    D --> H[DataRobot / SageMaker]
+    E --> I[Classified Analytics Apps]
+    F --> J[MLflow Model Registry]
+    G --> K[Program Office Consumers]
+            </div>
+          </div>
+          <p class="figure-caption">Advana data flow by classification level. NIPRNET and SIPRNET are separate pipelines with separate access controls and compute environments.</p>
+
+          <h2 id="current-state">Current State (2025–2026)</h2>
+
+          <h3 id="workforce-reduction">The Workforce Reduction</h3>
+          <p>In February and March 2025, following Defense Secretary Hegseth's directive for 5–8% civilian workforce cuts, CDAO lost approximately 60% of its workforce. Contracted support staff was reduced by roughly 80%. The practical result: platform development slowed, some capabilities that required active maintenance degraded, and the institutional knowledge embedded in those positions walked out the door.</p>
+
+          <h3 id="aamac-cancellation">The AAMAC Cancellation</h3>
+          <p>In July 2025, the planned 10-year, $15 billion recompete (the Advancing Artificial Intelligence Multiple Award Contract) was formally canceled. Booz Allen Hamilton's existing $647 million contract continues. The future contracting vehicle for Advana's expansion is unresolved as of early 2026.</p>
+
+          <h3 id="january-2026-restructuring">The January 2026 Restructuring</h3>
+          <p>On January 9, 2026, Defense Secretary Hegseth signed the "Transforming Advana to Accelerate Artificial Intelligence and Enhance Auditability" memo. It divides Advana into three tracks:</p>
+
+          <div class="mermaid-wrapper">
+            <div class="mermaid">
+graph LR
+    A[Current Advana] --> B[War Data Platform]
+    A --> C[Advana for Financial Management]
+    A --> D[WDP Application Services]
+    B --> E[DoD-wide AI Foundation]
+    C --> F[Audit Remediation FY27-28]
+    D --> G[App Migrations + New AI Tools]
+            </div>
+          </div>
+          <p class="figure-caption">The January 2026 three-way restructuring of Advana. Financial management returns to the Comptroller. The War Data Platform becomes the AI development foundation.</p>
+
+          <ul>
+            <li><strong>War Data Platform (WDP)</strong> — The new data integration foundation. Designed to be DoD-wide, standardized, and built to support agentic AI use cases at scale.</li>
+            <li><strong>Advana for Financial Management</strong> — Pulled back under the Office of the Under Secretary of Defense (Comptroller). Focused entirely on audit remediation (FY 2027 and FY 2028 clean audit targets).</li>
+            <li><strong>War Data Platform Application Services</strong> — Consolidates all non-audit Advana applications. Manages migrations from legacy Advana to the new WDP.</li>
+          </ul>
+
+          <h2 id="best-practices">Best Practices</h2>
+
+          <h3 id="what-works">What Works</h3>
+          <p><strong>Start in Collibra before you write a single query.</strong> An hour in Collibra before you touch the data saves you two weeks of debugging a model trained on a field that was redefined six months ago.</p>
+          <p><strong>Use Qlik SSE when the end user is a dashboard consumer, not a data scientist.</strong> Qlik SSE lets you embed Python computations directly in a dashboard that program office staff can refresh themselves. Build it that way from day one.</p>
+          <p><strong>GitLab everything.</strong> Treat your Advana work the same way you'd treat any production software: version-controlled, documented, reproducible.</p>
+          <p><strong>Track the War Data Platform timeline.</strong> Tools and pipelines built on legacy Advana infrastructure will need to migrate.</p>
+
+          <h2 id="failure-modes">Where This Goes Wrong</h2>
+
+          <div class="callout callout-warning">
+            <span class="callout-icon" aria-hidden="true">&#9888;</span>
+            <div class="callout-content">
+              <strong>Failure Mode 1: Treating Advana like a commercial cloud platform</strong>
+              <p>The mistake: Expecting to <code>pip install</code> packages freely and deploy code with standard DevOps practices. Submit your full package requirements list to the platform team at project kickoff, not when you need them.</p>
+            </div>
+          </div>
+
+          <div class="callout callout-warning">
+            <span class="callout-icon" aria-hidden="true">&#9888;</span>
+            <div class="callout-content">
+              <strong>Failure Mode 2: Building for today's Advana architecture</strong>
+              <p>The mistake: Designing pipelines that depend on specific legacy Advana infrastructure components scheduled for migration to the War Data Platform. Build modular pipelines with clean interfaces — when the migration happens, you swap the ingestion component, not the entire stack.</p>
+            </div>
+          </div>
+
+          <div class="callout callout-warning">
+            <span class="callout-icon" aria-hidden="true">&#9888;</span>
+            <div class="callout-content">
+              <strong>Failure Mode 3: Underestimating access lead time</strong>
+              <p>Advana provisioning takes one to three weeks minimum, often longer for sensitive community spaces. Submit 2875s before the contract starts. If you cannot do that, the first sprint should be architecture, Collibra data discovery, and training — not analysis that requires live data access.</p>
+            </div>
+          </div>
+
+          <h2 id="chapter-close">Platform Close</h2>
+          <p><strong>The one thing to remember:</strong> Advana is the DoD's single authoritative data aggregation platform for cross-component analytics, but it is in a significant transition period — the War Data Platform restructuring will change how data access and AI applications are built on top of it, and practitioners who understand that transition will make better architecture decisions than those who treat today's platform as permanent.</p>
+          <p><strong>What to do Monday morning:</strong> If you have a DoD analytics assignment coming up, submit your DD Form 2875 this week — before the contract starts. Spend an hour in the Advana University materials at <code>dau.edu</code> before you touch a notebook. Pull up the January 9, 2026 Hegseth restructuring memo at <code>media.defense.gov</code> and read the WDP requirements section.</p>
+
+        </div><!-- /prose -->
       </article>
       <nav class="chapter-toc" aria-label="On this page">
         <span class="toc-label">On this page</span>
         <ul class="toc-list" id="toc-list" role="list"></ul>
       </nav>
-    </div>
+    </div><!-- /chapter-layout -->
+
     <footer class="site-footer" role="contentinfo">
       <div class="footer-grid">
         <div><p class="footer-brand">Federal Data Science<br>Learning Handbook</p><p class="footer-tagline">Open reference. No registration.</p></div>
+        <div><p class="footer-col-title">Chapters</p><ul class="footer-links" role="list"><li><a href="../chapters/01-introduction.html">01 — Introduction</a></li><li><a href="../chapters/09-mlops.html">09 — MLOps</a></li><li><a href="../chapters/13-advanced-topics.html">13 — GenAI</a></li></ul></div>
         <div><p class="footer-col-title">Platforms</p><ul class="footer-links" role="list"><li><a href="advana.html">Advana</a></li><li><a href="databricks.html">Databricks</a></li><li><a href="qlik.html">Qlik</a></li><li><a href="navy-jupiter.html">Navy Jupiter</a></li><li><a href="palantir.html">Palantir</a></li></ul></div>
-        <div><p class="footer-col-title">Chapters</p><ul class="footer-links" role="list"><li><a href="../chapters/01-introduction.html">01 — Introduction</a></li><li><a href="../chapters/09-mlops.html">09 — MLOps</a></li><li><a href="../chapters/12-ethics-governance.html">12 — Ethics</a></li></ul></div>
       </div>
       <div class="footer-bottom">
         <span class="footer-copy">Federal Data Science Learning Handbook &mdash; Open Reference</span>

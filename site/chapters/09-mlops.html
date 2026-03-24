@@ -3,29 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Chapter 09: MLOps in the Federal Environment — Federal Data Science Learning Handbook">
-  <title>Chapter 09: MLOps in the Federal Environment — Federal DS Handbook</title>
+  <meta name="description" content="MLOps and production pipelines on federal platforms — Federal Data Science Learning Handbook">
+  <title>Chapter 09: MLOps — Federal DS Handbook</title>
   <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/prism-theme.css">
 </head>
 <body>
+
 <nav class="site-nav" role="navigation" aria-label="Main navigation">
   <button class="btn-icon mobile-menu-btn" id="mobile-menu-btn" aria-label="Open menu" aria-expanded="false">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
   </button>
   <a href="../index.html" class="nav-brand" aria-label="Home">
     <img src="../assets/favicon.svg" class="nav-brand-icon" alt="" aria-hidden="true" width="28" height="28">
-    <span class="nav-brand-text">
-      <span class="nav-brand-title">Federal</span>
-      <span class="nav-brand-subtitle">Data Science Handbook</span>
-    </span>
+    <span class="nav-brand-text"><span class="nav-brand-title">Federal</span><span class="nav-brand-subtitle">Data Science Handbook</span></span>
   </a>
   <div class="nav-spacer"></div>
   <ul class="nav-links" role="list">
     <li><a href="../index.html">Home</a></li>
     <li><a href="01-introduction.html" class="active">Chapters</a></li>
-    <li><a href="../platforms/template.html">Platforms</a></li>
+    <li><a href="../index.html#platforms">Platforms</a></li>
   </ul>
   <div class="nav-actions">
     <button class="btn-icon" id="theme-toggle" aria-label="Toggle dark mode">
@@ -34,41 +32,49 @@
     </button>
   </div>
 </nav>
+
 <div class="sidebar-overlay" id="sidebar-overlay" aria-hidden="true"></div>
+
 <aside class="sidebar" id="sidebar" role="complementary" aria-label="Navigation">
   <div class="sidebar-section">
     <span class="sidebar-label">Chapters</span>
-    <nav aria-label="Chapter list"><ul class="sidebar-nav" role="list">
-      <li><a href="01-introduction.html"><span class="chapter-num">01</span> Introduction</a></li>
-      <li><a href="02-python-r-foundations.html"><span class="chapter-num">02</span> Python &amp; R Foundations</a></li>
-      <li><a href="03-data-acquisition.html"><span class="chapter-num">03</span> Data Acquisition</a></li>
-      <li><a href="04-data-wrangling.html"><span class="chapter-num">04</span> Data Wrangling</a></li>
-      <li><a href="05-exploratory-analysis.html"><span class="chapter-num">05</span> Exploratory Analysis</a></li>
-      <li><a href="06-supervised-ml.html"><span class="chapter-num">06</span> Supervised ML</a></li>
-      <li><a href="07-unsupervised-ml.html"><span class="chapter-num">07</span> Unsupervised ML</a></li>
-      <li><a href="08-deep-learning.html"><span class="chapter-num">08</span> Deep Learning</a></li>
-      <li><a href="09-mlops.html"><span class="chapter-num">09</span> MLOps</a></li>
-      <li><a href="10-visualization.html"><span class="chapter-num">10</span> Visualization</a></li>
-      <li><a href="11-deployment.html"><span class="chapter-num">11</span> Deployment</a></li>
-      <li><a href="12-ethics-governance.html"><span class="chapter-num">12</span> Ethics &amp; Governance</a></li>
-      <li><a href="13-advanced-topics.html"><span class="chapter-num">13</span> Advanced Topics</a></li>
-    </ul></nav>
+    <nav aria-label="Chapter list">
+      <ul class="sidebar-nav" role="list">
+        <li><a href="01-introduction.html"><span class="chapter-num">01</span> Introduction</a></li>
+        <li><a href="02-python-r-foundations.html"><span class="chapter-num">02</span> Python &amp; R Foundations</a></li>
+        <li><a href="03-data-acquisition.html"><span class="chapter-num">03</span> Data Acquisition</a></li>
+        <li><a href="04-data-wrangling.html"><span class="chapter-num">04</span> Data Wrangling</a></li>
+        <li><a href="05-exploratory-analysis.html"><span class="chapter-num">05</span> Exploratory Analysis</a></li>
+        <li><a href="06-supervised-ml.html"><span class="chapter-num">06</span> Supervised ML</a></li>
+        <li><a href="07-unsupervised-ml.html"><span class="chapter-num">07</span> Unsupervised ML</a></li>
+        <li><a href="08-deep-learning.html"><span class="chapter-num">08</span> Deep Learning</a></li>
+        <li><a href="09-mlops.html" class="active"><span class="chapter-num">09</span> MLOps</a></li>
+        <li><a href="10-visualization.html"><span class="chapter-num">10</span> Visualization</a></li>
+        <li><a href="11-deployment.html"><span class="chapter-num">11</span> Deployment</a></li>
+        <li><a href="12-ethics-governance.html"><span class="chapter-num">12</span> Ethics &amp; Governance</a></li>
+        <li><a href="13-advanced-topics.html"><span class="chapter-num">13</span> Advanced Topics</a></li>
+      </ul>
+    </nav>
   </div>
   <div class="sidebar-section">
     <span class="sidebar-label">Platform Guides</span>
-    <nav aria-label="Platform guides"><ul class="sidebar-nav" role="list">
-      <li><a href="../platforms/advana.html"><span class="platform-dot" style="background:#C5A572"></span> Advana</a></li>
-      <li><a href="../platforms/databricks.html"><span class="platform-dot" style="background:#FF3621"></span> Databricks</a></li>
-      <li><a href="../platforms/qlik.html"><span class="platform-dot" style="background:#009845"></span> Qlik</a></li>
-      <li><a href="../platforms/navy-jupiter.html"><span class="platform-dot" style="background:#003B5C"></span> Navy Jupiter</a></li>
-      <li><a href="../platforms/palantir.html"><span class="platform-dot" style="background:#1B2A4A"></span> Palantir AIP/Foundry</a></li>
-    </ul></nav>
+    <nav aria-label="Platform guides">
+      <ul class="sidebar-nav" role="list">
+        <li><a href="../platforms/advana.html"><span class="platform-dot" style="background:#C5A572"></span> Advana</a></li>
+        <li><a href="../platforms/databricks.html"><span class="platform-dot" style="background:#FF3621"></span> Databricks</a></li>
+        <li><a href="../platforms/qlik.html"><span class="platform-dot" style="background:#009845"></span> Qlik</a></li>
+        <li><a href="../platforms/navy-jupiter.html"><span class="platform-dot" style="background:#003B5C"></span> Navy Jupiter</a></li>
+        <li><a href="../platforms/palantir.html"><span class="platform-dot" style="background:#1B2A4A"></span> Palantir AIP/Foundry</a></li>
+      </ul>
+    </nav>
   </div>
 </aside>
+
 <div class="page-wrapper">
   <main class="main-content" id="main-content">
     <div class="chapter-layout">
       <article class="chapter-main">
+
         <header class="chapter-header">
           <nav class="chapter-breadcrumb" aria-label="Breadcrumb">
             <a href="../index.html">Home</a>
@@ -78,71 +84,416 @@
             <span aria-current="page">Chapter 09</span>
           </nav>
           <span class="chapter-number">Chapter 09</span>
-          <h1 class="chapter-title" id="chapter-title">MLOps in the Federal Environment</h1>
-          <p class="chapter-lede">MLflow, Unity Catalog model registry, CI/CD on GitLab in GovCloud, ATO requirements for production models, and monitoring deployed models.</p>
+          <h1 class="chapter-title" id="chapter-title">MLOps and Production Pipelines</h1>
+          <p class="chapter-lede">
+            Training a model is 20% of the work. Getting it to score new data reliably, on schedule, with monitoring and an audit trail that survives a program manager change — that's the other 80%. This chapter covers MLflow experiment tracking, model registry lifecycle, drift detection, CI/CD for ML, and the Palantir <code>palantir_models</code> deployment pattern.
+          </p>
           <div class="chapter-meta-bar">
             <span class="chapter-meta-item">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              ~30–45 min read
+              ~50 min read
             </span>
-            <span class="chapter-meta-item">MLflow · GitLab · Databricks</span>
+            <span class="chapter-meta-item">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              Databricks, Advana, Navy Jupiter, Palantir Foundry
+            </span>
           </div>
         </header>
-        <div class="prose" id="prose-content">
-          <p>This chapter covers MLOps in the Federal Environment in the context of federal data science work. The content draws directly from the source markdown and covers platform-specific patterns, compliance requirements, and production-ready code examples.</p>
 
-          <div class="callout callout-note">
-            <span class="callout-icon" aria-hidden="true">&#8505;</span>
-            <div class="callout-content">
-              <p>This chapter is ready for content conversion from the source markdown at <code>chapters/09-mlops/README.md</code>. Use the chapter template pattern from <code>site/chapters/template.html</code>.</p>
+        <div class="prose" id="prose-content">
+
+          <h2 id="mlflow-tracking">MLflow Experiment Tracking</h2>
+          <p>MLflow is the standard experiment tracking layer on all Databricks deployments (Advana, Jupiter, standalone). Every training run that touches a production dataset should log to MLflow. The audit trail isn't optional — it's the answer to "why did the model predict this in February 2025 when the data at that time was X?"</p>
+
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
             </div>
+            <pre><code class="language-python">import mlflow
+import mlflow.sklearn
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+
+mlflow.set_experiment("/Users/your_email/maintenance-anomaly-v2")
+
+with mlflow.start_run(run_name="rf_baseline") as run:
+    # Log parameters
+    mlflow.log_param("n_estimators", 200)
+    mlflow.log_param("max_depth", 8)
+    mlflow.log_param("training_data_table", "jupiter_catalog.silver.maintenance_features")
+    mlflow.log_param("training_cutoff_date", "2024-09-30")
+
+    # Train model
+    clf = RandomForestClassifier(n_estimators=200, max_depth=8, random_state=42)
+    clf.fit(X_train, y_train)
+
+    # Log metrics
+    mlflow.log_metric("test_auc", clf.score(X_test, y_test))
+    mlflow.log_metric("test_f1", f1_score(y_test, clf.predict(X_test)))
+
+    # Log artifacts
+    mlflow.log_dict({"feature_names": feature_cols}, "feature_schema.json")
+
+    # Register model — always use stage aliases, never hardcode version numbers
+    mlflow.sklearn.log_model(
+        clf,
+        artifact_path="model",
+        registered_model_name="maintenance-anomaly-detector",
+        input_example=X_test.head(5),
+        signature=mlflow.models.infer_signature(X_test, clf.predict_proba(X_test)),
+    )
+
+    print(f"Run ID: {run.info.run_id}")</code></pre>
           </div>
 
-          <h2 id="source-content">Source Content Available</h2>
-          <p>The source markdown for this chapter is available at:</p>
+          <h2 id="model-registry">Model Registry Lifecycle</h2>
+          <p>The MLflow Model Registry provides stage management: a model version moves from <code>None</code> → <code>Staging</code> → <code>Production</code> → <code>Archived</code>. In a federal program, stage transitions map to review gates: Staging requires a technical peer review; Production requires the program manager's sign-off and the monitoring plan to be in place.</p>
+
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code class="language-python">from mlflow import MlflowClient
+
+client = MlflowClient()
+model_name = "maintenance-anomaly-detector"
+
+# Get the latest version in staging
+staging_versions = client.get_latest_versions(model_name, stages=["Staging"])
+if staging_versions:
+    version = staging_versions[0]
+    print(f"Staging version: {version.version}  Run ID: {version.run_id}")
+
+# Promote to Production (requires human approval in your workflow)
+client.transition_model_version_stage(
+    name=model_name,
+    version=version.version,
+    stage="Production",
+    archive_existing_versions=True,  # Archive the previous Production version
+)
+print(f"Promoted version {version.version} to Production")
+
+# Archive old Production version
+# (archive_existing_versions=True above handles this automatically)
+
+# Always load Production model by stage alias, never by version number
+model = mlflow.pyfunc.load_model(f"models:/{model_name}/Production")</code></pre>
+          </div>
+
+          <h2 id="palantir-models">Palantir palantir_models Deployment</h2>
+          <p>On Foundry, model deployment uses the <code>palantir_models</code> library (not the deprecated <code>foundry_ml</code>). Models are registered as versioned Foundry datasets that connect to the Ontology, allowing them to be called from Workshop dashboards and AIP Logic functions.</p>
+
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code class="language-python">from transforms.api import transform, Input, Output
+from palantir_models import Model
+from palantir_models.transforms import ModelInput, ModelOutput
+import pandas as pd
+
+# Model adapter — defines the interface between Foundry Ontology and your model
+class MaintenanceRiskAdapter:
+    def __init__(self, sklearn_pipeline):
+        self.pipeline = sklearn_pipeline
+
+    def predict(self, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Called by AIP Logic and Workshop batch scoring.
+        Input: DataFrame with work order features.
+        Output: DataFrame with overrun_probability and overrun_flag columns.
+        """
+        proba = self.pipeline.predict_proba(df)[:, 1]
+        df["overrun_probability"] = proba
+        df["overrun_flag"]        = (proba >= 0.65).astype(int)
+        return df[["work_order_id", "overrun_probability", "overrun_flag"]]
+
+
+@transform(
+    model_output=ModelOutput("/models/maintenance_overrun_v2"),
+    training_data=Input("/analytics/silver/maintenance_features"),
+)
+def train_and_register(training_data, model_output):
+    df = training_data.dataframe().toPandas()
+    # ... training code ...
+    adapter = MaintenanceRiskAdapter(trained_pipeline)
+    model_output.write_model(Model(adapter))</code></pre>
+          </div>
+
+          <h2 id="cicd-pipelines">CI/CD for ML Pipelines</h2>
+          <p>ML code is code. It goes through the same review, testing, and deployment pipeline as application code. On Databricks, GitHub Actions (or equivalent CI/CD on GovCloud) triggers training jobs and validation gates before any model moves to Production.</p>
+
           <div class="code-block-wrapper">
             <div class="code-block-header">
               <span class="code-block-lang">bash</span>
               <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
             </div>
-            <pre><code class="language-bash">chapters/09-mlops/README.md</code></pre>
+            <pre><code class="language-bash"># .github/workflows/ml-pipeline.yml (simplified)
+# Triggered on PR to main — runs validation before production deployment
+
+name: ML Pipeline Validation
+
+on:
+  pull_request:
+    branches: [main]
+    paths: ['src/models/**', 'notebooks/**']
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run data quality checks
+        run: python scripts/validate_data_quality.py
+
+      - name: Run model unit tests
+        run: pytest tests/test_model_logic.py -v
+
+      - name: Trigger Databricks training job
+        run: |
+          databricks jobs run-now \
+            --job-id ${{ secrets.TRAINING_JOB_ID }} \
+            --python-params '["--mode=validation", "--holdout=2024"]'
+
+      - name: Check model performance gate
+        run: python scripts/check_performance_gate.py --min-auc=0.78</code></pre>
           </div>
-          <p>Convert using the patterns in <code>site/chapters/template.html</code> and the component reference within that file.</p>
-        </div>
+
+          <h2 id="feature-stores">Feature Stores</h2>
+          <p>A feature store is the shared registry of computed features used across models. Without one, every team recomputes the same features independently — "ship age in years," "vendor prior award count," "fiscal month" — each with slightly different logic. The first production inconsistency surfaces in a discrepancy between the score in the dashboard and the score the model actually produces.</p>
+
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code class="language-python">from databricks.feature_store import FeatureStoreClient
+
+fs = FeatureStoreClient()
+
+# Create feature table from precomputed features
+fs.create_table(
+    name="procurement_catalog.feature_store.vendor_risk_features",
+    primary_keys=["recipient_uei"],
+    timestamp_keys=["as_of_date"],
+    description="Vendor-level risk features for ML models — updated daily",
+    schema=vendor_risk_df.schema,
+)
+
+# Write features to the store
+fs.write_table(
+    name="procurement_catalog.feature_store.vendor_risk_features",
+    df=vendor_risk_df,
+    mode="merge",
+)
+
+# Training with Feature Store — automatic training/serving consistency
+from databricks.feature_store import FeatureLookup
+
+feature_lookups = [
+    FeatureLookup(
+        table_name="procurement_catalog.feature_store.vendor_risk_features",
+        feature_names=["prior_award_count", "on_time_rate", "cost_growth_avg"],
+        lookup_key="recipient_uei",
+        timestamp_lookup_key="action_date",
+    )
+]
+
+training_set = fs.create_training_set(
+    df=df_awards,
+    feature_lookups=feature_lookups,
+    label="exceeded_cost",
+    exclude_columns=["recipient_uei", "action_date"],
+)
+
+training_df = training_set.load_df().toPandas()</code></pre>
+          </div>
+
+          <h2 id="drift-detection">Drift Detection</h2>
+          <p>Models decay. The operational environment changes — new equipment, doctrine updates, fiscal policy shifts — and the model trained 18 months ago no longer reflects reality. Drift detection is the monitoring discipline that tells you when this happens before the program manager notices it in the dashboard.</p>
+
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code class="language-python">from evidently.report import Report
+from evidently.metrics import DataDriftPreset, TargetDriftPreset
+
+def generate_drift_report(
+    reference_df: pd.DataFrame,
+    current_df: pd.DataFrame,
+    report_path: str = "/tmp/drift_report.html",
+) -> dict:
+    """
+    Generate a data drift report comparing training distribution to current scoring distribution.
+    Log report artifact to MLflow for audit trail.
+    """
+    report = Report(metrics=[DataDriftPreset(), TargetDriftPreset()])
+    report.run(reference_data=reference_df, current_data=current_df)
+    report.save_html(report_path)
+
+    result = report.as_dict()
+    drift_detected = result["metrics"][0]["result"]["dataset_drift"]
+
+    summary = {
+        "dataset_drift_detected": drift_detected,
+        "n_drifted_features":     result["metrics"][0]["result"]["number_of_drifted_columns"],
+        "total_features":         result["metrics"][0]["result"]["number_of_columns"],
+    }
+
+    with mlflow.start_run(run_name="drift_check"):
+        mlflow.log_metrics(summary)
+        mlflow.log_artifact(report_path)
+
+        if drift_detected:
+            mlflow.set_tag("action_required", "retraining_triggered")
+            print("DRIFT DETECTED — triggering retraining workflow")
+
+    return summary</code></pre>
+          </div>
+
+          <h2 id="failure-modes">Where This Goes Wrong</h2>
+
+          <div class="failure-card">
+            <h4>Failure Mode 1: No Monitoring After Deployment</h4>
+            <p>The model is deployed. You roll off the contract. Nobody checks whether it's still working. Six months later a new analyst notices the predictions are wrong and discovers the training data is two years stale and the operational context changed. Fix: define the monitoring owner, the monitoring frequency, and the retraining trigger in writing before you deploy. Not after. Before.</p>
+          </div>
+
+          <div class="failure-card">
+            <h4>Failure Mode 2: Hardcoding Version Numbers</h4>
+            <p><code>mlflow.pyfunc.load_model("models:/my-model/3")</code> works until version 4 is promoted and the scoring pipeline isn't updated. Fix: always use stage aliases: <code>"models:/my-model/Production"</code>. Stage transitions are managed by the registry; version numbers are an implementation detail.</p>
+          </div>
+
+          <div class="failure-card">
+            <h4>Failure Mode 3: Feature Inconsistency Between Training and Scoring</h4>
+            <p>The training pipeline computes "vendor on-time rate" as contracts completed on time divided by all contracts. The scoring pipeline computes it as a rolling 12-month average. The model trains on one, scores on another, and produces systematically biased predictions that look fine in aggregate but are wrong for specific vendors. Fix: use a feature store. The same computation runs at training time and scoring time, guaranteed.</p>
+          </div>
+
+          <h2 id="platform-comparison">Platform Comparison</h2>
+
+          <table>
+            <thead>
+              <tr>
+                <th>MLOps Capability</th>
+                <th>Databricks (Advana/Jupiter)</th>
+                <th>Palantir Foundry</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Experiment tracking</td>
+                <td>MLflow (native)</td>
+                <td>Foundry versioned artifacts</td>
+              </tr>
+              <tr>
+                <td>Model registry</td>
+                <td>MLflow Model Registry</td>
+                <td>Foundry datasets + Ontology</td>
+              </tr>
+              <tr>
+                <td>Feature store</td>
+                <td>Databricks Feature Store</td>
+                <td>Foundry Pipeline Builder</td>
+              </tr>
+              <tr>
+                <td>Drift detection</td>
+                <td>evidently + scheduled Workflow</td>
+                <td>Monitoring Transforms</td>
+              </tr>
+              <tr>
+                <td>CI/CD integration</td>
+                <td>GitHub Actions + Databricks CLI</td>
+                <td>Foundry CI/CD (built-in)</td>
+              </tr>
+              <tr>
+                <td>Audit trail</td>
+                <td>MLflow runs + Unity Catalog logs</td>
+                <td>Foundry Transform history + Ontology</td>
+              </tr>
+              <tr>
+                <td>Batch scoring orchestration</td>
+                <td>Databricks Workflows (DAG)</td>
+                <td>Foundry Pipeline Builder (scheduled)</td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div><!-- /prose -->
+
         <nav class="chapter-nav-footer" aria-label="Chapter navigation">
           <a href="08-deep-learning.html" class="chapter-nav-link prev">
-            <span class="chapter-nav-direction">Previous</span>
-            <span class="chapter-nav-title">08 — Deep Learning</span>
+            <span class="chapter-nav-direction">Previous Chapter</span>
+            <span class="chapter-nav-title">Deep Learning and Neural Networks</span>
           </a>
           <a href="10-visualization.html" class="chapter-nav-link next">
             <span class="chapter-nav-direction">Next Chapter</span>
-            <span class="chapter-nav-title">10 — Visualization</span>
+            <span class="chapter-nav-title">Visualization and Dashboards</span>
           </a>
         </nav>
+
       </article>
+
       <nav class="chapter-toc" aria-label="On this page">
         <span class="toc-label">On this page</span>
         <ul class="toc-list" id="toc-list" role="list"></ul>
       </nav>
-    </div>
+
+    </div><!-- /chapter-layout -->
+
     <footer class="site-footer" role="contentinfo">
       <div class="footer-grid">
-        <div><p class="footer-brand">Federal Data Science<br>Learning Handbook</p><p class="footer-tagline">Open reference. No registration.</p></div>
-        <div><p class="footer-col-title">Chapters</p><ul class="footer-links" role="list"><li><a href="01-introduction.html">01 — Introduction</a></li><li><a href="09-mlops.html">09 — MLOps</a></li><li><a href="12-ethics-governance.html">12 — Ethics</a></li></ul></div>
-        <div><p class="footer-col-title">Platforms</p><ul class="footer-links" role="list"><li><a href="../platforms/advana.html">Advana</a></li><li><a href="../platforms/databricks.html">Databricks</a></li><li><a href="../platforms/qlik.html">Qlik</a></li><li><a href="../platforms/navy-jupiter.html">Navy Jupiter</a></li><li><a href="../platforms/palantir.html">Palantir</a></li></ul></div>
+        <div>
+          <p class="footer-brand">Federal Data Science<br>Learning Handbook</p>
+          <p class="footer-tagline">A practical guide to data science in the federal government. Open reference.</p>
+        </div>
+        <div>
+          <p class="footer-col-title">Chapters</p>
+          <ul class="footer-links" role="list">
+            <li><a href="01-introduction.html">01 — Introduction</a></li>
+            <li><a href="02-python-r-foundations.html">02 — Python &amp; R</a></li>
+            <li><a href="03-data-acquisition.html">03 — Data Acquisition</a></li>
+            <li><a href="09-mlops.html">09 — MLOps</a></li>
+            <li><a href="12-ethics-governance.html">12 — Ethics</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="footer-col-title">Platforms</p>
+          <ul class="footer-links" role="list">
+            <li><a href="../platforms/advana.html">Advana</a></li>
+            <li><a href="../platforms/databricks.html">Databricks</a></li>
+            <li><a href="../platforms/qlik.html">Qlik</a></li>
+            <li><a href="../platforms/navy-jupiter.html">Navy Jupiter</a></li>
+            <li><a href="../platforms/palantir.html">Palantir</a></li>
+          </ul>
+        </div>
       </div>
       <div class="footer-bottom">
         <span class="footer-copy">Federal Data Science Learning Handbook &mdash; Open Reference</span>
-        <div class="footer-platform-dots" aria-hidden="true"><span class="footer-dot" style="background:#C5A572"></span><span class="footer-dot" style="background:#FF3621"></span><span class="footer-dot" style="background:#009845"></span><span class="footer-dot" style="background:#003B5C"></span><span class="footer-dot" style="background:#4A6FA5"></span></div>
+        <div class="footer-platform-dots" aria-hidden="true">
+          <span class="footer-dot" style="background:#C5A572"></span>
+          <span class="footer-dot" style="background:#FF3621"></span>
+          <span class="footer-dot" style="background:#009845"></span>
+          <span class="footer-dot" style="background:#003B5C"></span>
+          <span class="footer-dot" style="background:#4A6FA5"></span>
+        </div>
       </div>
     </footer>
+
   </main>
-</div>
+</div><!-- /page-wrapper -->
+
 <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
 <script src="../js/mermaid-init.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-r.min.js"></script>
 <script src="../js/main.js"></script>
 </body>
 </html>

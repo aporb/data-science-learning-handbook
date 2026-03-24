@@ -3,29 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Chapter 08: Deep Learning and Neural Networks — Federal Data Science Learning Handbook">
-  <title>Chapter 08: Deep Learning and Neural Networks — Federal DS Handbook</title>
+  <meta name="description" content="Deep learning and neural networks on federal platforms — Federal Data Science Learning Handbook">
+  <title>Chapter 08: Deep Learning — Federal DS Handbook</title>
   <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/prism-theme.css">
 </head>
 <body>
+
 <nav class="site-nav" role="navigation" aria-label="Main navigation">
   <button class="btn-icon mobile-menu-btn" id="mobile-menu-btn" aria-label="Open menu" aria-expanded="false">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
   </button>
   <a href="../index.html" class="nav-brand" aria-label="Home">
     <img src="../assets/favicon.svg" class="nav-brand-icon" alt="" aria-hidden="true" width="28" height="28">
-    <span class="nav-brand-text">
-      <span class="nav-brand-title">Federal</span>
-      <span class="nav-brand-subtitle">Data Science Handbook</span>
-    </span>
+    <span class="nav-brand-text"><span class="nav-brand-title">Federal</span><span class="nav-brand-subtitle">Data Science Handbook</span></span>
   </a>
   <div class="nav-spacer"></div>
   <ul class="nav-links" role="list">
     <li><a href="../index.html">Home</a></li>
     <li><a href="01-introduction.html" class="active">Chapters</a></li>
-    <li><a href="../platforms/template.html">Platforms</a></li>
+    <li><a href="../index.html#platforms">Platforms</a></li>
   </ul>
   <div class="nav-actions">
     <button class="btn-icon" id="theme-toggle" aria-label="Toggle dark mode">
@@ -34,41 +32,49 @@
     </button>
   </div>
 </nav>
+
 <div class="sidebar-overlay" id="sidebar-overlay" aria-hidden="true"></div>
+
 <aside class="sidebar" id="sidebar" role="complementary" aria-label="Navigation">
   <div class="sidebar-section">
     <span class="sidebar-label">Chapters</span>
-    <nav aria-label="Chapter list"><ul class="sidebar-nav" role="list">
-      <li><a href="01-introduction.html"><span class="chapter-num">01</span> Introduction</a></li>
-      <li><a href="02-python-r-foundations.html"><span class="chapter-num">02</span> Python &amp; R Foundations</a></li>
-      <li><a href="03-data-acquisition.html"><span class="chapter-num">03</span> Data Acquisition</a></li>
-      <li><a href="04-data-wrangling.html"><span class="chapter-num">04</span> Data Wrangling</a></li>
-      <li><a href="05-exploratory-analysis.html"><span class="chapter-num">05</span> Exploratory Analysis</a></li>
-      <li><a href="06-supervised-ml.html"><span class="chapter-num">06</span> Supervised ML</a></li>
-      <li><a href="07-unsupervised-ml.html"><span class="chapter-num">07</span> Unsupervised ML</a></li>
-      <li><a href="08-deep-learning.html"><span class="chapter-num">08</span> Deep Learning</a></li>
-      <li><a href="09-mlops.html"><span class="chapter-num">09</span> MLOps</a></li>
-      <li><a href="10-visualization.html"><span class="chapter-num">10</span> Visualization</a></li>
-      <li><a href="11-deployment.html"><span class="chapter-num">11</span> Deployment</a></li>
-      <li><a href="12-ethics-governance.html"><span class="chapter-num">12</span> Ethics &amp; Governance</a></li>
-      <li><a href="13-advanced-topics.html"><span class="chapter-num">13</span> Advanced Topics</a></li>
-    </ul></nav>
+    <nav aria-label="Chapter list">
+      <ul class="sidebar-nav" role="list">
+        <li><a href="01-introduction.html"><span class="chapter-num">01</span> Introduction</a></li>
+        <li><a href="02-python-r-foundations.html"><span class="chapter-num">02</span> Python &amp; R Foundations</a></li>
+        <li><a href="03-data-acquisition.html"><span class="chapter-num">03</span> Data Acquisition</a></li>
+        <li><a href="04-data-wrangling.html"><span class="chapter-num">04</span> Data Wrangling</a></li>
+        <li><a href="05-exploratory-analysis.html"><span class="chapter-num">05</span> Exploratory Analysis</a></li>
+        <li><a href="06-supervised-ml.html"><span class="chapter-num">06</span> Supervised ML</a></li>
+        <li><a href="07-unsupervised-ml.html"><span class="chapter-num">07</span> Unsupervised ML</a></li>
+        <li><a href="08-deep-learning.html" class="active"><span class="chapter-num">08</span> Deep Learning</a></li>
+        <li><a href="09-mlops.html"><span class="chapter-num">09</span> MLOps</a></li>
+        <li><a href="10-visualization.html"><span class="chapter-num">10</span> Visualization</a></li>
+        <li><a href="11-deployment.html"><span class="chapter-num">11</span> Deployment</a></li>
+        <li><a href="12-ethics-governance.html"><span class="chapter-num">12</span> Ethics &amp; Governance</a></li>
+        <li><a href="13-advanced-topics.html"><span class="chapter-num">13</span> Advanced Topics</a></li>
+      </ul>
+    </nav>
   </div>
   <div class="sidebar-section">
     <span class="sidebar-label">Platform Guides</span>
-    <nav aria-label="Platform guides"><ul class="sidebar-nav" role="list">
-      <li><a href="../platforms/advana.html"><span class="platform-dot" style="background:#C5A572"></span> Advana</a></li>
-      <li><a href="../platforms/databricks.html"><span class="platform-dot" style="background:#FF3621"></span> Databricks</a></li>
-      <li><a href="../platforms/qlik.html"><span class="platform-dot" style="background:#009845"></span> Qlik</a></li>
-      <li><a href="../platforms/navy-jupiter.html"><span class="platform-dot" style="background:#003B5C"></span> Navy Jupiter</a></li>
-      <li><a href="../platforms/palantir.html"><span class="platform-dot" style="background:#1B2A4A"></span> Palantir AIP/Foundry</a></li>
-    </ul></nav>
+    <nav aria-label="Platform guides">
+      <ul class="sidebar-nav" role="list">
+        <li><a href="../platforms/advana.html"><span class="platform-dot" style="background:#C5A572"></span> Advana</a></li>
+        <li><a href="../platforms/databricks.html"><span class="platform-dot" style="background:#FF3621"></span> Databricks</a></li>
+        <li><a href="../platforms/qlik.html"><span class="platform-dot" style="background:#009845"></span> Qlik</a></li>
+        <li><a href="../platforms/navy-jupiter.html"><span class="platform-dot" style="background:#003B5C"></span> Navy Jupiter</a></li>
+        <li><a href="../platforms/palantir.html"><span class="platform-dot" style="background:#1B2A4A"></span> Palantir AIP/Foundry</a></li>
+      </ul>
+    </nav>
   </div>
 </aside>
+
 <div class="page-wrapper">
   <main class="main-content" id="main-content">
     <div class="chapter-layout">
       <article class="chapter-main">
+
         <header class="chapter-header">
           <nav class="chapter-breadcrumb" aria-label="Breadcrumb">
             <a href="../index.html">Home</a>
@@ -79,70 +85,427 @@
           </nav>
           <span class="chapter-number">Chapter 08</span>
           <h1 class="chapter-title" id="chapter-title">Deep Learning and Neural Networks</h1>
-          <p class="chapter-lede">Deep learning in government-approved compute environments. Working within GPU access constraints, compliance-friendly model storage, and approved framework versions.</p>
+          <p class="chapter-lede">
+            Deep learning is the right tool for specific problems — large labeled datasets, unstructured inputs (images, text, audio), sequential data with temporal dependencies. For everything else, simpler models win. This chapter covers where deep learning is warranted in federal AI, GPU costs and constraints, transfer learning in air-gapped environments, and DoD Directive 3000.09 requirements.
+          </p>
           <div class="chapter-meta-bar">
             <span class="chapter-meta-item">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              ~30–45 min read
+              ~50 min read
             </span>
-            <span class="chapter-meta-item">Databricks · PyTorch · Mosaic AI</span>
+            <span class="chapter-meta-item">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              Databricks, Advana, Navy Jupiter, Palantir AIP/Foundry
+            </span>
           </div>
         </header>
+
         <div class="prose" id="prose-content">
-          <p>This chapter covers Deep Learning and Neural Networks in the context of federal data science work. The content draws directly from the source markdown and covers platform-specific patterns, compliance requirements, and production-ready code examples.</p>
 
-          <div class="callout callout-note">
-            <span class="callout-icon" aria-hidden="true">&#8505;</span>
-            <div class="callout-content">
-              <p>This chapter is ready for content conversion from the source markdown at <code>chapters/08-deep-learning/README.md</code>. Use the chapter template pattern from <code>site/chapters/template.html</code>.</p>
-            </div>
-          </div>
+          <h2 id="when-deep-learning">When Deep Learning is Warranted</h2>
+          <p>Before writing any neural network code, establish a strong XGBoost or gradient boosting baseline. If the neural network doesn't beat the baseline by 3+ percentage points on the primary metric, ship the XGBoost. Explainability is easier. Auditability is simpler. The contract sponsor is happier.</p>
+          <p>Deep learning is warranted when:</p>
+          <ul>
+            <li>The dataset has 100,000+ labeled examples</li>
+            <li>The input is unstructured: imagery, text documents, audio recordings</li>
+            <li>The problem has temporal sequence structure (LSTM, Transformer)</li>
+            <li>High-cardinality categorical variables benefit from learned embeddings</li>
+          </ul>
 
-          <h2 id="source-content">Source Content Available</h2>
-          <p>The source markdown for this chapter is available at:</p>
+          <h2 id="pytorch-pytorch">PyTorch on Databricks</h2>
+          <p>PyTorch is the dominant framework for government AI work. TensorFlow is still present in legacy programs but new development defaults to PyTorch. On Databricks ML Runtime, PyTorch is pre-installed alongside CUDA for GPU clusters.</p>
+
           <div class="code-block-wrapper">
             <div class="code-block-header">
-              <span class="code-block-lang">bash</span>
+              <span class="code-block-lang">python</span>
               <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
             </div>
-            <pre><code class="language-bash">chapters/08-deep-learning/README.md</code></pre>
+            <pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.optim as optim
+from torch.utils.data import DataLoader, TensorDataset
+import mlflow, mlflow.pytorch
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print(f"Training on: {device}")
+if torch.cuda.is_available():
+    print(f"GPU: {torch.cuda.get_device_name(0)}")
+    print(f"VRAM: {torch.cuda.get_device_properties(0).total_memory / 1e9:.1f} GB")
+
+
+class ContractRiskNet(nn.Module):
+    """
+    Feedforward network with embeddings for tabular government data.
+    Uses embeddings for high-cardinality categoricals (hull_class, naics_code)
+    and standard linear layers for numeric features.
+    """
+    def __init__(self, n_numeric: int, naics_vocab: int, hull_vocab: int,
+                 embed_dim: int = 8, hidden_dim: int = 128):
+        super().__init__()
+        self.naics_embed = nn.Embedding(naics_vocab, embed_dim)
+        self.hull_embed  = nn.Embedding(hull_vocab, embed_dim)
+
+        input_dim = n_numeric + 2 * embed_dim
+        self.network = nn.Sequential(
+            nn.Linear(input_dim, hidden_dim),
+            nn.BatchNorm1d(hidden_dim),
+            nn.ReLU(),
+            nn.Dropout(0.3),
+            nn.Linear(hidden_dim, hidden_dim // 2),
+            nn.BatchNorm1d(hidden_dim // 2),
+            nn.ReLU(),
+            nn.Dropout(0.2),
+            nn.Linear(hidden_dim // 2, 1),
+        )
+
+    def forward(self, numeric, naics_idx, hull_idx):
+        naics_emb = self.naics_embed(naics_idx)
+        hull_emb  = self.hull_embed(hull_idx)
+        x = torch.cat([numeric, naics_emb, hull_emb], dim=1)
+        return self.network(x).squeeze(1)
+
+
+model = ContractRiskNet(
+    n_numeric=6, naics_vocab=500, hull_vocab=30
+).to(device)
+
+optimizer  = optim.AdamW(model.parameters(), lr=1e-3, weight_decay=1e-4)
+criterion  = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([5.0]).to(device))
+scheduler  = optim.lr_scheduler.OneCycleLR(
+    optimizer, max_lr=1e-2, steps_per_epoch=100, epochs=20
+)
+
+mlflow.set_experiment("/models/contract_risk_neural")
+
+with mlflow.start_run(run_name="feedforward_baseline"):
+    mlflow.log_params({
+        "architecture": "feedforward_with_embeddings",
+        "hidden_dim": 128, "embed_dim": 8, "dropout": 0.3,
+        "optimizer": "AdamW", "lr": 1e-3, "epochs": 20,
+    })
+
+    for epoch in range(20):
+        model.train()
+        epoch_loss = 0.0
+        for batch in train_loader:
+            numeric, naics_idx, hull_idx, labels = [b.to(device) for b in batch]
+            optimizer.zero_grad()
+            logits = model(numeric, naics_idx, hull_idx)
+            loss = criterion(logits, labels.float())
+            loss.backward()
+            torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+            optimizer.step()
+            scheduler.step()
+            epoch_loss += loss.item()
+
+        mlflow.log_metric("train_loss", epoch_loss, step=epoch)
+
+    mlflow.pytorch.log_model(model, artifact_path="model")</code></pre>
           </div>
-          <p>Convert using the patterns in <code>site/chapters/template.html</code> and the component reference within that file.</p>
-        </div>
+
+          <h2 id="transfer-learning">Transfer Learning</h2>
+          <p>Government AI projects have a structural disadvantage: labeled data is expensive and slow to acquire. Transfer learning addresses this directly — a model pre-trained on large public datasets has already learned general representations that transfer to your specific task.</p>
+
+          <div class="mermaid-wrapper">
+            <div class="mermaid">
+graph TD
+    A[Pre-trained Model\nImageNet / CommonCrawl] --> B{Transfer Strategy}
+    B -->|Small dataset\nunder 5K examples| C[Freeze backbone\nTrain head only]
+    B -->|Medium dataset\n5K to 50K examples| D[Freeze early layers\nFine-tune deep + head]
+    B -->|Large dataset\n50K+ examples| E[Fine-tune all layers\nLow LR on backbone]
+    C --> F[Fast training\nLow overfitting risk]
+    D --> G[Balanced speed\nand performance]
+    E --> H[Maximum performance\nRequires careful regularization]
+            </div>
+            <p class="mermaid-caption">Transfer learning strategy by dataset size. Government datasets typically fall in the small-to-medium range — freeze more of the backbone to prevent overfitting on limited labels.</p>
+          </div>
+
+          <h2 id="air-gapped-models">Transfer Learning in Air-Gapped Environments</h2>
+          <p>At IL5 and above, your training environment has no internet access. <code>pip install transformers</code> and <code>model = ResNet50(weights="IMAGENET1K_V2")</code> will fail. Pre-trained model weights are on HuggingFace Hub and PyTorch Hub — both on the public internet, both inaccessible.</p>
+
+          <p>The process for getting pre-trained weights into an air-gapped environment:</p>
+          <ol>
+            <li><strong>Download on an unclassified system.</strong> Use <code>model.save_pretrained("/path/to/output")</code> for HuggingFace models. This produces <code>config.json</code>, <code>tokenizer.json</code>, and <code>model.safetensors</code>. Compute its SHA-256 hash for chain-of-custody.</li>
+            <li><strong>Package for transfer.</strong> Create a single archive. Complete a DD-1149 (Requisition and Invoice/Shipping Document) or equivalent transfer form.</li>
+            <li><strong>Virus scan and media transfer.</strong> Archive goes on approved removable media (hardware write-protected USB). The receiving side's ISSO runs the virus scan before mounting.</li>
+            <li><strong>Install in the secure environment.</strong> Load from local path: <code>AutoModel.from_pretrained("/path/to/local/model")</code> for HuggingFace; set <code>TORCH_HOME</code> environment variable for PyTorch Hub.</li>
+          </ol>
+
+          <div class="callout callout-warning">
+            <span class="callout-icon" aria-hidden="true">&#9888;</span>
+            <div class="callout-content"><p>This process takes 2–6 weeks at organizations with a mature transfer process, 3 months at organizations doing it for the first time. Model selection must happen before the transfer request goes in. You cannot pivot to a larger BERT model after three weeks of waiting for the weights to clear.</p></div>
+          </div>
+
+          <h2 id="multi-gpu">Multi-GPU Training on Databricks</h2>
+
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code class="language-python">from pyspark.ml.torch.distributor import TorchDistributor
+import torch.distributed as dist
+from torch.nn.parallel import DistributedDataParallel as DDP
+from torch.utils.data.distributed import DistributedSampler
+
+def train_fn(n_gpus: int):
+    """Training function executed on each GPU worker."""
+    local_rank = int(os.environ.get("LOCAL_RANK", 0))
+    dist.init_process_group(backend="nccl")
+    torch.cuda.set_device(local_rank)
+
+    model = build_facility_classifier(freeze_backbone=False)
+    model = model.to(local_rank)
+    model = DDP(model, device_ids=[local_rank])
+
+    train_ds = SatelliteImageDataset(train_dir, transform=train_transforms)
+    sampler  = DistributedSampler(train_ds)
+    loader   = DataLoader(train_ds, batch_size=32, sampler=sampler, num_workers=4)
+
+    # ... training loop ...
+    dist.destroy_process_group()
+
+n_gpus = torch.cuda.device_count()
+distributor = TorchDistributor(
+    num_processes=n_gpus,
+    local_mode=False,
+    use_gpu=True,
+)
+distributor.run(train_fn, n_gpus)</code></pre>
+          </div>
+
+          <h2 id="gpu-costs">GPU Compute Costs on Federal Platforms</h2>
+          <p>GPU time is expensive everywhere. On federal platforms it is expensive and administratively constrained.</p>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Phase</th>
+                <th>Right approach</th>
+                <th>Wrong approach</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Feature development</td>
+                <td>CPU cluster or local machine</td>
+                <td>GPU cluster running idle</td>
+              </tr>
+              <tr>
+                <td>Architecture search</td>
+                <td>1x A10g, early stopping</td>
+                <td>8x A10g, full training runs</td>
+              </tr>
+              <tr>
+                <td>Final training runs</td>
+                <td>Multi-GPU with distributed sampler</td>
+                <td>Single GPU for large dataset</td>
+              </tr>
+              <tr>
+                <td>Model serving</td>
+                <td>Serverless (pay per inference)</td>
+                <td>Dedicated cluster running 24/7</td>
+              </tr>
+              <tr>
+                <td>Exploratory analysis</td>
+                <td>Standard CPU cluster</td>
+                <td>GPU cluster for tabular EDA</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="callout callout-tip">
+            <span class="callout-icon" aria-hidden="true">&#128161;</span>
+            <div class="callout-content"><p>The biggest GPU budget mistake on government contracts: leaving clusters running. Configure auto-termination at 60 minutes from day one. Over a project, idle GPU time adds up to tens of thousands of dollars — real budget that could fund the next phase.</p></div>
+          </div>
+
+          <h2 id="dod-directive-3000">DoD Directive 3000.09</h2>
+          <p>DoD Directive 3000.09 establishes policy for autonomous weapons systems, but its engineering implications reach into any AI system used in operational military contexts:</p>
+          <ul>
+            <li><strong>Human judgment must be exercised in use-of-force decisions.</strong> Your model is decision support, not the decision maker. The interface must visually distinguish model output from human decision.</li>
+            <li><strong>The system must minimize unintended engagements.</strong> Your false positive rate on a safety-critical class is a legal and policy constraint, not just a model quality metric. It goes in the requirements document. It gets tested. It gets certified.</li>
+            <li><strong>Systems must be designed for failure safety.</strong> When confidence is low, the system must have a defined behavior — escalation to human review, flag for analyst queue — rather than defaulting silently to the highest-probability class.</li>
+          </ul>
+
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code class="language-python">class OperationalInferencePipeline:
+    """
+    Wrapper enforcing DoD 3000.09 requirements:
+    - Confidence threshold gate (below threshold → human review)
+    - Full probability distribution logged with every prediction
+    - Audit trail for every inference
+    """
+    def __init__(self, model, confidence_threshold: float = 0.80):
+        self.model               = model
+        self.confidence_threshold = confidence_threshold
+
+    def predict(self, inputs, record_id: str) -> dict:
+        probs      = self.model.predict_proba([inputs])[0]
+        pred_class = int(np.argmax(probs))
+        confidence = float(probs.max())
+
+        result = {
+            "record_id":            record_id,
+            "predicted_class":      pred_class,
+            "confidence":           confidence,
+            "probability_dist":     probs.tolist(),   # ALWAYS log full distribution
+            "requires_human_review": confidence < self.confidence_threshold,
+            "timestamp":            pd.Timestamp.now().isoformat(),
+        }
+
+        # Log to audit trail — every inference, no exceptions
+        self._log_to_audit_table(result)
+        return result
+
+    def _log_to_audit_table(self, result: dict) -> None:
+        # On Foundry: write to an Ontology Action
+        # On Databricks: append to a Delta audit table
+        pass</code></pre>
+          </div>
+
+          <h2 id="failure-modes">Where This Goes Wrong</h2>
+
+          <div class="failure-card">
+            <h4>Failure Mode 1: Using Deep Learning When It Isn't Warranted</h4>
+            <p>A senior analyst asks for "an AI model." You build a 6-layer neural network. It performs worse than logistic regression on the same features. The program office loses confidence in the entire AI effort. Fix: always establish a strong baseline first. If the neural network doesn't beat XGBoost by 3+ points on the primary metric, ship the XGBoost.</p>
+          </div>
+
+          <div class="failure-card">
+            <h4>Failure Mode 2: Training on the Wrong Distribution</h4>
+            <p>The model trains and validates on historical data, then deploys on current data from a different operational context — different geography, different season, different equipment generation. Fix: treat distribution shift as a first-class engineering problem. Log prediction confidence distributions in production. Alert when mean confidence drops 5+ percentage points below training baseline.</p>
+          </div>
+
+          <div class="failure-card">
+            <h4>Failure Mode 3: Ignoring the Confidence Score</h4>
+            <p>Deploying a model that outputs a class label without exposing the confidence distribution to the end user. Users treat model outputs as facts rather than probabilistic predictions. Fix: always expose confidence scores. Define a threshold below which predictions route to human review. Document that threshold in the system's AI ethics review.</p>
+          </div>
+
+          <h2 id="platform-comparison">Platform Comparison</h2>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Capability</th>
+                <th>Advana (Databricks)</th>
+                <th>Navy Jupiter</th>
+                <th>Palantir Foundry/AIP</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>GPU training</td>
+                <td>A10g via GovCloud IL5</td>
+                <td>A10g via GovCloud IL5</td>
+                <td>External training; deploy via AIP</td>
+              </tr>
+              <tr>
+                <td>Multi-GPU training</td>
+                <td>TorchDistributor</td>
+                <td>TorchDistributor</td>
+                <td>Code Repository (custom)</td>
+              </tr>
+              <tr>
+                <td>Experiment tracking</td>
+                <td>MLflow 3.0</td>
+                <td>MLflow 3.0</td>
+                <td>Foundry Model Registry</td>
+              </tr>
+              <tr>
+                <td>Inference serving</td>
+                <td>Mosaic AI Model Serving</td>
+                <td>Mosaic AI Model Serving</td>
+                <td>AIP Logic + Workshop</td>
+              </tr>
+              <tr>
+                <td>Human-in-the-loop routing</td>
+                <td>Custom (via Workflows)</td>
+                <td>Custom (via Workflows)</td>
+                <td>Native (AIP + Workshop queues)</td>
+              </tr>
+              <tr>
+                <td>Max practical model size (IL5)</td>
+                <td>7B (single A10g, 4-bit)</td>
+                <td>7B (single A10g, 4-bit)</td>
+                <td>IL5 Azure GPU (varies)</td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div><!-- /prose -->
+
         <nav class="chapter-nav-footer" aria-label="Chapter navigation">
           <a href="07-unsupervised-ml.html" class="chapter-nav-link prev">
-            <span class="chapter-nav-direction">Previous</span>
-            <span class="chapter-nav-title">07 — Unsupervised ML</span>
+            <span class="chapter-nav-direction">Previous Chapter</span>
+            <span class="chapter-nav-title">Unsupervised Machine Learning</span>
           </a>
           <a href="09-mlops.html" class="chapter-nav-link next">
             <span class="chapter-nav-direction">Next Chapter</span>
-            <span class="chapter-nav-title">09 — MLOps</span>
+            <span class="chapter-nav-title">MLOps and Production Pipelines</span>
           </a>
         </nav>
+
       </article>
+
       <nav class="chapter-toc" aria-label="On this page">
         <span class="toc-label">On this page</span>
         <ul class="toc-list" id="toc-list" role="list"></ul>
       </nav>
-    </div>
+
+    </div><!-- /chapter-layout -->
+
     <footer class="site-footer" role="contentinfo">
       <div class="footer-grid">
-        <div><p class="footer-brand">Federal Data Science<br>Learning Handbook</p><p class="footer-tagline">Open reference. No registration.</p></div>
-        <div><p class="footer-col-title">Chapters</p><ul class="footer-links" role="list"><li><a href="01-introduction.html">01 — Introduction</a></li><li><a href="09-mlops.html">09 — MLOps</a></li><li><a href="12-ethics-governance.html">12 — Ethics</a></li></ul></div>
-        <div><p class="footer-col-title">Platforms</p><ul class="footer-links" role="list"><li><a href="../platforms/advana.html">Advana</a></li><li><a href="../platforms/databricks.html">Databricks</a></li><li><a href="../platforms/qlik.html">Qlik</a></li><li><a href="../platforms/navy-jupiter.html">Navy Jupiter</a></li><li><a href="../platforms/palantir.html">Palantir</a></li></ul></div>
+        <div>
+          <p class="footer-brand">Federal Data Science<br>Learning Handbook</p>
+          <p class="footer-tagline">A practical guide to data science in the federal government. Open reference.</p>
+        </div>
+        <div>
+          <p class="footer-col-title">Chapters</p>
+          <ul class="footer-links" role="list">
+            <li><a href="01-introduction.html">01 — Introduction</a></li>
+            <li><a href="02-python-r-foundations.html">02 — Python &amp; R</a></li>
+            <li><a href="03-data-acquisition.html">03 — Data Acquisition</a></li>
+            <li><a href="09-mlops.html">09 — MLOps</a></li>
+            <li><a href="12-ethics-governance.html">12 — Ethics</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="footer-col-title">Platforms</p>
+          <ul class="footer-links" role="list">
+            <li><a href="../platforms/advana.html">Advana</a></li>
+            <li><a href="../platforms/databricks.html">Databricks</a></li>
+            <li><a href="../platforms/qlik.html">Qlik</a></li>
+            <li><a href="../platforms/navy-jupiter.html">Navy Jupiter</a></li>
+            <li><a href="../platforms/palantir.html">Palantir</a></li>
+          </ul>
+        </div>
       </div>
       <div class="footer-bottom">
         <span class="footer-copy">Federal Data Science Learning Handbook &mdash; Open Reference</span>
-        <div class="footer-platform-dots" aria-hidden="true"><span class="footer-dot" style="background:#C5A572"></span><span class="footer-dot" style="background:#FF3621"></span><span class="footer-dot" style="background:#009845"></span><span class="footer-dot" style="background:#003B5C"></span><span class="footer-dot" style="background:#4A6FA5"></span></div>
+        <div class="footer-platform-dots" aria-hidden="true">
+          <span class="footer-dot" style="background:#C5A572"></span>
+          <span class="footer-dot" style="background:#FF3621"></span>
+          <span class="footer-dot" style="background:#009845"></span>
+          <span class="footer-dot" style="background:#003B5C"></span>
+          <span class="footer-dot" style="background:#4A6FA5"></span>
+        </div>
       </div>
     </footer>
+
   </main>
-</div>
+</div><!-- /page-wrapper -->
+
 <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
 <script src="../js/mermaid-init.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-r.min.js"></script>
 <script src="../js/main.js"></script>
 </body>
 </html>

@@ -3,29 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Chapter 06: Supervised Machine Learning — Federal Data Science Learning Handbook">
-  <title>Chapter 06: Supervised Machine Learning — Federal DS Handbook</title>
+  <meta name="description" content="Supervised machine learning on federal platforms — Federal Data Science Learning Handbook">
+  <title>Chapter 06: Supervised ML — Federal DS Handbook</title>
   <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/prism-theme.css">
 </head>
 <body>
+
 <nav class="site-nav" role="navigation" aria-label="Main navigation">
   <button class="btn-icon mobile-menu-btn" id="mobile-menu-btn" aria-label="Open menu" aria-expanded="false">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
   </button>
   <a href="../index.html" class="nav-brand" aria-label="Home">
     <img src="../assets/favicon.svg" class="nav-brand-icon" alt="" aria-hidden="true" width="28" height="28">
-    <span class="nav-brand-text">
-      <span class="nav-brand-title">Federal</span>
-      <span class="nav-brand-subtitle">Data Science Handbook</span>
-    </span>
+    <span class="nav-brand-text"><span class="nav-brand-title">Federal</span><span class="nav-brand-subtitle">Data Science Handbook</span></span>
   </a>
   <div class="nav-spacer"></div>
   <ul class="nav-links" role="list">
     <li><a href="../index.html">Home</a></li>
     <li><a href="01-introduction.html" class="active">Chapters</a></li>
-    <li><a href="../platforms/template.html">Platforms</a></li>
+    <li><a href="../index.html#platforms">Platforms</a></li>
   </ul>
   <div class="nav-actions">
     <button class="btn-icon" id="theme-toggle" aria-label="Toggle dark mode">
@@ -34,41 +32,49 @@
     </button>
   </div>
 </nav>
+
 <div class="sidebar-overlay" id="sidebar-overlay" aria-hidden="true"></div>
+
 <aside class="sidebar" id="sidebar" role="complementary" aria-label="Navigation">
   <div class="sidebar-section">
     <span class="sidebar-label">Chapters</span>
-    <nav aria-label="Chapter list"><ul class="sidebar-nav" role="list">
-      <li><a href="01-introduction.html"><span class="chapter-num">01</span> Introduction</a></li>
-      <li><a href="02-python-r-foundations.html"><span class="chapter-num">02</span> Python &amp; R Foundations</a></li>
-      <li><a href="03-data-acquisition.html"><span class="chapter-num">03</span> Data Acquisition</a></li>
-      <li><a href="04-data-wrangling.html"><span class="chapter-num">04</span> Data Wrangling</a></li>
-      <li><a href="05-exploratory-analysis.html"><span class="chapter-num">05</span> Exploratory Analysis</a></li>
-      <li><a href="06-supervised-ml.html"><span class="chapter-num">06</span> Supervised ML</a></li>
-      <li><a href="07-unsupervised-ml.html"><span class="chapter-num">07</span> Unsupervised ML</a></li>
-      <li><a href="08-deep-learning.html"><span class="chapter-num">08</span> Deep Learning</a></li>
-      <li><a href="09-mlops.html"><span class="chapter-num">09</span> MLOps</a></li>
-      <li><a href="10-visualization.html"><span class="chapter-num">10</span> Visualization</a></li>
-      <li><a href="11-deployment.html"><span class="chapter-num">11</span> Deployment</a></li>
-      <li><a href="12-ethics-governance.html"><span class="chapter-num">12</span> Ethics &amp; Governance</a></li>
-      <li><a href="13-advanced-topics.html"><span class="chapter-num">13</span> Advanced Topics</a></li>
-    </ul></nav>
+    <nav aria-label="Chapter list">
+      <ul class="sidebar-nav" role="list">
+        <li><a href="01-introduction.html"><span class="chapter-num">01</span> Introduction</a></li>
+        <li><a href="02-python-r-foundations.html"><span class="chapter-num">02</span> Python &amp; R Foundations</a></li>
+        <li><a href="03-data-acquisition.html"><span class="chapter-num">03</span> Data Acquisition</a></li>
+        <li><a href="04-data-wrangling.html"><span class="chapter-num">04</span> Data Wrangling</a></li>
+        <li><a href="05-exploratory-analysis.html"><span class="chapter-num">05</span> Exploratory Analysis</a></li>
+        <li><a href="06-supervised-ml.html" class="active"><span class="chapter-num">06</span> Supervised ML</a></li>
+        <li><a href="07-unsupervised-ml.html"><span class="chapter-num">07</span> Unsupervised ML</a></li>
+        <li><a href="08-deep-learning.html"><span class="chapter-num">08</span> Deep Learning</a></li>
+        <li><a href="09-mlops.html"><span class="chapter-num">09</span> MLOps</a></li>
+        <li><a href="10-visualization.html"><span class="chapter-num">10</span> Visualization</a></li>
+        <li><a href="11-deployment.html"><span class="chapter-num">11</span> Deployment</a></li>
+        <li><a href="12-ethics-governance.html"><span class="chapter-num">12</span> Ethics &amp; Governance</a></li>
+        <li><a href="13-advanced-topics.html"><span class="chapter-num">13</span> Advanced Topics</a></li>
+      </ul>
+    </nav>
   </div>
   <div class="sidebar-section">
     <span class="sidebar-label">Platform Guides</span>
-    <nav aria-label="Platform guides"><ul class="sidebar-nav" role="list">
-      <li><a href="../platforms/advana.html"><span class="platform-dot" style="background:#C5A572"></span> Advana</a></li>
-      <li><a href="../platforms/databricks.html"><span class="platform-dot" style="background:#FF3621"></span> Databricks</a></li>
-      <li><a href="../platforms/qlik.html"><span class="platform-dot" style="background:#009845"></span> Qlik</a></li>
-      <li><a href="../platforms/navy-jupiter.html"><span class="platform-dot" style="background:#003B5C"></span> Navy Jupiter</a></li>
-      <li><a href="../platforms/palantir.html"><span class="platform-dot" style="background:#1B2A4A"></span> Palantir AIP/Foundry</a></li>
-    </ul></nav>
+    <nav aria-label="Platform guides">
+      <ul class="sidebar-nav" role="list">
+        <li><a href="../platforms/advana.html"><span class="platform-dot" style="background:#C5A572"></span> Advana</a></li>
+        <li><a href="../platforms/databricks.html"><span class="platform-dot" style="background:#FF3621"></span> Databricks</a></li>
+        <li><a href="../platforms/qlik.html"><span class="platform-dot" style="background:#009845"></span> Qlik</a></li>
+        <li><a href="../platforms/navy-jupiter.html"><span class="platform-dot" style="background:#003B5C"></span> Navy Jupiter</a></li>
+        <li><a href="../platforms/palantir.html"><span class="platform-dot" style="background:#1B2A4A"></span> Palantir AIP/Foundry</a></li>
+      </ul>
+    </nav>
   </div>
 </aside>
+
 <div class="page-wrapper">
   <main class="main-content" id="main-content">
     <div class="chapter-layout">
       <article class="chapter-main">
+
         <header class="chapter-header">
           <nav class="chapter-breadcrumb" aria-label="Breadcrumb">
             <a href="../index.html">Home</a>
@@ -78,71 +84,462 @@
             <span aria-current="page">Chapter 06</span>
           </nav>
           <span class="chapter-number">Chapter 06</span>
-          <h1 class="chapter-title" id="chapter-title">Supervised Machine Learning</h1>
-          <p class="chapter-lede">Building predictive models on Databricks with MLflow tracking. Classification, regression, ensemble methods, SHAP explainability for command briefings.</p>
+          <h1 class="chapter-title" id="chapter-title">Supervised Machine Learning on Federal Platforms</h1>
+          <p class="chapter-lede">
+            A 94% accuracy number that fails the admiral's test. A readiness model that performs at AUC 0.91 overall but 0.61 on the hull class that makes up 40% of the fleet. Federal ML is not about building models — it's about building models that work for the subgroups that matter operationally, that you can explain to a contracting officer, and that have a monitoring plan before you leave the contract.
+          </p>
           <div class="chapter-meta-bar">
             <span class="chapter-meta-item">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              ~30–45 min read
+              ~55 min read
             </span>
-            <span class="chapter-meta-item">Databricks · MLflow · scikit-learn</span>
+            <span class="chapter-meta-item">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              Databricks, Advana, Navy Jupiter, Palantir Foundry
+            </span>
           </div>
         </header>
+
         <div class="prose" id="prose-content">
-          <p>This chapter covers Supervised Machine Learning in the context of federal data science work. The content draws directly from the source markdown and covers platform-specific patterns, compliance requirements, and production-ready code examples.</p>
 
-          <div class="callout callout-note">
-            <span class="callout-icon" aria-hidden="true">&#8505;</span>
-            <div class="callout-content">
-              <p>This chapter is ready for content conversion from the source markdown at <code>chapters/06-supervised-ml/README.md</code>. Use the chapter template pattern from <code>site/chapters/template.html</code>.</p>
-            </div>
-          </div>
+          <h2 id="the-readiness-problem">The Readiness Prediction Problem</h2>
+          <p>The canonical federal ML problem: predict which maintenance work orders will exceed their estimated completion time. The data is in Navy Jupiter. The output goes into a command dashboard. The contracting officer wants to know why the model flagged a specific work order. The admiral wants to know why the accuracy number in the slide doesn't match what she sees in the fleet.</p>
+          <p>This chapter walks from raw features through a production-ready scikit-learn Pipeline, MLflow logging, Hyperopt tuning, SHAP explanations, batch scoring, and the failure modes that make federal ML projects fail after the demo succeeds.</p>
 
-          <h2 id="source-content">Source Content Available</h2>
-          <p>The source markdown for this chapter is available at:</p>
+          <h2 id="sklearn-pipeline">scikit-learn Pipeline Pattern</h2>
+          <p>Always build a scikit-learn Pipeline — not separate preprocessing steps and a model. A Pipeline serializes as a single artifact: the same preprocessing that ran on training data runs automatically on scoring data, with no possibility of train/test leakage or preprocessing drift.</p>
+
           <div class="code-block-wrapper">
             <div class="code-block-header">
-              <span class="code-block-lang">bash</span>
+              <span class="code-block-lang">python</span>
               <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
             </div>
-            <pre><code class="language-bash">chapters/06-supervised-ml/README.md</code></pre>
+            <pre><code class="language-python">import mlflow, mlflow.sklearn
+import pandas as pd
+import numpy as np
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler, OrdinalEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import roc_auc_score, average_precision_score
+
+# Feature definition — explicit, documented, version-controlled
+numeric_features = [
+    "labor_hours_estimated",
+    "estimated_completion_days",
+    "ship_age_years",
+    "prior_work_order_count",
+    "start_month",           # fiscal month, 1-12
+    "data_quality_score",
+]
+categorical_features = ["hull_class", "maintenance_category"]
+target = "exceeded_estimate"   # binary: 1 if work order ran over, 0 if not
+
+df = spark.table("jupiter_catalog.silver.maintenance_work_orders").toPandas()
+X = df[numeric_features + categorical_features]
+y = df[target].values
+
+# Time-based split — never random split for time-series-dependent data
+cutoff_date = "2023-09-30"
+train_mask = df["completion_date"] <= cutoff_date
+test_mask  = df["start_date"] > cutoff_date
+X_train, y_train = X[train_mask], y[train_mask]
+X_test,  y_test  = X[test_mask],  y[test_mask]
+
+print(f"Train: {len(X_train):,} rows | Test: {len(X_test):,} rows")
+print(f"Train positive rate: {y_train.mean():.3f} | Test: {y_test.mean():.3f}")
+
+# Pipeline: preprocessing + model as single artifact
+preprocessor = ColumnTransformer([
+    ("num", StandardScaler(), numeric_features),
+    ("cat", OrdinalEncoder(handle_unknown="use_encoded_value", unknown_value=-1),
+     categorical_features),
+])
+
+pipeline = Pipeline([
+    ("prep", preprocessor),
+    ("clf", GradientBoostingClassifier(
+        n_estimators=200, max_depth=4, learning_rate=0.05,
+        subsample=0.8, min_samples_leaf=20, random_state=42
+    ))
+])
+
+mlflow.set_experiment("/models/maintenance_overrun")
+
+with mlflow.start_run(run_name="gbt_baseline") as run:
+    pipeline.fit(X_train, y_train)
+    y_proba = pipeline.predict_proba(X_test)[:, 1]
+
+    test_auc = roc_auc_score(y_test, y_proba)
+    test_ap  = average_precision_score(y_test, y_proba)
+
+    mlflow.log_params({
+        "n_estimators": 200, "max_depth": 4,
+        "learning_rate": 0.05, "train_size": len(X_train),
+    })
+    mlflow.log_metrics({"test_auc": test_auc, "test_avg_precision": test_ap})
+
+    mlflow.sklearn.log_model(
+        pipeline,
+        artifact_path="model",
+        registered_model_name="maintenance_overrun_classifier",
+        input_example=X_test.head(5),
+        signature=mlflow.models.infer_signature(X_test, y_proba),
+    )
+
+    print(f"Test AUC: {test_auc:.4f}  |  Avg Precision: {test_ap:.4f}")</code></pre>
           </div>
-          <p>Convert using the patterns in <code>site/chapters/template.html</code> and the component reference within that file.</p>
-        </div>
+
+          <h2 id="hyperopt-tuning">Hyperparameter Tuning with Hyperopt</h2>
+          <p>Manual grid search is slow. On Databricks, Hyperopt with SparkTrials runs Bayesian optimization — learning which parameter regions are promising — in parallel across your cluster. Every trial is automatically logged to MLflow.</p>
+
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code class="language-python">from hyperopt import fmin, tpe, hp, SparkTrials, STATUS_OK
+from sklearn.model_selection import cross_val_score
+
+def objective(params):
+    model = Pipeline([
+        ("prep", preprocessor),
+        ("clf", GradientBoostingClassifier(
+            n_estimators=int(params["n_estimators"]),
+            max_depth=int(params["max_depth"]),
+            learning_rate=params["learning_rate"],
+            subsample=params["subsample"],
+            random_state=42,
+        ))
+    ])
+    auc = cross_val_score(model, X_train, y_train, cv=3,
+                          scoring="roc_auc", n_jobs=-1).mean()
+    return {"loss": -auc, "status": STATUS_OK}
+
+search_space = {
+    "n_estimators":  hp.quniform("n_estimators", 100, 500, 50),
+    "max_depth":     hp.quniform("max_depth", 3, 8, 1),
+    "learning_rate": hp.loguniform("learning_rate", np.log(0.01), np.log(0.2)),
+    "subsample":     hp.uniform("subsample", 0.6, 1.0),
+}
+
+spark_trials = SparkTrials(parallelism=4)
+
+with mlflow.start_run(run_name="hyperopt_search"):
+    best_params = fmin(
+        fn=objective, space=search_space,
+        algo=tpe.suggest, max_evals=50,
+        trials=spark_trials,
+    )
+
+print(f"Best parameters: {best_params}")</code></pre>
+          </div>
+
+          <h2 id="stratified-evaluation">Stratified Performance Evaluation</h2>
+          <p>The worst-performing slice is what you present to the decision-maker first. If your model performs at AUC 0.91 overall but 0.61 on the hull class that makes up 40% of the fleet, you do not have a deployable model.</p>
+
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code class="language-python">def stratified_eval_report(model, X_test: pd.DataFrame, y_test: np.ndarray,
+                            stratify_col: str, min_slice_size: int = 50) -> pd.DataFrame:
+    """
+    Compute performance metrics for each value of a stratification column.
+    Returns results sorted by AUC ascending — worst slices first.
+    """
+    y_proba = model.predict_proba(X_test)[:, 1]
+    results = []
+
+    for value in X_test[stratify_col].unique():
+        mask = X_test[stratify_col] == value
+        n    = int(mask.sum())
+        if n < min_slice_size:
+            continue
+
+        results.append({
+            "slice":         value,
+            "n":             n,
+            "positive_rate": round(float(y_test[mask].mean()), 3),
+            "auc":           round(roc_auc_score(y_test[mask], y_proba[mask]), 3),
+            "avg_precision": round(average_precision_score(y_test[mask], y_proba[mask]), 3),
+        })
+
+    results_df = pd.DataFrame(results).sort_values("auc", ascending=True)
+    print(f"\nStratified report by '{stratify_col}' (worst first):")
+    print(results_df.to_string(index=False))
+    return results_df
+
+
+# Run before any briefing — not after
+hull_report = stratified_eval_report(pipeline, X_test, y_test, "hull_class")</code></pre>
+          </div>
+
+          <h2 id="threshold-selection">Threshold Selection for Asymmetric Costs</h2>
+          <p>The default 0.5 classification threshold is almost always wrong for government use cases. The cost of a false positive (expediting an unnecessary supply item: $2,000) is not the same as a false negative (missing a Priority 01 item: $50,000). Set the threshold based on the actual cost ratio.</p>
+
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code class="language-python">from sklearn.metrics import confusion_matrix
+
+def find_operational_threshold(y_true: np.ndarray, y_proba: np.ndarray,
+                                cost_fp: float, cost_fn: float) -> float:
+    """
+    Find the classification threshold that minimizes total operational cost.
+    """
+    thresholds  = np.linspace(0.05, 0.95, 91)
+    total_costs = []
+
+    for t in thresholds:
+        y_pred = (y_proba >= t).astype(int)
+        tn, fp, fn, tp = confusion_matrix(y_true, y_pred).ravel()
+        total_costs.append(fp * cost_fp + fn * cost_fn)
+
+    optimal_idx       = int(np.argmin(total_costs))
+    optimal_threshold = float(thresholds[optimal_idx])
+
+    print(f"Cost ratio FP:FN = {cost_fp}:{cost_fn}")
+    print(f"Optimal threshold: {optimal_threshold:.2f}")
+    print(f"  Default 0.50 total cost : {total_costs[45]:,.0f}")
+    print(f"  Optimal {optimal_threshold:.2f} total cost: {total_costs[optimal_idx]:,.0f}")
+
+    return optimal_threshold
+
+
+# Example: expediting a supply item costs $2,000; missing a Priority 01 costs $50,000
+operational_threshold = find_operational_threshold(
+    y_test, y_proba, cost_fp=2_000, cost_fn=50_000
+)</code></pre>
+          </div>
+
+          <h2 id="shap-explanations">SHAP Explanations</h2>
+          <p>On every federal platform that deploys a model affecting operational decisions, someone will ask "why did it predict this?" SHAP (SHapley Additive exPlanations) is the standard answer. It assigns each feature a contribution value for each individual prediction.</p>
+          <p>"This requisition was flagged because the vendor's historical on-time rate is 62% (pushes toward late), it's Priority 01 (pushes toward scrutiny), and the item's demand frequency is low (harder to source quickly)." That explanation lands. "The model said so" doesn't.</p>
+
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code class="language-python">import shap
+import matplotlib.pyplot as plt
+
+preprocessor_fitted = pipeline.named_steps["prep"]
+classifier          = pipeline.named_steps["clf"]
+X_transformed       = preprocessor_fitted.transform(X_test.head(500))
+
+explainer   = shap.TreeExplainer(classifier)
+shap_values = explainer.shap_values(X_transformed)
+
+# For binary classification, take class 1 SHAP values
+if isinstance(shap_values, list):
+    shap_values = shap_values[1]
+
+feature_names = (
+    numeric_features +
+    list(preprocessor_fitted.named_transformers_["cat"]
+         .get_feature_names_out(categorical_features))
+)
+
+plt.figure(figsize=(10, 6))
+shap.summary_plot(
+    shap_values, X_transformed,
+    feature_names=feature_names,
+    show=False, max_display=10,
+)
+plt.title("Feature Impact on Maintenance Overrun Prediction")
+plt.tight_layout()
+plt.savefig("/tmp/shap_summary.png", dpi=150, bbox_inches="tight")
+mlflow.log_artifact("/tmp/shap_summary.png")</code></pre>
+          </div>
+
+          <h2 id="palantir-foundry-training">Palantir Foundry: Training as a Transform</h2>
+          <p>On Foundry, model training runs as a scheduled Transform that reads from the Ontology and writes a versioned model artifact. The model connects to the Ontology, allowing it to be called from Workshop dashboards or AIP Logic functions.</p>
+
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code class="language-python">from transforms.api import transform, Input, Output
+from palantir_models import Model
+
+@transform(
+    model_output=Output("/models/maintenance_overrun_classifier"),
+    training_data=Input("/analytics/silver/maintenance_features"),
+)
+def train_maintenance_classifier(training_data, model_output):
+    df = training_data.dataframe().toPandas()
+
+    numeric_features     = ["labor_hours_estimated", "estimated_completion_days",
+                             "ship_age_years", "prior_work_order_count", "start_month"]
+    categorical_features = ["hull_class", "maintenance_category"]
+    target               = "exceeded_estimate"
+
+    X = df[numeric_features + categorical_features]
+    y = df[target].values
+
+    preprocessor = ColumnTransformer([
+        ("num", StandardScaler(), numeric_features),
+        ("cat", OrdinalEncoder(handle_unknown="use_encoded_value", unknown_value=-1),
+         categorical_features),
+    ])
+    pipeline = Pipeline([
+        ("prep", preprocessor),
+        ("clf", GradientBoostingClassifier(
+            n_estimators=200, max_depth=4, learning_rate=0.05, random_state=42
+        ))
+    ])
+    pipeline.fit(X, y)
+
+    # Foundry wraps models in its own versioned container
+    model_output.write_model(Model(pipeline))</code></pre>
+          </div>
+
+          <h2 id="failure-modes">Where This Goes Wrong</h2>
+
+          <div class="failure-card">
+            <h4>Failure Mode 1: The Data Cutoff Problem</h4>
+            <p>Training on all available years without accounting for incomplete labels in recent periods. For a contract cost growth model, records from the last 12 months have unusually low positive rates because outcomes haven't resolved yet. Fix: establish a label cutoff — exclude records where the outcome has not yet resolved. Only include contracts that completed at least 12 months ago.</p>
+          </div>
+
+          <div class="failure-card">
+            <h4>Failure Mode 2: Leaking the Future Into the Past</h4>
+            <p>Including features computed from the full dataset that use information only available after the event you're predicting — e.g., "this vendor's average cost growth across all their contracts" includes future contracts in the average. Fix: use temporal cross-validation (train on years 1–3, test on year 4) and always compute aggregated features using only data available at prediction time.</p>
+          </div>
+
+          <div class="failure-card">
+            <h4>Failure Mode 3: Deploying Without a Monitoring Plan</h4>
+            <p>Getting model approval, deploying to production, and moving on. Fix: at deployment time, define three things in writing: a drift detection metric, a performance monitoring query, and a retraining trigger. On Databricks, this is a scheduled Workflow job. Schedule it before you close the project.</p>
+          </div>
+
+          <h2 id="platform-comparison">Platform Comparison</h2>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Dimension</th>
+                <th>Advana (Databricks)</th>
+                <th>Palantir Foundry</th>
+                <th>Navy Jupiter</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Primary ML framework</td>
+                <td>scikit-learn, XGBoost, MLflow</td>
+                <td>scikit-learn via Code Workspaces</td>
+                <td>scikit-learn, XGBoost, MLflow</td>
+              </tr>
+              <tr>
+                <td>Experiment tracking</td>
+                <td>MLflow (native)</td>
+                <td>Foundry versioned artifacts</td>
+                <td>MLflow (native)</td>
+              </tr>
+              <tr>
+                <td>Hyperparameter tuning</td>
+                <td>Hyperopt + SparkTrials</td>
+                <td>Custom loops</td>
+                <td>Hyperopt + SparkTrials</td>
+              </tr>
+              <tr>
+                <td>Batch scoring</td>
+                <td>Databricks Workflows</td>
+                <td>Foundry Transforms (scheduled)</td>
+                <td>Databricks Workflows</td>
+              </tr>
+              <tr>
+                <td>SHAP interpretability</td>
+                <td>Pre-installed (DBR ML)</td>
+                <td>Available via conda</td>
+                <td>Pre-installed (DBR ML)</td>
+              </tr>
+              <tr>
+                <td>IL5 support</td>
+                <td>Yes</td>
+                <td>Yes</td>
+                <td>Yes (SIPR)</td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div><!-- /prose -->
+
         <nav class="chapter-nav-footer" aria-label="Chapter navigation">
           <a href="05-exploratory-analysis.html" class="chapter-nav-link prev">
-            <span class="chapter-nav-direction">Previous</span>
-            <span class="chapter-nav-title">05 — Exploratory Analysis</span>
+            <span class="chapter-nav-direction">Previous Chapter</span>
+            <span class="chapter-nav-title">Exploratory Data Analysis</span>
           </a>
           <a href="07-unsupervised-ml.html" class="chapter-nav-link next">
             <span class="chapter-nav-direction">Next Chapter</span>
-            <span class="chapter-nav-title">07 — Unsupervised ML</span>
+            <span class="chapter-nav-title">Unsupervised Machine Learning</span>
           </a>
         </nav>
+
       </article>
+
       <nav class="chapter-toc" aria-label="On this page">
         <span class="toc-label">On this page</span>
         <ul class="toc-list" id="toc-list" role="list"></ul>
       </nav>
-    </div>
+
+    </div><!-- /chapter-layout -->
+
     <footer class="site-footer" role="contentinfo">
       <div class="footer-grid">
-        <div><p class="footer-brand">Federal Data Science<br>Learning Handbook</p><p class="footer-tagline">Open reference. No registration.</p></div>
-        <div><p class="footer-col-title">Chapters</p><ul class="footer-links" role="list"><li><a href="01-introduction.html">01 — Introduction</a></li><li><a href="09-mlops.html">09 — MLOps</a></li><li><a href="12-ethics-governance.html">12 — Ethics</a></li></ul></div>
-        <div><p class="footer-col-title">Platforms</p><ul class="footer-links" role="list"><li><a href="../platforms/advana.html">Advana</a></li><li><a href="../platforms/databricks.html">Databricks</a></li><li><a href="../platforms/qlik.html">Qlik</a></li><li><a href="../platforms/navy-jupiter.html">Navy Jupiter</a></li><li><a href="../platforms/palantir.html">Palantir</a></li></ul></div>
+        <div>
+          <p class="footer-brand">Federal Data Science<br>Learning Handbook</p>
+          <p class="footer-tagline">A practical guide to data science in the federal government. Open reference.</p>
+        </div>
+        <div>
+          <p class="footer-col-title">Chapters</p>
+          <ul class="footer-links" role="list">
+            <li><a href="01-introduction.html">01 — Introduction</a></li>
+            <li><a href="02-python-r-foundations.html">02 — Python &amp; R</a></li>
+            <li><a href="03-data-acquisition.html">03 — Data Acquisition</a></li>
+            <li><a href="09-mlops.html">09 — MLOps</a></li>
+            <li><a href="12-ethics-governance.html">12 — Ethics</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="footer-col-title">Platforms</p>
+          <ul class="footer-links" role="list">
+            <li><a href="../platforms/advana.html">Advana</a></li>
+            <li><a href="../platforms/databricks.html">Databricks</a></li>
+            <li><a href="../platforms/qlik.html">Qlik</a></li>
+            <li><a href="../platforms/navy-jupiter.html">Navy Jupiter</a></li>
+            <li><a href="../platforms/palantir.html">Palantir</a></li>
+          </ul>
+        </div>
       </div>
       <div class="footer-bottom">
         <span class="footer-copy">Federal Data Science Learning Handbook &mdash; Open Reference</span>
-        <div class="footer-platform-dots" aria-hidden="true"><span class="footer-dot" style="background:#C5A572"></span><span class="footer-dot" style="background:#FF3621"></span><span class="footer-dot" style="background:#009845"></span><span class="footer-dot" style="background:#003B5C"></span><span class="footer-dot" style="background:#4A6FA5"></span></div>
+        <div class="footer-platform-dots" aria-hidden="true">
+          <span class="footer-dot" style="background:#C5A572"></span>
+          <span class="footer-dot" style="background:#FF3621"></span>
+          <span class="footer-dot" style="background:#009845"></span>
+          <span class="footer-dot" style="background:#003B5C"></span>
+          <span class="footer-dot" style="background:#4A6FA5"></span>
+        </div>
       </div>
     </footer>
+
   </main>
-</div>
+</div><!-- /page-wrapper -->
+
 <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
 <script src="../js/mermaid-init.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-r.min.js"></script>
 <script src="../js/main.js"></script>
 </body>
 </html>

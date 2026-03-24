@@ -3,29 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Chapter 07: Unsupervised Machine Learning — Federal Data Science Learning Handbook">
-  <title>Chapter 07: Unsupervised Machine Learning — Federal DS Handbook</title>
+  <meta name="description" content="Unsupervised machine learning on federal platforms — Federal Data Science Learning Handbook">
+  <title>Chapter 07: Unsupervised ML — Federal DS Handbook</title>
   <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/prism-theme.css">
 </head>
 <body>
+
 <nav class="site-nav" role="navigation" aria-label="Main navigation">
   <button class="btn-icon mobile-menu-btn" id="mobile-menu-btn" aria-label="Open menu" aria-expanded="false">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
   </button>
   <a href="../index.html" class="nav-brand" aria-label="Home">
     <img src="../assets/favicon.svg" class="nav-brand-icon" alt="" aria-hidden="true" width="28" height="28">
-    <span class="nav-brand-text">
-      <span class="nav-brand-title">Federal</span>
-      <span class="nav-brand-subtitle">Data Science Handbook</span>
-    </span>
+    <span class="nav-brand-text"><span class="nav-brand-title">Federal</span><span class="nav-brand-subtitle">Data Science Handbook</span></span>
   </a>
   <div class="nav-spacer"></div>
   <ul class="nav-links" role="list">
     <li><a href="../index.html">Home</a></li>
     <li><a href="01-introduction.html" class="active">Chapters</a></li>
-    <li><a href="../platforms/template.html">Platforms</a></li>
+    <li><a href="../index.html#platforms">Platforms</a></li>
   </ul>
   <div class="nav-actions">
     <button class="btn-icon" id="theme-toggle" aria-label="Toggle dark mode">
@@ -34,41 +32,49 @@
     </button>
   </div>
 </nav>
+
 <div class="sidebar-overlay" id="sidebar-overlay" aria-hidden="true"></div>
+
 <aside class="sidebar" id="sidebar" role="complementary" aria-label="Navigation">
   <div class="sidebar-section">
     <span class="sidebar-label">Chapters</span>
-    <nav aria-label="Chapter list"><ul class="sidebar-nav" role="list">
-      <li><a href="01-introduction.html"><span class="chapter-num">01</span> Introduction</a></li>
-      <li><a href="02-python-r-foundations.html"><span class="chapter-num">02</span> Python &amp; R Foundations</a></li>
-      <li><a href="03-data-acquisition.html"><span class="chapter-num">03</span> Data Acquisition</a></li>
-      <li><a href="04-data-wrangling.html"><span class="chapter-num">04</span> Data Wrangling</a></li>
-      <li><a href="05-exploratory-analysis.html"><span class="chapter-num">05</span> Exploratory Analysis</a></li>
-      <li><a href="06-supervised-ml.html"><span class="chapter-num">06</span> Supervised ML</a></li>
-      <li><a href="07-unsupervised-ml.html"><span class="chapter-num">07</span> Unsupervised ML</a></li>
-      <li><a href="08-deep-learning.html"><span class="chapter-num">08</span> Deep Learning</a></li>
-      <li><a href="09-mlops.html"><span class="chapter-num">09</span> MLOps</a></li>
-      <li><a href="10-visualization.html"><span class="chapter-num">10</span> Visualization</a></li>
-      <li><a href="11-deployment.html"><span class="chapter-num">11</span> Deployment</a></li>
-      <li><a href="12-ethics-governance.html"><span class="chapter-num">12</span> Ethics &amp; Governance</a></li>
-      <li><a href="13-advanced-topics.html"><span class="chapter-num">13</span> Advanced Topics</a></li>
-    </ul></nav>
+    <nav aria-label="Chapter list">
+      <ul class="sidebar-nav" role="list">
+        <li><a href="01-introduction.html"><span class="chapter-num">01</span> Introduction</a></li>
+        <li><a href="02-python-r-foundations.html"><span class="chapter-num">02</span> Python &amp; R Foundations</a></li>
+        <li><a href="03-data-acquisition.html"><span class="chapter-num">03</span> Data Acquisition</a></li>
+        <li><a href="04-data-wrangling.html"><span class="chapter-num">04</span> Data Wrangling</a></li>
+        <li><a href="05-exploratory-analysis.html"><span class="chapter-num">05</span> Exploratory Analysis</a></li>
+        <li><a href="06-supervised-ml.html"><span class="chapter-num">06</span> Supervised ML</a></li>
+        <li><a href="07-unsupervised-ml.html" class="active"><span class="chapter-num">07</span> Unsupervised ML</a></li>
+        <li><a href="08-deep-learning.html"><span class="chapter-num">08</span> Deep Learning</a></li>
+        <li><a href="09-mlops.html"><span class="chapter-num">09</span> MLOps</a></li>
+        <li><a href="10-visualization.html"><span class="chapter-num">10</span> Visualization</a></li>
+        <li><a href="11-deployment.html"><span class="chapter-num">11</span> Deployment</a></li>
+        <li><a href="12-ethics-governance.html"><span class="chapter-num">12</span> Ethics &amp; Governance</a></li>
+        <li><a href="13-advanced-topics.html"><span class="chapter-num">13</span> Advanced Topics</a></li>
+      </ul>
+    </nav>
   </div>
   <div class="sidebar-section">
     <span class="sidebar-label">Platform Guides</span>
-    <nav aria-label="Platform guides"><ul class="sidebar-nav" role="list">
-      <li><a href="../platforms/advana.html"><span class="platform-dot" style="background:#C5A572"></span> Advana</a></li>
-      <li><a href="../platforms/databricks.html"><span class="platform-dot" style="background:#FF3621"></span> Databricks</a></li>
-      <li><a href="../platforms/qlik.html"><span class="platform-dot" style="background:#009845"></span> Qlik</a></li>
-      <li><a href="../platforms/navy-jupiter.html"><span class="platform-dot" style="background:#003B5C"></span> Navy Jupiter</a></li>
-      <li><a href="../platforms/palantir.html"><span class="platform-dot" style="background:#1B2A4A"></span> Palantir AIP/Foundry</a></li>
-    </ul></nav>
+    <nav aria-label="Platform guides">
+      <ul class="sidebar-nav" role="list">
+        <li><a href="../platforms/advana.html"><span class="platform-dot" style="background:#C5A572"></span> Advana</a></li>
+        <li><a href="../platforms/databricks.html"><span class="platform-dot" style="background:#FF3621"></span> Databricks</a></li>
+        <li><a href="../platforms/qlik.html"><span class="platform-dot" style="background:#009845"></span> Qlik</a></li>
+        <li><a href="../platforms/navy-jupiter.html"><span class="platform-dot" style="background:#003B5C"></span> Navy Jupiter</a></li>
+        <li><a href="../platforms/palantir.html"><span class="platform-dot" style="background:#1B2A4A"></span> Palantir AIP/Foundry</a></li>
+      </ul>
+    </nav>
   </div>
 </aside>
+
 <div class="page-wrapper">
   <main class="main-content" id="main-content">
     <div class="chapter-layout">
       <article class="chapter-main">
+
         <header class="chapter-header">
           <nav class="chapter-breadcrumb" aria-label="Breadcrumb">
             <a href="../index.html">Home</a>
@@ -79,70 +85,452 @@
           </nav>
           <span class="chapter-number">Chapter 07</span>
           <h1 class="chapter-title" id="chapter-title">Unsupervised Machine Learning</h1>
-          <p class="chapter-lede">Clustering, anomaly detection, and dimensionality reduction in the federal context. Applications in maintenance forecasting, logistics anomaly detection, and personnel analytics.</p>
+          <p class="chapter-lede">
+            When there are no labels, you still have structure. Clustering finds natural groupings in contract portfolios. Anomaly detection flags spending patterns that fall outside the fiscal calendar's rhythm. Dimensionality reduction makes 40-feature datasets interpretable for a program manager who will never open a Jupyter notebook.
+          </p>
           <div class="chapter-meta-bar">
             <span class="chapter-meta-item">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              ~30–45 min read
+              ~45 min read
             </span>
-            <span class="chapter-meta-item">Python · Databricks</span>
+            <span class="chapter-meta-item">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              Databricks, Palantir Foundry, Advana, Navy Jupiter
+            </span>
           </div>
         </header>
+
         <div class="prose" id="prose-content">
-          <p>This chapter covers Unsupervised Machine Learning in the context of federal data science work. The content draws directly from the source markdown and covers platform-specific patterns, compliance requirements, and production-ready code examples.</p>
 
-          <div class="callout callout-note">
-            <span class="callout-icon" aria-hidden="true">&#8505;</span>
-            <div class="callout-content">
-              <p>This chapter is ready for content conversion from the source markdown at <code>chapters/07-unsupervised-ml/README.md</code>. Use the chapter template pattern from <code>site/chapters/template.html</code>.</p>
-            </div>
-          </div>
+          <h2 id="clustering">Clustering</h2>
 
-          <h2 id="source-content">Source Content Available</h2>
-          <p>The source markdown for this chapter is available at:</p>
+          <h3 id="kmeans">K-Means for Procurement Segmentation</h3>
+          <p>K-means clusters contracts into groups that share similar characteristics — obligation size, competition type, NAICS sector, vendor relationship patterns. The output gives a contracting officer a vocabulary for describing the portfolio without enumerating individual awards.</p>
+          <p>The right number of clusters is not 2 and not 20. Use the elbow method (inertia curve) and silhouette score together. The elbow is a heuristic; the silhouette tells you whether clusters are meaningfully separated.</p>
+
           <div class="code-block-wrapper">
             <div class="code-block-header">
-              <span class="code-block-lang">bash</span>
+              <span class="code-block-lang">python</span>
               <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
             </div>
-            <pre><code class="language-bash">chapters/07-unsupervised-ml/README.md</code></pre>
+            <pre><code class="language-python">import numpy as np
+import pandas as pd
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import silhouette_score
+import matplotlib.pyplot as plt
+
+# Feature selection for procurement clustering
+feature_cols = [
+    "log_obligation",          # np.log1p(federal_action_obligation)
+    "period_of_performance_days",
+    "competition_type_encoded",  # 0=sole source, 1=limited, 2=full
+    "naics_sector_encoded",
+    "modification_count",
+    "vendor_award_count_prior",  # vendor experience proxy
+]
+
+X = df[feature_cols].fillna(0)
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Evaluate k from 2 to 15
+inertias    = []
+silhouettes = []
+k_values    = range(2, 16)
+
+for k in k_values:
+    km = KMeans(n_clusters=k, random_state=42, n_init=10)
+    labels = km.fit_predict(X_scaled)
+    inertias.append(km.inertia_)
+    silhouettes.append(silhouette_score(X_scaled, labels, sample_size=5000))
+    print(f"k={k:2d}  inertia={km.inertia_:,.0f}  silhouette={silhouettes[-1]:.3f}")
+
+# Choose k at the silhouette peak
+best_k = k_values[np.argmax(silhouettes)]
+print(f"\nBest k by silhouette: {best_k}")
+
+# Final model
+km_final = KMeans(n_clusters=best_k, random_state=42, n_init=10)
+df["cluster"] = km_final.fit_predict(X_scaled)
+
+# Profile each cluster
+cluster_profile = (
+    df.groupby("cluster")
+    .agg(
+        count=("contract_award_unique_key", "count"),
+        total_obligation=("federal_action_obligation", "sum"),
+        median_obligation=("federal_action_obligation", "median"),
+        sole_source_rate=("competition_type_encoded", lambda x: (x == 0).mean()),
+    )
+    .sort_values("total_obligation", ascending=False)
+)
+print(f"\nCluster profiles:\n{cluster_profile}")</code></pre>
           </div>
-          <p>Convert using the patterns in <code>site/chapters/template.html</code> and the component reference within that file.</p>
-        </div>
+
+          <h3 id="distributed-kmeans">Distributed K-Means with Databricks MLlib</h3>
+          <p>For datasets too large for scikit-learn (over ~5M rows), use Databricks MLlib's distributed K-means, which runs across the Spark cluster.</p>
+
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code class="language-python">from pyspark.ml.clustering import KMeans as SparkKMeans
+from pyspark.ml.feature import VectorAssembler, StandardScaler as SparkScaler
+from pyspark.ml import Pipeline as SparkPipeline
+
+# Assemble feature vector for Spark ML
+assembler = VectorAssembler(
+    inputCols=feature_cols,
+    outputCol="raw_features",
+    handleInvalid="keep",
+)
+
+scaler = SparkScaler(
+    inputCol="raw_features",
+    outputCol="features",
+    withMean=True, withStd=True,
+)
+
+km_spark = SparkKMeans(
+    featuresCol="features",
+    predictionCol="cluster",
+    k=best_k,
+    seed=42,
+    maxIter=20,
+)
+
+pipeline_spark = SparkPipeline(stages=[assembler, scaler, km_spark])
+model = pipeline_spark.fit(df_spark)
+df_clustered = model.transform(df_spark)
+
+# Write results to Gold tier
+df_clustered.write.format("delta").mode("overwrite").saveAsTable(
+    "procurement_catalog.gold.contract_clusters"
+)</code></pre>
+          </div>
+
+          <h3 id="dbscan">DBSCAN for Irregular-Shaped Clusters</h3>
+          <p>K-means assumes spherical clusters. Government data rarely has spherical structure. DBSCAN (Density-Based Spatial Clustering) finds clusters of arbitrary shape and explicitly marks low-density points as noise (label -1) — which is often exactly what you want: identifying the "normal" contracts and flagging the outliers.</p>
+
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code class="language-python">from sklearn.cluster import DBSCAN
+
+# DBSCAN: eps = neighborhood radius, min_samples = core point threshold
+# On scaled procurement data: eps ~0.5-1.0 is typical starting point
+dbscan = DBSCAN(eps=0.7, min_samples=10, n_jobs=-1)
+df["dbscan_cluster"] = dbscan.fit_predict(X_scaled)
+
+n_clusters = len(set(df["dbscan_cluster"])) - (1 if -1 in df["dbscan_cluster"].values else 0)
+n_noise    = (df["dbscan_cluster"] == -1).sum()
+
+print(f"DBSCAN results: {n_clusters} clusters, {n_noise:,} noise points "
+      f"({n_noise/len(df)*100:.1f}%)")
+
+# The noise points (-1) are your anomaly candidates
+anomalies = df[df["dbscan_cluster"] == -1].sort_values(
+    "federal_action_obligation", ascending=False
+)
+print(f"\nTop anomalous contracts by obligation:")
+print(anomalies[["contract_award_unique_key", "recipient_name",
+                  "federal_action_obligation"]].head(10))</code></pre>
+          </div>
+
+          <h2 id="anomaly-detection">Anomaly Detection with Isolation Forest</h2>
+          <p>Isolation Forest is the most practical anomaly detector for government financial data because it handles mixed feature types, scales to millions of records, and produces an anomaly score (not just a binary flag) that you can threshold operationally.</p>
+          <p>The government-specific wrinkle: September is anomalous by design (fiscal year-end spending surge). If you train without controlling for fiscal calendar effects, you'll generate a spike of false positives every September. Include fiscal month as a feature so the model learns that September is "normal-for-September."</p>
+
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code class="language-python">from sklearn.ensemble import IsolationForest
+
+# Include fiscal calendar features to avoid September false positives
+feature_cols_anomaly = feature_cols + [
+    "fiscal_month",     # 1=Oct through 12=Sep — critical for government data
+    "is_fiscal_eoq",    # end-of-quarter (December, March, June, September)
+    "is_fiscal_eoy",    # September only
+]
+
+X_anomaly = df[feature_cols_anomaly].fillna(0)
+X_scaled_anomaly = StandardScaler().fit_transform(X_anomaly)
+
+iso_forest = IsolationForest(
+    n_estimators=100,
+    contamination=0.05,   # expect ~5% anomalies
+    random_state=42,
+    n_jobs=-1,
+)
+
+df["anomaly_score"]  = iso_forest.fit_predict(X_scaled_anomaly)
+df["anomaly_raw"]    = iso_forest.decision_function(X_scaled_anomaly)
+# anomaly_score: -1 = anomaly, 1 = normal
+# anomaly_raw: lower = more anomalous
+
+anomaly_rate = (df["anomaly_score"] == -1).mean()
+print(f"Anomaly rate: {anomaly_rate:.3f} ({anomaly_rate*100:.1f}% of contracts flagged)")
+
+# Review flagged contracts — present to contracting officer
+flagged = df[df["anomaly_score"] == -1].sort_values("anomaly_raw")
+print(f"\nTop anomalies (lowest scores = most anomalous):")
+print(flagged[["contract_award_unique_key", "recipient_name",
+               "federal_action_obligation", "fiscal_month",
+               "anomaly_raw"]].head(20))</code></pre>
+          </div>
+
+          <h2 id="dimensionality-reduction">Dimensionality Reduction</h2>
+
+          <h3 id="pca">PCA for Feature Compression</h3>
+          <p>PCA reduces many correlated features to a smaller set of orthogonal components. For procurement data with 40+ features, PCA can compress to 5-10 components that capture 85% of variance — making downstream clustering faster and visualization possible.</p>
+
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code class="language-python">from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
+
+pca = PCA(random_state=42)
+pca.fit(X_scaled)
+
+# Explained variance plot — find the "elbow"
+cumulative_variance = np.cumsum(pca.explained_variance_ratio_)
+n_components_85 = np.argmax(cumulative_variance >= 0.85) + 1
+n_components_95 = np.argmax(cumulative_variance >= 0.95) + 1
+
+print(f"Components for 85% variance: {n_components_85}")
+print(f"Components for 95% variance: {n_components_95}")
+
+# Apply chosen dimensionality
+pca_final = PCA(n_components=n_components_85, random_state=42)
+X_pca = pca_final.fit_transform(X_scaled)
+print(f"Reduced from {X_scaled.shape[1]} to {X_pca.shape[1]} dimensions")</code></pre>
+          </div>
+
+          <h2 id="topic-modeling">Topic Modeling for Contract Descriptions</h2>
+          <p>Federal contract descriptions are free text that encodes procurement intent in ways that NAICS codes miss. LDA (Latent Dirichlet Allocation) finds recurring themes across tens of thousands of contract descriptions — useful for portfolio analysis and anomaly detection in contract language.</p>
+
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code class="language-python">from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.decomposition import LatentDirichletAllocation
+
+# Preprocess contract description text
+vectorizer = TfidfVectorizer(
+    max_features=5000,
+    min_df=10,          # ignore terms that appear in fewer than 10 contracts
+    max_df=0.95,        # ignore terms in more than 95% of contracts
+    stop_words="english",
+    ngram_range=(1, 2), # unigrams and bigrams
+)
+
+X_text = vectorizer.fit_transform(df["contract_description"].fillna(""))
+feature_names = vectorizer.get_feature_names_out()
+
+lda = LatentDirichletAllocation(
+    n_components=10,    # 10 topics
+    max_iter=15,
+    learning_method="online",
+    random_state=42,
+    n_jobs=-1,
+)
+
+lda.fit(X_text)
+
+# Display top words per topic
+def display_topics(model, feature_names, n_top_words=10):
+    for topic_idx, topic in enumerate(model.components_):
+        top_words = [feature_names[i] for i in topic.argsort()[:-n_top_words-1:-1]]
+        print(f"Topic {topic_idx:2d}: {', '.join(top_words)}")
+
+print("LDA Topics:")
+display_topics(lda, feature_names)
+
+# Assign dominant topic to each contract
+df["dominant_topic"] = lda.transform(X_text).argmax(axis=1)</code></pre>
+          </div>
+
+          <h2 id="foundry-transform">Foundry: Unsupervised Learning as a Transform</h2>
+
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code class="language-python">from transforms.api import transform_df, Input, Output
+import pandas as pd
+import numpy as np
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
+
+@transform_df(
+    Output("/analytics/gold/contract_segments"),
+    features=Input("/analytics/silver/contract_features"),
+)
+def segment_contracts(features: pd.DataFrame) -> pd.DataFrame:
+    """
+    Foundry transform: cluster contracts into operational segments.
+    Output is written to Gold tier and exposed as a Foundry Object Type.
+    """
+    df = features.copy()
+    cluster_cols = ["log_obligation", "period_days", "competition_type",
+                    "naics_sector", "fiscal_month"]
+
+    X = df[cluster_cols].fillna(0)
+    X_scaled = StandardScaler().fit_transform(X)
+
+    km = KMeans(n_clusters=6, random_state=42, n_init=10)
+    df["segment_id"] = km.fit_predict(X_scaled)
+
+    return df[["contract_id", "segment_id",
+               "federal_action_obligation", "naics_sector",
+               "recipient_name", "fiscal_year"]]</code></pre>
+          </div>
+
+          <h2 id="failure-modes">Where This Goes Wrong</h2>
+
+          <div class="failure-card">
+            <h4>Failure Mode 1: Choosing k Without Validation</h4>
+            <p>Picking k=5 because "five segments seems reasonable" without computing silhouette scores or profiling the resulting clusters for interpretability. Fix: always compute silhouette scores across a range of k values. Then profile the clusters — if you can't explain what each cluster represents to a non-statistician in one sentence, the clustering is not useful.</p>
+          </div>
+
+          <div class="failure-card">
+            <h4>Failure Mode 2: Ignoring Fiscal Calendar in Anomaly Detection</h4>
+            <p>Training an anomaly detector on procurement data and generating a wave of false positives every September and December because the model doesn't know that end-of-quarter spending surges are structural. Fix: include fiscal month and quarter-end indicators as features so the model learns the calendar pattern as "normal."</p>
+          </div>
+
+          <div class="failure-card">
+            <h4>Failure Mode 3: Treating Noise Points as Errors</h4>
+            <p>In DBSCAN, noise points (label -1) are contracts that don't fit any cluster — which is exactly what you wanted to find. Automatically removing them or re-assigning them to the nearest cluster destroys the analysis. Fix: surface noise points to the contracting officer as anomaly candidates. That's the output of the analysis, not a data quality problem.</p>
+          </div>
+
+          <h2 id="platform-comparison">Platform Comparison</h2>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Capability</th>
+                <th>Databricks (Advana/Jupiter)</th>
+                <th>Palantir Foundry</th>
+                <th>Qlik</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Distributed clustering</td>
+                <td>MLlib K-means (millions of rows)</td>
+                <td>Code Workspaces (scikit-learn)</td>
+                <td>Not supported</td>
+              </tr>
+              <tr>
+                <td>Anomaly detection</td>
+                <td>Isolation Forest (scikit-learn)</td>
+                <td>Code Workspaces (scikit-learn)</td>
+                <td>Not supported</td>
+              </tr>
+              <tr>
+                <td>Topic modeling</td>
+                <td>LDA, BERTopic (DBR ML)</td>
+                <td>Code Workspaces</td>
+                <td>Not supported</td>
+              </tr>
+              <tr>
+                <td>Results as operational objects</td>
+                <td>Delta table → Gold tier</td>
+                <td>Foundry Objects (Ontology)</td>
+                <td>QVD → charts</td>
+              </tr>
+              <tr>
+                <td>Experiment tracking</td>
+                <td>MLflow</td>
+                <td>Foundry versioned artifacts</td>
+                <td>Not applicable</td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div><!-- /prose -->
+
         <nav class="chapter-nav-footer" aria-label="Chapter navigation">
           <a href="06-supervised-ml.html" class="chapter-nav-link prev">
-            <span class="chapter-nav-direction">Previous</span>
-            <span class="chapter-nav-title">06 — Supervised ML</span>
+            <span class="chapter-nav-direction">Previous Chapter</span>
+            <span class="chapter-nav-title">Supervised Machine Learning</span>
           </a>
           <a href="08-deep-learning.html" class="chapter-nav-link next">
             <span class="chapter-nav-direction">Next Chapter</span>
-            <span class="chapter-nav-title">08 — Deep Learning</span>
+            <span class="chapter-nav-title">Deep Learning and Neural Networks</span>
           </a>
         </nav>
+
       </article>
+
       <nav class="chapter-toc" aria-label="On this page">
         <span class="toc-label">On this page</span>
         <ul class="toc-list" id="toc-list" role="list"></ul>
       </nav>
-    </div>
+
+    </div><!-- /chapter-layout -->
+
     <footer class="site-footer" role="contentinfo">
       <div class="footer-grid">
-        <div><p class="footer-brand">Federal Data Science<br>Learning Handbook</p><p class="footer-tagline">Open reference. No registration.</p></div>
-        <div><p class="footer-col-title">Chapters</p><ul class="footer-links" role="list"><li><a href="01-introduction.html">01 — Introduction</a></li><li><a href="09-mlops.html">09 — MLOps</a></li><li><a href="12-ethics-governance.html">12 — Ethics</a></li></ul></div>
-        <div><p class="footer-col-title">Platforms</p><ul class="footer-links" role="list"><li><a href="../platforms/advana.html">Advana</a></li><li><a href="../platforms/databricks.html">Databricks</a></li><li><a href="../platforms/qlik.html">Qlik</a></li><li><a href="../platforms/navy-jupiter.html">Navy Jupiter</a></li><li><a href="../platforms/palantir.html">Palantir</a></li></ul></div>
+        <div>
+          <p class="footer-brand">Federal Data Science<br>Learning Handbook</p>
+          <p class="footer-tagline">A practical guide to data science in the federal government. Open reference.</p>
+        </div>
+        <div>
+          <p class="footer-col-title">Chapters</p>
+          <ul class="footer-links" role="list">
+            <li><a href="01-introduction.html">01 — Introduction</a></li>
+            <li><a href="02-python-r-foundations.html">02 — Python &amp; R</a></li>
+            <li><a href="03-data-acquisition.html">03 — Data Acquisition</a></li>
+            <li><a href="09-mlops.html">09 — MLOps</a></li>
+            <li><a href="12-ethics-governance.html">12 — Ethics</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="footer-col-title">Platforms</p>
+          <ul class="footer-links" role="list">
+            <li><a href="../platforms/advana.html">Advana</a></li>
+            <li><a href="../platforms/databricks.html">Databricks</a></li>
+            <li><a href="../platforms/qlik.html">Qlik</a></li>
+            <li><a href="../platforms/navy-jupiter.html">Navy Jupiter</a></li>
+            <li><a href="../platforms/palantir.html">Palantir</a></li>
+          </ul>
+        </div>
       </div>
       <div class="footer-bottom">
         <span class="footer-copy">Federal Data Science Learning Handbook &mdash; Open Reference</span>
-        <div class="footer-platform-dots" aria-hidden="true"><span class="footer-dot" style="background:#C5A572"></span><span class="footer-dot" style="background:#FF3621"></span><span class="footer-dot" style="background:#009845"></span><span class="footer-dot" style="background:#003B5C"></span><span class="footer-dot" style="background:#4A6FA5"></span></div>
+        <div class="footer-platform-dots" aria-hidden="true">
+          <span class="footer-dot" style="background:#C5A572"></span>
+          <span class="footer-dot" style="background:#FF3621"></span>
+          <span class="footer-dot" style="background:#009845"></span>
+          <span class="footer-dot" style="background:#003B5C"></span>
+          <span class="footer-dot" style="background:#4A6FA5"></span>
+        </div>
       </div>
     </footer>
+
   </main>
-</div>
+</div><!-- /page-wrapper -->
+
 <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
 <script src="../js/mermaid-init.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-r.min.js"></script>
 <script src="../js/main.js"></script>
 </body>
 </html>
