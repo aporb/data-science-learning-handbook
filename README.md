@@ -130,14 +130,6 @@ Every chapter includes working Python code examples and a hands-on exercises dir
 
 ---
 
-## Project Status
-
-**COMPLETE** — Opus sign-off: READY (2026-03-24)
-
-All 13 chapters, 5 platform guides, 41 Python code example files, and 13 exercise sets with solutions are written, QA-reviewed, and published. All QA gates passed. See `docs/FINAL_SIGNOFF.md` for the full review report.
-
----
-
 ## Technology Stack
 
 **Languages**
