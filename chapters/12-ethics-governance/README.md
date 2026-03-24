@@ -75,7 +75,7 @@ graph LR
 
 **MAP** — Identify the risks that apply to a specific AI system. What could go wrong? Who is affected? What is the impact if it does go wrong?
 
-**MEASURE** — Quantify the identified risks. Bias testing, adversarial robustness testing, performance under distribution shift.
+**MEASURE** — Quantify the identified risks. Bias testing, adversarial red-teaming, performance under distribution shift.
 
 **MANAGE** — Mitigate and monitor. Implement the fixes, track whether they work, define when to escalate.
 
@@ -99,7 +99,7 @@ The assessment is reviewed by the program's Responsible AI Champion (a role crea
 
 ## Bias Testing in Practice
 
-The attrition model in the opening scenario failed because no one ran the analysis. The analysis itself is not complicated. What makes it hard is organizational, not technical — someone has to require it, and someone has to be empowered to stop a deployment when it fails.
+The attrition model in the opening scenario failed because no one ran the analysis. The analysis itself is not complicated. What makes it hard is organizational, not technical — someone has to require it, and someone has to have the authority to stop a deployment when it fails.
 
 Here is what the technical work looks like.
 
