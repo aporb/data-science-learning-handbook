@@ -394,6 +394,16 @@ _(Updated as phases complete)_
 | 2026-03-23 ~T07 | Agent team created | `handbook-builders` team with orchestrator lead |
 | 2026-03-23 ~T07 | Phase C1 launched | 4 chapter writer teammates spawned (Ch 01-04, Sonnet, agent team) |
 | 2026-03-23 ~T08 | Monitor check #2 | Teammates reading research docs. 0/4 chapters started yet. Normal — reading phase. |
+| 2026-03-24 ~T09 | Ch01 complete | 5,127 words, 0 banned words, all files. chapter-01-writer reassigned to Ch05. |
+| 2026-03-24 ~T09 | Ch02 complete | 4,908 words, 0 banned words, all 6 files. chapter-02-writer reassigned to Ch06. |
+| 2026-03-24 ~T10 | Ch03 complete | 5,614 words, 0 banned words, all 6 files. chapter-03-writer reassigned to Ch07. |
+| 2026-03-24 ~T10 | Monitor check #3 | 3/13 chapters complete. 21 new files. Ch04 nearly done. Ch05 writer stuck — spawned fresh chapter-05-writer. |
+| 2026-03-24 ~T10 | Tasks 9-13 created | All 13 chapter tasks now in shared task list. |
+| 2026-03-24 ~T11 | Ch04 complete | 5,174 words, all 6 files. Batch 1 (Ch1-4) fully complete. |
+| 2026-03-24 ~T12 | Monitor check #4 | 4/13 done. Ch05-07 READMEs written. Ch08 starting. 10 new files. |
+| 2026-03-24 ~T13 | Ch06 complete | 4,371 words, all 6 files. chapter-02-writer → Ch12. |
+| 2026-03-24 ~T13 | Ch08 complete | 4,324 words, 7 files (4 py). chapter-04-writer → Ch13 (final chapter). |
+| 2026-03-24 ~T14 | Monitor check #5 | 8/13 done. Ch09(5951w) Ch10(4996w) Ch11(4593w) finishing. Ch12 starting. Ch13 queued. 25 new files. |
 | | | |
 
 ---
