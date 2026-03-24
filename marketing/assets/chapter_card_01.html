@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 1 — Federal Data Science Learning Handbook</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --palantir:   #1B2A4A;
+    --databricks: #FF3621;
+    --qlik:       #009845;
+    --navy-jup:   #003B5C;
+    --advana:     #C5A572;
+    --bg:         #0F1419;
+    --surface:    #161D26;
+    --surface2:   #1C2632;
+    --text:       #E8E6E3;
+    --text-muted: #8B9AB0;
+    --border:     #2A3A4E;
+
+    /* Chapter-specific — change these per chapter */
+    --ch-number:  "01";
+    --ch-accent:  #1B2A4A;       /* Palantir deep navy for ch1 */
+    --ch-accent2: #C5A572;
+  }
+
+  html, body {
+    width: 1200px;
+    height: 627px;
+    overflow: hidden;
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+
+  .card {
+    width: 1200px;
+    height: 627px;
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Top accent bar — chapter color */
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #1B2A4A, #C5A572 60%, transparent);
+    z-index: 10;
+  }
+
+  /* Left sidebar */
+  .sidebar {
+    background: #1B2A4A;
+    padding: 52px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Diagonal decorative element */
+  .sidebar::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; right: -60px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(197,165,114,0.08);
+  }
+
+  .ch-eyebrow {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(197,165,114,0.7);
+    margin-bottom: 16px;
+  }
+
+  .ch-number {
+    font-size: 120px;
+    font-weight: 900;
+    line-height: 1;
+    color: rgba(255,255,255,0.08);
+    letter-spacing: -0.06em;
+    position: absolute;
+    bottom: 80px;
+    left: 24px;
+    font-variant-numeric: tabular-nums;
+    z-index: 0;
+  }
+
+  .ch-number-display {
+    font-size: 72px;
+    font-weight: 900;
+    line-height: 1;
+    color: var(--advana);
+    letter-spacing: -0.04em;
+    margin-bottom: 8px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .sidebar-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: rgba(232,230,227,0.5);
+    position: relative;
+    z-index: 1;
+  }
+
+  .word-count {
+    position: relative;
+    z-index: 1;
+    margin-top: auto;
+  }
+
+  .wc-num {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .wc-label {
+    font-size: 11px;
+    color: rgba(232,230,227,0.5);
+    margin-top: 2px;
+  }
+
+  /* Platforms in sidebar */
+  .sidebar-platforms {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .plat-dot {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 0.02em;
+  }
+
+  /* Main content */
+  .main {
+    padding: 52px 64px 52px 56px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+  }
+
+  .handbook-tag {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 28px;
+  }
+
+  .handbook-tag span {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .handbook-tag .tag-sep {
+    color: var(--border);
+  }
+
+  .chapter-title {
+    font-size: 44px;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+
+  .chapter-title .highlight {
+    color: var(--advana);
+  }
+
+  .chapter-subtitle {
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-bottom: 36px;
+    max-width: 560px;
+  }
+
+  .divider {
+    width: 40px;
+    height: 2px;
+    background: var(--advana);
+    margin-bottom: 32px;
+    opacity: 0.6;
+  }
+
+  .topics-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+
+  .topics-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .topic-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .topic-bullet {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--advana);
+    flex-shrink: 0;
+  }
+
+  .topic-tag {
+    margin-left: auto;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 3px;
+    background: rgba(197,165,114,0.1);
+    color: var(--advana);
+    border: 1px solid rgba(197,165,114,0.2);
+  }
+
+  .bottom-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    margin-top: 24px;
+  }
+
+  .bottom-bar .book-name {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .bottom-bar .github-link {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--advana);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+  }
+
+  /* Decorative large numeral watermark */
+  .watermark {
+    position: absolute;
+    right: 40px;
+    bottom: 60px;
+    font-size: 200px;
+    font-weight: 900;
+    color: rgba(255,255,255,0.015);
+    line-height: 1;
+    letter-spacing: -0.06em;
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+  }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="sidebar">
+    <div>
+      <div class="ch-eyebrow">Federal DS Handbook</div>
+      <div class="ch-number-display">01</div>
+      <div class="sidebar-label">Chapter One</div>
+    </div>
+
+    <div class="ch-number" aria-hidden="true">1</div>
+
+    <div class="word-count">
+      <div class="wc-num">7,200</div>
+      <div class="wc-label">words · ~36 min read</div>
+
+      <div class="sidebar-platforms">
+        <div class="plat-dot" style="background:#1B2A4A; border: 1px solid rgba(255,255,255,0.15);" title="Palantir">PA</div>
+        <div class="plat-dot" style="background:#FF3621;" title="Databricks">DB</div>
+        <div class="plat-dot" style="background:#009845;" title="Qlik">QL</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="watermark" aria-hidden="true">1</div>
+    <div>
+      <div class="handbook-tag">
+        <span>Federal Data Science</span>
+        <span class="tag-sep">/</span>
+        <span>Learning Handbook</span>
+      </div>
+
+      <h1 class="chapter-title">Introduction to the<br><span class="highlight">Federal Analytics</span><br>Ecosystem</h1>
+      <p class="chapter-subtitle">Navigating the unique landscape of DoD data infrastructure, governance mandates, and the platforms shaping how defense organizations turn data into decisions.</p>
+
+      <div class="divider"></div>
+    </div>
+
+    <div>
+      <div class="topics-label">Key Topics</div>
+      <ul class="topics-list">
+        <li class="topic-item">
+          <span class="topic-bullet"></span>
+          DoD data strategy & CDO organizational structure
+          <span class="topic-tag">Governance</span>
+        </li>
+        <li class="topic-item">
+          <span class="topic-bullet"></span>
+          The Advana/JUPITER enterprise data architecture
+          <span class="topic-tag">Architecture</span>
+        </li>
+        <li class="topic-item">
+          <span class="topic-bullet"></span>
+          Platform landscape: Palantir, Databricks, Qlik, Jupiter
+          <span class="topic-tag">Platforms</span>
+        </li>
+        <li class="topic-item">
+          <span class="topic-bullet"></span>
+          Clearance levels and data classification in practice
+          <span class="topic-tag">Security</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="bottom-bar">
+      <span class="book-name">Federal Data Science Learning Handbook — Open Source</span>
+      <span class="github-link">github.com/amynporb/federal-ds-handbook</span>
+    </div>
+  </div>
+</div>
+</body>
+</html>

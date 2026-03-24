@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Federal Data Science Learning Handbook — Announcement</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --palantir:  #1B2A4A;
+    --databricks:#FF3621;
+    --qlik:      #009845;
+    --navy-jup:  #003B5C;
+    --advana:    #C5A572;
+    --bg:        #0F1419;
+    --surface:   #161D26;
+    --surface2:  #1C2632;
+    --text:      #E8E6E3;
+    --text-muted:#8B9AB0;
+    --border:    #2A3A4E;
+  }
+
+  html, body {
+    width: 1600px;
+    height: 840px;
+    overflow: hidden;
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+
+  .hero {
+    width: 1600px;
+    height: 840px;
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Subtle grid lines */
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 80px 80px;
+    pointer-events: none;
+  }
+
+  /* Accent bar top */
+  .accent-bar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg,
+      var(--palantir) 0%,
+      var(--databricks) 30%,
+      var(--advana) 55%,
+      var(--qlik) 78%,
+      var(--navy-jup) 100%
+    );
+  }
+
+  /* Left panel */
+  .left {
+    padding: 72px 80px 64px 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    z-index: 1;
+  }
+
+  .label {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(197,165,114,0.12);
+    border: 1px solid rgba(197,165,114,0.3);
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--advana);
+    width: fit-content;
+    margin-bottom: 36px;
+  }
+
+  .label-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--advana);
+  }
+
+  .title-block h1 {
+    font-size: 62px;
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .title-block h1 .accent { color: var(--advana); }
+
+  .title-block h2 {
+    font-size: 28px;
+    font-weight: 300;
+    color: var(--text-muted);
+    letter-spacing: -0.01em;
+    margin-top: 16px;
+  }
+
+  .divider {
+    width: 64px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--databricks), transparent);
+    margin: 32px 0;
+  }
+
+  .stats-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 40px;
+  }
+
+  .stat-pill {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .stat-pill .num {
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--advana);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .author-block {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+  }
+
+  .author-avatar {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--palantir), var(--navy-jup));
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 18px; color: var(--advana);
+    flex-shrink: 0;
+  }
+
+  .author-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .author-role {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  /* Right panel */
+  .right {
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    padding: 72px 40px 64px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .right-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+
+  .platform-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 18px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    transition: border-color 0.2s;
+  }
+
+  .platform-dot {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .platform-dot svg {
+    width: 18px; height: 18px;
+    fill: white;
+  }
+
+  .platform-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .platform-desc {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+    line-height: 1.4;
+  }
+
+  .chapters-badge {
+    margin-top: auto;
+    background: linear-gradient(135deg, rgba(27,42,74,0.6), rgba(0,59,92,0.6));
+    border: 1px solid rgba(197,165,114,0.2);
+    border-radius: 10px;
+    padding: 20px 24px;
+    text-align: center;
+  }
+
+  .chapters-badge .big-num {
+    font-size: 56px;
+    font-weight: 900;
+    line-height: 1;
+    color: var(--advana);
+    letter-spacing: -0.04em;
+  }
+
+  .chapters-badge .big-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 4px;
+  }
+
+  /* Decorative corner glows */
+  .glow-tl {
+    position: absolute;
+    top: -100px; left: -100px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(27,42,74,0.4) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .glow-br {
+    position: absolute;
+    bottom: -120px; right: 380px;
+    width: 500px; height: 400px;
+    background: radial-gradient(circle, rgba(255,54,33,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="accent-bar"></div>
+  <div class="glow-tl"></div>
+  <div class="glow-br"></div>
+
+  <div class="left">
+    <div>
+      <div class="label"><span class="label-dot"></span> Now Available — Open Source</div>
+      <div class="title-block">
+        <h1>Federal<br><span class="accent">Data Science</span><br>Learning Handbook</h1>
+        <h2>A practitioner's guide to the DoD analytics ecosystem</h2>
+      </div>
+      <div class="divider"></div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-pill"><span class="num">96,000+</span> words</div>
+      <div class="stat-pill"><span class="num">13</span> chapters</div>
+      <div class="stat-pill"><span class="num">5</span> federal platforms</div>
+      <div class="stat-pill"><span class="num">41</span> code examples</div>
+      <div class="stat-pill"><span class="num">67</span> exercises</div>
+    </div>
+
+    <div class="author-block">
+      <div class="author-avatar">A</div>
+      <div>
+        <div class="author-name">Amy Porb</div>
+        <div class="author-role">Federal Data Science Practitioner · Open Source</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="right-label">Platforms Covered</div>
+
+    <div class="platform-card">
+      <div class="platform-dot" style="background:#1B2A4A;">
+        <svg viewBox="0 0 24 24"><path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.18L20 8.5v7L12 19.82 4 15.5v-7l8-4.32z"/></svg>
+      </div>
+      <div>
+        <div class="platform-name">Palantir Foundry</div>
+        <div class="platform-desc">Pipeline orchestration, ontology modeling, AIP</div>
+      </div>
+    </div>
+
+    <div class="platform-card">
+      <div class="platform-dot" style="background:#FF3621;">
+        <svg viewBox="0 0 24 24"><path d="M12 3L4 9v12h16V9L12 3zm0 2.5L18 9.5V19H6V9.5l6-4z"/></svg>
+      </div>
+      <div>
+        <div class="platform-name">Databricks</div>
+        <div class="platform-desc">Lakehouse architecture, MLflow, Delta Lake</div>
+      </div>
+    </div>
+
+    <div class="platform-card">
+      <div class="platform-dot" style="background:#009845;">
+        <svg viewBox="0 0 24 24"><path d="M3 3h18v18H3V3zm2 2v14h14V5H5zm2 2h10v2H7V7zm0 4h10v2H7v-2zm0 4h6v2H7v-2z"/></svg>
+      </div>
+      <div>
+        <div class="platform-name">Qlik Sense</div>
+        <div class="platform-desc">Associative analytics, self-service BI, NPrinting</div>
+      </div>
+    </div>
+
+    <div class="platform-card">
+      <div class="platform-dot" style="background:#003B5C;">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+      </div>
+      <div>
+        <div class="platform-name">Navy Jupiter</div>
+        <div class="platform-desc">JupyterHub deployment, classified compute</div>
+      </div>
+    </div>
+
+    <div class="platform-card">
+      <div class="platform-dot" style="background:#8B6914;">
+        <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.18L20 7v4c0 4.52-3.08 8.75-8 9.93C7.08 19.75 4 15.52 4 11V7l8-3.82z"/></svg>
+      </div>
+      <div>
+        <div class="platform-name">Advana (JUPITER)</div>
+        <div class="platform-desc">DoD enterprise analytics, data mesh, compliance</div>
+      </div>
+    </div>
+
+    <div class="chapters-badge">
+      <div class="big-num">13</div>
+      <div class="big-label">Chapters · Free on GitHub</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
