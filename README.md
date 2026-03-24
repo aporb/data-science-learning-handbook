@@ -1,5 +1,7 @@
 # Federal Data Science Handbook
 
+**[Read online at aporb.github.io/federal-ds-handbook-site](https://aporb.github.io/federal-ds-handbook-site/)**
+
 A practitioner's guide to data science on federal government platforms. Thirteen chapters covering the full data science lifecycle — environment setup through generative AI — grounded in how the work actually gets done on Advana, Qlik, Databricks, Navy Jupiter, and Palantir AIP/Foundry.
 
 This is the book a senior practitioner would hand to someone on their first day on a DoD contract and say: read this, everything you need is in here.
