@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="{{PLATFORM_NAME}} Platform Guide — Federal Data Science Learning Handbook">
+  <title>{{PLATFORM_NAME}} Guide — Federal DS Handbook</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/prism-theme.css">
+
+  <style>
+    /* =====================================================
+       Platform guide specific styles
+       ===================================================== */
+
+    .platform-hero {
+      /* Set --platform-color to the platform's brand color in the inline style */
+      background: var(--platform-color, #1B2A4A);
+      color: white;
+      padding: 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .platform-hero::before {
+      content: '';
+      position: absolute;
+      top: -40%;
+      right: -10%;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.04);
+      pointer-events: none;
+    }
+
+    .platform-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 1rem;
+    }
+
+    .platform-eyebrow .platform-dot-large {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.5);
+    }
+
+    .platform-hero-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 400;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+      color: white;
+    }
+
+    .platform-hero-desc {
+      font-size: 1.125rem;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.75);
+      max-width: 56ch;
+      margin-bottom: 2rem;
+    }
+
+    .platform-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .platform-tag-pill {
+      display: inline-block;
+      padding: 0.3rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      border-radius: 100px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.9);
+    }
+
+    /* Platform quick facts bar */
+    .platform-facts {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      border-bottom: 1px solid var(--border-light);
+      background: var(--bg-secondary);
+    }
+
+    .platform-fact {
+      padding: 1.25rem 1.5rem;
+      border-right: 1px solid var(--border-light);
+    }
+
+    .platform-fact:last-child {
+      border-right: none;
+    }
+
+    .platform-fact-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+
+    .platform-fact-value {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    /* API Reference card */
+    .api-card {
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 1.5rem 0;
+    }
+
+    .api-card-header {
+      padding: 0.75rem 1.25rem;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .api-method {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+    }
+
+    .method-get { background: rgba(0,152,69,0.12); color: #007A38; }
+    .method-post { background: rgba(255,54,33,0.12); color: #CC2D1C; }
+    .method-put { background: rgba(197,165,114,0.2); color: #8B6914; }
+
+    .api-path {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .api-card-body {
+      padding: 1rem 1.25rem;
+    }
+
+    .api-card-desc {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-bottom: 0;
+    }
+
+    /* Resource links grid */
+    .resource-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 0.75rem;
+      margin: 1.5rem 0;
+    }
+
+    .resource-link {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      padding: 0.875rem 1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      transition: all var(--transition-fast);
+    }
+
+    .resource-link:hover {
+      border-color: var(--border-medium);
+      box-shadow: var(--shadow-sm);
+      color: var(--text-link);
+    }
+
+    .resource-link-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 900px) {
+      .platform-hero {
+        padding: 2.5rem 1.5rem;
+      }
+
+      .platform-facts {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .platform-fact {
+        border-right: none;
+        border-bottom: 1px solid var(--border-light);
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOP NAVIGATION -->
+<nav class="site-nav" role="navigation" aria-label="Main navigation">
+  <button class="btn-icon mobile-menu-btn" id="mobile-menu-btn" aria-label="Open menu" aria-expanded="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <line x1="3" y1="6" x2="21" y2="6"/>
+      <line x1="3" y1="12" x2="21" y2="12"/>
+      <line x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+  </button>
+
+  <a href="../index.html" class="nav-brand" aria-label="Home">
+    <img src="../assets/favicon.svg" class="nav-brand-icon" alt="" aria-hidden="true" width="28" height="28">
+    <span class="nav-brand-text">
+      <span class="nav-brand-title">Federal</span>
+      <span class="nav-brand-subtitle">Data Science Handbook</span>
+    </span>
+  </a>
+
+  <div class="nav-spacer"></div>
+
+  <ul class="nav-links" role="list">
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="../chapters/01-introduction.html">Chapters</a></li>
+    <li><a href="template.html" class="active">Platforms</a></li>
+  </ul>
+
+  <div class="nav-actions">
+    <button class="btn-icon" id="theme-toggle" aria-label="Toggle dark mode">
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none" aria-hidden="true">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1" x2="12" y2="3"/>
+        <line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/>
+        <line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+    </button>
+  </div>
+</nav>
+
+<div class="sidebar-overlay" id="sidebar-overlay" aria-hidden="true"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar" role="complementary" aria-label="Navigation">
+  <div class="sidebar-section">
+    <span class="sidebar-label">Platform Guides</span>
+    <nav aria-label="Platform guides">
+      <ul class="sidebar-nav" role="list">
+        <!-- Mark current platform active -->
+        <li><a href="advana.html"><span class="platform-dot" style="background:#C5A572"></span> Advana</a></li>
+        <li><a href="databricks.html"><span class="platform-dot" style="background:#FF3621"></span> Databricks</a></li>
+        <li><a href="qlik.html"><span class="platform-dot" style="background:#009845"></span> Qlik</a></li>
+        <li><a href="navy-jupiter.html"><span class="platform-dot" style="background:#003B5C"></span> Navy Jupiter</a></li>
+        <li><a href="palantir.html"><span class="platform-dot" style="background:#1B2A4A"></span> Palantir AIP/Foundry</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="sidebar-section">
+    <span class="sidebar-label">Chapters</span>
+    <nav aria-label="Chapter list">
+      <ul class="sidebar-nav" role="list">
+        <li><a href="../chapters/01-introduction.html"><span class="chapter-num">01</span> Introduction</a></li>
+        <li><a href="../chapters/02-python-r-foundations.html"><span class="chapter-num">02</span> Python &amp; R</a></li>
+        <li><a href="../chapters/03-data-acquisition.html"><span class="chapter-num">03</span> Data Acquisition</a></li>
+        <li><a href="../chapters/04-data-wrangling.html"><span class="chapter-num">04</span> Data Wrangling</a></li>
+        <li><a href="../chapters/09-mlops.html"><span class="chapter-num">09</span> MLOps</a></li>
+        <li><a href="../chapters/12-ethics-governance.html"><span class="chapter-num">12</span> Ethics</a></li>
+      </ul>
+    </nav>
+  </div>
+</aside>
+
+<!-- PAGE WRAPPER -->
+<div class="page-wrapper">
+  <main class="main-content" id="main-content">
+
+    <!-- =====================================================
+         PLATFORM HERO
+         Set style="--platform-color: #HEXCOLOR" to the
+         platform's brand color.
+         ===================================================== -->
+    <div class="platform-hero" style="--platform-color: #1B2A4A">
+      <div class="platform-eyebrow">
+        <span class="platform-dot-large" aria-hidden="true"></span>
+        Platform Guide
+      </div>
+
+      <h1 class="platform-hero-title">{{PLATFORM_NAME}}</h1>
+
+      <p class="platform-hero-desc">
+        {{PLATFORM_DESCRIPTION}}
+      </p>
+
+      <div class="platform-tags">
+        <!-- Add relevant authorization and network tags -->
+        <span class="platform-tag-pill">FedRAMP High</span>
+        <span class="platform-tag-pill">IL5</span>
+        <span class="platform-tag-pill">DoD</span>
+      </div>
+    </div>
+
+    <!-- QUICK FACTS BAR -->
+    <div class="platform-facts" role="list">
+      <div class="platform-fact" role="listitem">
+        <span class="platform-fact-label">Authorization</span>
+        <span class="platform-fact-value">{{AUTH_LEVEL}}</span>
+      </div>
+      <div class="platform-fact" role="listitem">
+        <span class="platform-fact-label">Networks</span>
+        <span class="platform-fact-value">{{NETWORKS}}</span>
+      </div>
+      <div class="platform-fact" role="listitem">
+        <span class="platform-fact-label">Managed By</span>
+        <span class="platform-fact-value">{{MANAGED_BY}}</span>
+      </div>
+      <div class="platform-fact" role="listitem">
+        <span class="platform-fact-label">Access</span>
+        <span class="platform-fact-value">{{ACCESS_METHOD}}</span>
+      </div>
+      <div class="platform-fact" role="listitem">
+        <span class="platform-fact-label">PII/PHI</span>
+        <span class="platform-fact-value">{{PII_PHI}}</span>
+      </div>
+      <div class="platform-fact" role="listitem">
+        <span class="platform-fact-label">Users</span>
+        <span class="platform-fact-value">{{USER_SCALE}}</span>
+      </div>
+    </div>
+
+    <!-- CHAPTER LAYOUT (reuse for platform pages) -->
+    <div class="chapter-layout">
+
+      <article class="chapter-main">
+        <div class="prose" id="prose-content">
+
+          <!--
+            ==========================================
+            PLATFORM GUIDE CONTENT
+            ==========================================
+
+            Suggested sections:
+            - Overview
+            - Architecture
+            - Getting Access
+            - Key Tools and APIs (with code examples)
+            - Working with Data
+            - Authentication Patterns
+            - Common Patterns (with code)
+            - Troubleshooting
+            - Resources
+
+            Use all the same components as chapter pages:
+            callouts, code blocks, mermaid diagrams, tables.
+          -->
+
+          <h2 id="overview">Overview</h2>
+          <p>{{PLATFORM_OVERVIEW_PROSE}}</p>
+
+          <h2 id="architecture">Architecture</h2>
+
+          <div class="mermaid-wrapper">
+            <div class="mermaid">
+graph TD
+    A[Your Code] --> B[Platform Layer]
+    B --> C[Data Storage]
+    B --> D[Compute]
+    B --> E[Governance]
+            </div>
+            <p class="mermaid-caption">Platform architecture overview. Replace with platform-specific diagram.</p>
+          </div>
+
+          <h2 id="getting-access">Getting Access</h2>
+          <p>Replace with platform-specific access instructions.</p>
+
+          <h2 id="key-tools">Key Tools and APIs</h2>
+
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code class="language-python"># Example: Platform authentication pattern
+# Replace with platform-specific code
+
+import os
+
+# Use environment variables for credentials
+# Never hardcode credentials
+API_TOKEN = os.environ.get("PLATFORM_TOKEN")
+
+client = PlatformClient(
+    host=os.environ.get("PLATFORM_HOST"),
+    token=API_TOKEN,
+)
+</code></pre>
+          </div>
+
+          <h2 id="resources">Resources</h2>
+
+          <div class="resource-grid">
+            <a href="#" class="resource-link">
+              <span class="resource-link-icon" style="background:var(--bg-secondary)">
+                &#128196;
+              </span>
+              Official Documentation
+            </a>
+            <a href="#" class="resource-link">
+              <span class="resource-link-icon" style="background:var(--bg-secondary)">
+                &#127891;
+              </span>
+              Training / Certification
+            </a>
+            <a href="#" class="resource-link">
+              <span class="resource-link-icon" style="background:var(--bg-secondary)">
+                &#128279;
+              </span>
+              Access Request Form
+            </a>
+            <a href="#" class="resource-link">
+              <span class="resource-link-icon" style="background:var(--bg-secondary)">
+                &#128202;
+              </span>
+              Status Page
+            </a>
+          </div>
+
+        </div><!-- /prose -->
+
+        <!-- PLATFORM NAVIGATION FOOTER -->
+        <nav class="chapter-nav-footer" aria-label="Platform navigation">
+          <a href="{{PREV_PLATFORM_URL}}" class="chapter-nav-link prev">
+            <span class="chapter-nav-direction">Previous Platform</span>
+            <span class="chapter-nav-title">{{PREV_PLATFORM_NAME}}</span>
+          </a>
+          <a href="{{NEXT_PLATFORM_URL}}" class="chapter-nav-link next">
+            <span class="chapter-nav-direction">Next Platform</span>
+            <span class="chapter-nav-title">{{NEXT_PLATFORM_NAME}}</span>
+          </a>
+        </nav>
+
+      </article>
+
+      <!-- TABLE OF CONTENTS -->
+      <nav class="chapter-toc" aria-label="On this page">
+        <span class="toc-label">On this page</span>
+        <ul class="toc-list" id="toc-list" role="list">
+          <!-- Populated by JS -->
+        </ul>
+      </nav>
+
+    </div><!-- /chapter-layout -->
+
+    <!-- FOOTER -->
+    <footer class="site-footer" role="contentinfo">
+      <div class="footer-grid">
+        <div>
+          <p class="footer-brand">Federal Data Science<br>Learning Handbook</p>
+          <p class="footer-tagline">A practical guide to data science in the federal government.</p>
+        </div>
+        <div>
+          <p class="footer-col-title">Platforms</p>
+          <ul class="footer-links" role="list">
+            <li><a href="advana.html">Advana</a></li>
+            <li><a href="databricks.html">Databricks</a></li>
+            <li><a href="qlik.html">Qlik</a></li>
+            <li><a href="navy-jupiter.html">Navy Jupiter</a></li>
+            <li><a href="palantir.html">Palantir</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="footer-col-title">Chapters</p>
+          <ul class="footer-links" role="list">
+            <li><a href="../chapters/01-introduction.html">01 — Introduction</a></li>
+            <li><a href="../chapters/02-python-r-foundations.html">02 — Python &amp; R</a></li>
+            <li><a href="../chapters/09-mlops.html">09 — MLOps</a></li>
+            <li><a href="../chapters/12-ethics-governance.html">12 — Ethics</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-copy">Federal Data Science Learning Handbook &mdash; Open Reference</span>
+        <div class="footer-platform-dots" aria-hidden="true">
+          <span class="footer-dot" style="background:#C5A572"></span>
+          <span class="footer-dot" style="background:#FF3621"></span>
+          <span class="footer-dot" style="background:#009845"></span>
+          <span class="footer-dot" style="background:#003B5C"></span>
+          <span class="footer-dot" style="background:#4A6FA5"></span>
+        </div>
+      </div>
+    </footer>
+
+  </main>
+</div>
+
+<!-- External Libraries -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script src="../js/mermaid-init.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+<script src="../js/main.js"></script>
+</body>
+</html>

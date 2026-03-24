@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="{{CHAPTER_DESCRIPTION}} — Federal Data Science Learning Handbook">
+  <title>{{CHAPTER_TITLE}} — Federal DS Handbook</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/prism-theme.css">
+</head>
+<body>
+
+<!-- TOP NAVIGATION -->
+<nav class="site-nav" role="navigation" aria-label="Main navigation">
+  <button class="btn-icon mobile-menu-btn" id="mobile-menu-btn" aria-label="Open menu" aria-expanded="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <line x1="3" y1="6" x2="21" y2="6"/>
+      <line x1="3" y1="12" x2="21" y2="12"/>
+      <line x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+  </button>
+
+  <a href="../index.html" class="nav-brand" aria-label="Home">
+    <img src="../assets/favicon.svg" class="nav-brand-icon" alt="" aria-hidden="true" width="28" height="28">
+    <span class="nav-brand-text">
+      <span class="nav-brand-title">Federal</span>
+      <span class="nav-brand-subtitle">Data Science Handbook</span>
+    </span>
+  </a>
+
+  <div class="nav-spacer"></div>
+
+  <ul class="nav-links" role="list">
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="01-introduction.html" class="active">Chapters</a></li>
+    <li><a href="../platforms/template.html">Platforms</a></li>
+  </ul>
+
+  <div class="nav-actions">
+    <button class="btn-icon" id="theme-toggle" aria-label="Toggle dark mode">
+      <!-- Moon icon (shown in light mode) -->
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+      <!-- Sun icon (shown in dark mode) -->
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none" aria-hidden="true">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1" x2="12" y2="3"/>
+        <line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/>
+        <line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+    </button>
+  </div>
+</nav>
+
+<!-- MOBILE SIDEBAR OVERLAY -->
+<div class="sidebar-overlay" id="sidebar-overlay" aria-hidden="true"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar" role="complementary" aria-label="Navigation">
+  <div class="sidebar-section">
+    <span class="sidebar-label">Chapters</span>
+    <nav aria-label="Chapter list">
+      <ul class="sidebar-nav" role="list">
+        <!-- Highlight the current chapter by adding class="active" to its <a> tag -->
+        <li><a href="01-introduction.html"><span class="chapter-num">01</span> Introduction</a></li>
+        <li><a href="02-python-r-foundations.html"><span class="chapter-num">02</span> Python &amp; R Foundations</a></li>
+        <li><a href="03-data-acquisition.html"><span class="chapter-num">03</span> Data Acquisition</a></li>
+        <li><a href="04-data-wrangling.html"><span class="chapter-num">04</span> Data Wrangling</a></li>
+        <li><a href="05-exploratory-analysis.html"><span class="chapter-num">05</span> Exploratory Analysis</a></li>
+        <li><a href="06-supervised-ml.html"><span class="chapter-num">06</span> Supervised ML</a></li>
+        <li><a href="07-unsupervised-ml.html"><span class="chapter-num">07</span> Unsupervised ML</a></li>
+        <li><a href="08-deep-learning.html"><span class="chapter-num">08</span> Deep Learning</a></li>
+        <li><a href="09-mlops.html"><span class="chapter-num">09</span> MLOps</a></li>
+        <li><a href="10-visualization.html"><span class="chapter-num">10</span> Visualization</a></li>
+        <li><a href="11-deployment.html"><span class="chapter-num">11</span> Deployment</a></li>
+        <li><a href="12-ethics-governance.html"><span class="chapter-num">12</span> Ethics &amp; Governance</a></li>
+        <li><a href="13-advanced-topics.html"><span class="chapter-num">13</span> Advanced Topics</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="sidebar-section">
+    <span class="sidebar-label">Platform Guides</span>
+    <nav aria-label="Platform guides">
+      <ul class="sidebar-nav" role="list">
+        <li><a href="../platforms/advana.html"><span class="platform-dot" style="background:#C5A572"></span> Advana</a></li>
+        <li><a href="../platforms/databricks.html"><span class="platform-dot" style="background:#FF3621"></span> Databricks</a></li>
+        <li><a href="../platforms/qlik.html"><span class="platform-dot" style="background:#009845"></span> Qlik</a></li>
+        <li><a href="../platforms/navy-jupiter.html"><span class="platform-dot" style="background:#003B5C"></span> Navy Jupiter</a></li>
+        <li><a href="../platforms/palantir.html"><span class="platform-dot" style="background:#1B2A4A"></span> Palantir AIP/Foundry</a></li>
+      </ul>
+    </nav>
+  </div>
+</aside>
+
+<!-- PAGE WRAPPER -->
+<div class="page-wrapper">
+  <main class="main-content" id="main-content">
+    <div class="chapter-layout">
+
+      <!-- MAIN CHAPTER ARTICLE -->
+      <article class="chapter-main">
+
+        <!-- =====================================================
+             CHAPTER HEADER — Update these fields per chapter
+             ===================================================== -->
+        <header class="chapter-header">
+          <nav class="chapter-breadcrumb" aria-label="Breadcrumb">
+            <a href="../index.html">Home</a>
+            <span class="chapter-breadcrumb-sep" aria-hidden="true">/</span>
+            <a href="01-introduction.html">Chapters</a>
+            <span class="chapter-breadcrumb-sep" aria-hidden="true">/</span>
+            <!-- Update chapter number below -->
+            <span aria-current="page">Chapter {{CHAPTER_NUM}}</span>
+          </nav>
+
+          <!-- Update chapter number, title, and lede -->
+          <span class="chapter-number">Chapter {{CHAPTER_NUM}}</span>
+          <h1 class="chapter-title" id="chapter-title">{{CHAPTER_TITLE}}</h1>
+
+          <p class="chapter-lede">
+            {{CHAPTER_LEDE}}
+          </p>
+
+          <div class="chapter-meta-bar">
+            <span class="chapter-meta-item">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              ~{{READ_TIME}} min read
+            </span>
+            <span class="chapter-meta-item">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              {{PLATFORM_LIST}}
+            </span>
+          </div>
+        </header>
+
+        <!-- =====================================================
+             PROSE CONTENT
+             Replace {{PROSE_CONTENT}} with the chapter body.
+
+             COMPONENT REFERENCE:
+
+             -- Callout (note) --
+             <div class="callout callout-note">
+               <span class="callout-icon" aria-hidden="true">&#8505;</span>
+               <div class="callout-content"><p>Note text here.</p></div>
+             </div>
+
+             -- Callout (warning) --
+             <div class="callout callout-warning">
+               <span class="callout-icon" aria-hidden="true">&#9888;</span>
+               <div class="callout-content"><p>Warning text here.</p></div>
+             </div>
+
+             -- Callout (tip) --
+             <div class="callout callout-tip">
+               <span class="callout-icon" aria-hidden="true">&#128161;</span>
+               <div class="callout-content"><p>Tip text here.</p></div>
+             </div>
+
+             -- Mermaid Diagram --
+             <div class="mermaid-wrapper">
+               <div class="mermaid">
+                 graph TD
+                   A --> B
+               </div>
+               <p class="mermaid-caption">Caption text.</p>
+             </div>
+
+             -- Code Block with Header --
+             <div class="code-block-wrapper">
+               <div class="code-block-header">
+                 <span class="code-block-lang">python</span>
+                 <button class="code-copy-btn" type="button" aria-label="Copy code">
+                   Copy
+                 </button>
+               </div>
+               <pre><code class="language-python">
+# Your Python code here
+               </code></pre>
+             </div>
+
+             -- Failure Mode Card --
+             <div class="failure-card">
+               <h4>Failure Mode N: Description</h4>
+               <p>Details...</p>
+             </div>
+
+             -- Task List --
+             <ul class="task-list">
+               <li><input type="checkbox" disabled> Item text</li>
+             </ul>
+             ===================================================== -->
+        <div class="prose" id="prose-content">
+
+          <!--
+            ==========================================
+            PASTE CONVERTED CHAPTER CONTENT HERE
+            ==========================================
+
+            Follow the component patterns above.
+            All <h2> and <h3> elements will be
+            automatically added to the ToC by JS.
+            Give each heading a meaningful id=""
+            for smooth-scroll anchor links.
+          -->
+
+          <h2 id="placeholder">Chapter Content</h2>
+          <p>This template is ready for content. Replace this section with the converted chapter markdown.</p>
+
+          <h3 id="example-code">Example Code Block</h3>
+
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="code-copy-btn" type="button" aria-label="Copy code">Copy</button>
+            </div>
+            <pre><code class="language-python"># Example: MLflow experiment tracking on Databricks
+import mlflow
+import mlflow.sklearn
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+
+mlflow.set_experiment("/Users/your_email/maintenance-anomaly-v2")
+
+with mlflow.start_run(run_name="rf_baseline"):
+    # Log parameters
+    mlflow.log_param("n_estimators", 200)
+    mlflow.log_param("max_depth", 8)
+
+    # Train model
+    clf = RandomForestClassifier(n_estimators=200, max_depth=8, random_state=42)
+    clf.fit(X_train, y_train)
+
+    # Log metrics
+    mlflow.log_metric("accuracy", clf.score(X_test, y_test))
+    mlflow.log_metric("f1_score", f1)
+
+    # Register model
+    mlflow.sklearn.log_model(
+        clf,
+        artifact_path="model",
+        registered_model_name="maintenance-anomaly-detector",
+    )
+</code></pre>
+          </div>
+
+          <h3 id="example-mermaid">Example Diagram</h3>
+
+          <div class="mermaid-wrapper">
+            <div class="mermaid">
+graph LR
+    A[Raw Data] --> B[Bronze Tier]
+    B --> C[Silver Tier]
+    C --> D[Gold Tier]
+    D --> E[Production Models]
+    D --> F[Command Briefings]
+            </div>
+            <p class="mermaid-caption">Data quality tiers in Navy Jupiter and Advana.</p>
+          </div>
+
+        </div><!-- /prose -->
+
+        <!-- CHAPTER NAVIGATION FOOTER -->
+        <!-- Update prev/next links per chapter -->
+        <nav class="chapter-nav-footer" aria-label="Chapter navigation">
+          <a href="{{PREV_CHAPTER_URL}}" class="chapter-nav-link prev">
+            <span class="chapter-nav-direction">Previous Chapter</span>
+            <span class="chapter-nav-title">{{PREV_CHAPTER_TITLE}}</span>
+          </a>
+          <a href="{{NEXT_CHAPTER_URL}}" class="chapter-nav-link next">
+            <span class="chapter-nav-direction">Next Chapter</span>
+            <span class="chapter-nav-title">{{NEXT_CHAPTER_TITLE}}</span>
+          </a>
+        </nav>
+
+      </article>
+
+      <!-- TABLE OF CONTENTS SIDEBAR -->
+      <nav class="chapter-toc" aria-label="On this page">
+        <span class="toc-label">On this page</span>
+        <ul class="toc-list" id="toc-list" role="list">
+          <!-- Automatically populated by main.js buildToc() -->
+        </ul>
+      </nav>
+
+    </div><!-- /chapter-layout -->
+
+    <!-- SITE FOOTER -->
+    <footer class="site-footer" role="contentinfo">
+      <div class="footer-grid">
+        <div>
+          <p class="footer-brand">Federal Data Science<br>Learning Handbook</p>
+          <p class="footer-tagline">A practical guide to data science in the federal government. Open reference.</p>
+        </div>
+        <div>
+          <p class="footer-col-title">Chapters</p>
+          <ul class="footer-links" role="list">
+            <li><a href="01-introduction.html">01 — Introduction</a></li>
+            <li><a href="02-python-r-foundations.html">02 — Python &amp; R</a></li>
+            <li><a href="03-data-acquisition.html">03 — Data Acquisition</a></li>
+            <li><a href="09-mlops.html">09 — MLOps</a></li>
+            <li><a href="12-ethics-governance.html">12 — Ethics</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="footer-col-title">Platforms</p>
+          <ul class="footer-links" role="list">
+            <li><a href="../platforms/advana.html">Advana</a></li>
+            <li><a href="../platforms/databricks.html">Databricks</a></li>
+            <li><a href="../platforms/qlik.html">Qlik</a></li>
+            <li><a href="../platforms/navy-jupiter.html">Navy Jupiter</a></li>
+            <li><a href="../platforms/palantir.html">Palantir</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-copy">Federal Data Science Learning Handbook &mdash; Open Reference</span>
+        <div class="footer-platform-dots" aria-hidden="true">
+          <span class="footer-dot" style="background:#C5A572"></span>
+          <span class="footer-dot" style="background:#FF3621"></span>
+          <span class="footer-dot" style="background:#009845"></span>
+          <span class="footer-dot" style="background:#003B5C"></span>
+          <span class="footer-dot" style="background:#4A6FA5"></span>
+        </div>
+      </div>
+    </footer>
+
+  </main>
+</div><!-- /page-wrapper -->
+
+<!-- External Libraries -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script src="../js/mermaid-init.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-r.min.js"></script>
+<script src="../js/main.js"></script>
+</body>
+</html>
