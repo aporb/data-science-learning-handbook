@@ -122,10 +122,19 @@ Every chapter includes working Python code examples and a hands-on exercises dir
 | Platform guides | 5 |
 | Total words (chapters) | 67,826 |
 | Total words (platform guides) | 28,392 |
-| **Total words** | **96,218** |
+| Exercise / solution content | included |
+| **Total words** | **96,376** |
 | Python files | 41 |
-| Exercise sets with solutions | 13 |
+| Exercise sets with solutions | 13 (67 exercises total) |
 | Platforms covered | 5 |
+
+---
+
+## Project Status
+
+**COMPLETE** — Opus sign-off: READY (2026-03-24)
+
+All 13 chapters, 5 platform guides, 41 Python code example files, and 13 exercise sets with solutions are written, QA-reviewed, and published. All QA gates passed. See `docs/FINAL_SIGNOFF.md` for the full review report.
 
 ---
 

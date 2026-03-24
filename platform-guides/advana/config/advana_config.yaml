@@ -1,0 +1,55 @@
+# Advana Platform Configuration
+# Reference configuration for CAC/PIV authentication and OAuth 2.0 integration.
+# Copy this file to advana_config.local.yaml and fill in environment-specific values.
+# Never commit secrets or real endpoints to version control.
+
+platform:
+  name: advana
+  display_name: "Advana (Analytics Platform)"
+  environment: development  # development | staging | production
+
+# OAuth 2.0 / OIDC settings
+oauth:
+  client_id: "${ADVANA_CLIENT_ID}"
+  client_secret: "${ADVANA_CLIENT_SECRET}"
+  authorization_endpoint: "${ADVANA_AUTH_ENDPOINT}"
+  token_endpoint: "${ADVANA_TOKEN_ENDPOINT}"
+  userinfo_endpoint: "${ADVANA_USERINFO_ENDPOINT}"
+  redirect_uri: "${ADVANA_REDIRECT_URI}"
+  scopes:
+    - openid
+    - profile
+    - email
+  pkce_enabled: true
+  token_refresh_margin_seconds: 300
+
+# CAC/PIV certificate settings
+cac_piv:
+  enabled: true
+  pkcs11_library: "${PKCS11_LIB_PATH}"  # e.g. /usr/lib/opensc-pkcs11.so
+  certificate_slot: "9a"                 # PIV authentication slot
+  require_pin: true
+  certificate_validation:
+    check_revocation: true
+    ocsp_enabled: true
+    crl_enabled: true
+    trusted_ca_bundle: "${CAC_CA_BUNDLE_PATH}"
+
+# Session settings
+session:
+  max_age_seconds: 28800   # 8 hours
+  idle_timeout_seconds: 3600
+  secure_cookies: true
+  same_site: "strict"
+
+# Logging
+logging:
+  level: INFO
+  audit_log_enabled: true
+  audit_log_path: "${AUDIT_LOG_PATH}"
+
+# Proxy (if behind a DoD network proxy)
+proxy:
+  http_proxy: "${HTTP_PROXY}"
+  https_proxy: "${HTTPS_PROXY}"
+  no_proxy: "localhost,127.0.0.1,.mil,.gov"

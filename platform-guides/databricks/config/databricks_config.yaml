@@ -1,0 +1,73 @@
+# Databricks Platform Configuration
+# Reference configuration for CAC/PIV authentication and Databricks workspace integration.
+# Copy to databricks_config.local.yaml and fill in environment-specific values.
+# Never commit secrets or real workspace URLs to version control.
+
+platform:
+  name: databricks
+  display_name: "Databricks (Unified Analytics)"
+  environment: development  # development | staging | production
+
+# Databricks workspace connection
+workspace:
+  host: "${DATABRICKS_HOST}"       # e.g. https://adb-XXXXXXXX.azuredatabricks.net
+  token: "${DATABRICKS_TOKEN}"     # PAT or service principal token
+  cluster_id: "${DATABRICKS_CLUSTER_ID}"
+  http_path: "${DATABRICKS_HTTP_PATH}"  # for SQL warehouse
+
+# OAuth 2.0 / OIDC settings
+oauth:
+  client_id: "${DATABRICKS_CLIENT_ID}"
+  client_secret: "${DATABRICKS_CLIENT_SECRET}"
+  authorization_endpoint: "${DATABRICKS_AUTH_ENDPOINT}"
+  token_endpoint: "${DATABRICKS_TOKEN_ENDPOINT}"
+  redirect_uri: "${DATABRICKS_REDIRECT_URI}"
+  scopes:
+    - openid
+    - profile
+    - email
+    - all-apis
+  pkce_enabled: true
+
+# CAC/PIV certificate settings
+cac_piv:
+  enabled: true
+  pkcs11_library: "${PKCS11_LIB_PATH}"
+  certificate_slot: "9a"
+  require_pin: true
+  certificate_validation:
+    check_revocation: true
+    ocsp_enabled: true
+    crl_enabled: true
+    trusted_ca_bundle: "${CAC_CA_BUNDLE_PATH}"
+
+# Databricks Unity Catalog settings
+unity_catalog:
+  enabled: true
+  catalog: "${DATABRICKS_CATALOG}"
+  schema: "${DATABRICKS_SCHEMA}"
+  volume: "${DATABRICKS_VOLUME}"
+
+# MLflow tracking (Databricks Managed MLflow)
+mlflow:
+  tracking_uri: "${MLFLOW_TRACKING_URI}"  # databricks or specific endpoint
+  experiment_name: "${MLFLOW_EXPERIMENT_NAME}"
+  registry_uri: "${MLFLOW_REGISTRY_URI}"
+
+# Session settings
+session:
+  max_age_seconds: 28800
+  idle_timeout_seconds: 3600
+  secure_cookies: true
+
+# Logging
+logging:
+  level: INFO
+  audit_log_enabled: true
+  audit_log_path: "${AUDIT_LOG_PATH}"
+
+# Proxy
+proxy:
+  http_proxy: "${HTTP_PROXY}"
+  https_proxy: "${HTTPS_PROXY}"
+  no_proxy: "localhost,127.0.0.1,.mil,.gov,.azuredatabricks.net"

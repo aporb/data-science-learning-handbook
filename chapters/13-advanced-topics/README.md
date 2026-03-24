@@ -1,10 +1,10 @@
 # Chapter 13: Advanced Topics — GenAI, RAG, and LLMs on Federal Platforms
 
-The Situation Room briefing was scheduled for 0800. It was 0754, and Lieutenant Colonel Sarah Okafor was watching her analyst run the same CTRL+F search for the third time across eleven PDF documents — each one an intelligence summary from a different theater command, each one formatted differently, each one describing the same enemy logistics network in completely different terminology.
+The Situation Room briefing was scheduled for 0800. It was 0754, and Lieutenant Colonel Sarah Nakamura was watching her analyst run the same CTRL+F search for the third time across eleven PDF documents — each one an intelligence summary from a different theater command, each one formatted differently, each one describing the same enemy logistics network in completely different terminology.
 
 "There," the analyst said, highlighting a paragraph. "That's the reference we need." He'd found it in document nine of eleven. The briefing started in four minutes.
 
-Okafor had seen this movie before. The information was always there. Finding it was the bottleneck. She'd been told, repeatedly, that the DoD was deploying AI to solve exactly this problem. What she needed was something that could read all eleven documents simultaneously and answer a natural-language question about enemy supply routes in under thirty seconds. What she had was a junior analyst with a sore ctrl finger.
+Nakamura had seen this movie before. The information was always there. Finding it was the bottleneck. She'd been told, repeatedly, that the DoD was deploying AI to solve exactly this problem. What she needed was something that could read all eleven documents simultaneously and answer a natural-language question about enemy supply routes in under thirty seconds. What she had was a junior analyst with a sore ctrl finger.
 
 Six months later, deployed on Maven Smart System — Palantir's AI platform running Anthropic's Claude at IL5 — that same workflow took 28 seconds. The analyst typed the question in plain English. The system cited which document each answer came from. The briefing prep dropped from forty minutes to twelve.
 

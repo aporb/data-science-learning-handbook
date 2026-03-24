@@ -1,6 +1,6 @@
 # Chapter 10: Visualization and Dashboards
 
-The briefing was at 0800. The admiral had forty minutes before his next meeting, and Lieutenant Commander Danielle Okafor had spent three days building the dashboard that was supposed to change how he thought about readiness.
+The briefing was at 0800. The admiral had forty minutes before his next meeting, and Lieutenant Commander Danielle Reyes had spent three days building the dashboard that was supposed to change how he thought about readiness.
 
 She'd done everything right. The data was clean — she'd personally validated it against the source systems. The analysis was sound. The underlying model had an 87% accuracy rate on holdout data. She had bar charts, trend lines, a correlation matrix, and a geospatial map showing equipment availability by region.
 

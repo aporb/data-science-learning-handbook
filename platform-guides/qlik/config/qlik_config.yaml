@@ -1,0 +1,69 @@
+# Qlik Platform Configuration
+# Reference configuration for CAC/PIV authentication and Qlik Sense/Cloud integration.
+# Copy to qlik_config.local.yaml and fill in environment-specific values.
+# Never commit secrets or real endpoints to version control.
+
+platform:
+  name: qlik
+  display_name: "Qlik Sense / Qlik Cloud"
+  environment: development  # development | staging | production
+
+# Qlik tenant / deployment
+qlik:
+  tenant_url: "${QLIK_TENANT_URL}"      # e.g. https://your-tenant.us.qlikcloud.com
+  tenant_id: "${QLIK_TENANT_ID}"
+  api_key: "${QLIK_API_KEY}"            # for server-to-server API calls
+  virtual_proxy: "${QLIK_VIRTUAL_PROXY}"  # e.g. /dod for CAC-authenticated proxy
+
+# OAuth 2.0 / OIDC settings
+oauth:
+  client_id: "${QLIK_CLIENT_ID}"
+  client_secret: "${QLIK_CLIENT_SECRET}"
+  authorization_endpoint: "${QLIK_AUTH_ENDPOINT}"
+  token_endpoint: "${QLIK_TOKEN_ENDPOINT}"
+  userinfo_endpoint: "${QLIK_USERINFO_ENDPOINT}"
+  redirect_uri: "${QLIK_REDIRECT_URI}"
+  scopes:
+    - openid
+    - profile
+    - email
+  pkce_enabled: true
+
+# CAC/PIV certificate settings
+cac_piv:
+  enabled: true
+  pkcs11_library: "${PKCS11_LIB_PATH}"
+  certificate_slot: "9a"
+  require_pin: true
+  certificate_validation:
+    check_revocation: true
+    ocsp_enabled: true
+    crl_enabled: true
+    trusted_ca_bundle: "${CAC_CA_BUNDLE_PATH}"
+
+# Qlik Engine API (WebSocket)
+engine_api:
+  port: 4747
+  websocket_scheme: "wss"
+  certificate_auth_enabled: true
+  client_cert_path: "${QLIK_CLIENT_CERT_PATH}"
+  client_key_path: "${QLIK_CLIENT_KEY_PATH}"
+
+# Session settings
+session:
+  max_age_seconds: 28800
+  idle_timeout_seconds: 3600
+  secure_cookies: true
+  samesite: "strict"
+
+# Logging
+logging:
+  level: INFO
+  audit_log_enabled: true
+  audit_log_path: "${AUDIT_LOG_PATH}"
+
+# Proxy
+proxy:
+  http_proxy: "${HTTP_PROXY}"
+  https_proxy: "${HTTPS_PROXY}"
+  no_proxy: "localhost,127.0.0.1,.mil,.gov,.qlikcloud.com"

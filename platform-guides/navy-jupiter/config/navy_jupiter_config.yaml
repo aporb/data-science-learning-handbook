@@ -1,0 +1,86 @@
+# Navy Jupiter Platform Configuration
+# Reference configuration for CAC/PIV authentication and Navy Jupiter integration.
+# Copy to navy_jupiter_config.local.yaml and fill in environment-specific values.
+# Never commit secrets or real endpoints to version control.
+
+platform:
+  name: navy-jupiter
+  display_name: "Navy Jupiter (DoD Analytics Cloud)"
+  environment: development  # development | staging | production
+
+# OAuth 2.0 / OIDC settings
+oauth:
+  client_id: "${NAVY_JUPITER_CLIENT_ID}"
+  client_secret: "${NAVY_JUPITER_CLIENT_SECRET}"
+  authorization_endpoint: "${NAVY_JUPITER_AUTH_ENDPOINT}"
+  token_endpoint: "${NAVY_JUPITER_TOKEN_ENDPOINT}"
+  userinfo_endpoint: "${NAVY_JUPITER_USERINFO_ENDPOINT}"
+  redirect_uri: "${NAVY_JUPITER_REDIRECT_URI}"
+  scopes:
+    - openid
+    - profile
+    - email
+    - groups
+  pkce_enabled: true
+  token_refresh_margin_seconds: 300
+
+# CAC/PIV certificate settings
+cac_piv:
+  enabled: true
+  pkcs11_library: "${PKCS11_LIB_PATH}"
+  certificate_slot: "9a"
+  require_pin: true
+  certificate_validation:
+    check_revocation: true
+    ocsp_enabled: true
+    crl_enabled: true
+    trusted_ca_bundle: "${CAC_CA_BUNDLE_PATH}"
+  # Navy Jupiter requires DoD Root CA validation
+  dod_root_ca_required: true
+
+# JupyterHub integration
+jupyterhub:
+  base_url: "${NAVY_JUPITER_BASE_URL}"
+  api_token: "${JUPYTERHUB_API_TOKEN}"
+  spawn_timeout: 300
+  default_kernel: "python3"
+  profile:
+    memory_guarantee: "2G"
+    memory_limit: "8G"
+    cpu_guarantee: 0.5
+    cpu_limit: 2.0
+
+# Storage / S3-compatible object store
+storage:
+  endpoint: "${NAVY_JUPITER_S3_ENDPOINT}"
+  access_key: "${AWS_ACCESS_KEY_ID}"
+  secret_key: "${AWS_SECRET_ACCESS_KEY}"
+  bucket: "${NAVY_JUPITER_BUCKET}"
+  region: "us-gov-west-1"
+  ssl_verify: true
+
+# Classification markings (required for Navy Jupiter)
+classification:
+  default_level: "UNCLASSIFIED"
+  allowed_levels:
+    - UNCLASSIFIED
+    - CUI
+  banner_required: true
+
+# Session settings
+session:
+  max_age_seconds: 28800
+  idle_timeout_seconds: 1800  # Navy Jupiter enforces 30-min idle timeout
+  secure_cookies: true
+
+# Logging
+logging:
+  level: INFO
+  audit_log_enabled: true
+  audit_log_path: "${AUDIT_LOG_PATH}"
+
+# Proxy
+proxy:
+  http_proxy: "${HTTP_PROXY}"
+  https_proxy: "${HTTPS_PROXY}"
+  no_proxy: "localhost,127.0.0.1,.mil,.navy.mil,.gov"

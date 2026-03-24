@@ -10,6 +10,8 @@ She had $180,000 worth of analysis to deliver in six weeks and a dataset that wo
 
 This chapter is about what Priya did next.
 
+*Note: Priya is a composite character representing common patterns in DoD data science engagements. No single individual is depicted.*
+
 Data cleaning is not a preliminary step you knock out before the real work begins. It is the real work — especially in federal government contexts where data comes from dozens of legacy systems, no two agencies standardize the same fields the same way, and "authoritative" sources disagree with each other by hundreds of millions of dollars in obligation amounts. The tools you choose, the order in which you apply them, and the quality rules you enforce will determine whether your downstream analysis is right or wrong. There is no fixing a flawed foundation after the model is built.
 
 ## What You'll Build

@@ -1,0 +1,76 @@
+# Palantir AIP / Foundry Configuration
+# Reference configuration for Foundry workspace and AIP integration.
+# Copy to palantir_config.local.yaml and fill in environment-specific values.
+# Never commit tokens or real hostnames to version control.
+
+platform:
+  name: palantir-aip-foundry
+  display_name: "Palantir AIP / Foundry"
+  environment: development  # development | staging | production
+
+# Foundry workspace
+foundry:
+  hostname: "${FOUNDRY_HOSTNAME}"         # e.g. your-tenant.palantirfoundry.com
+  token: "${FOUNDRY_TOKEN}"               # Multipass or service account token
+  # For FedRAMP / IL environments the hostname may differ:
+  # il4: your-tenant.palantirfoundry.gov
+  # il5: your-tenant-il5.palantirfoundry.gov
+
+# OAuth 2.0 / OIDC (for browser-based interactive auth)
+oauth:
+  client_id: "${PALANTIR_CLIENT_ID}"
+  client_secret: "${PALANTIR_CLIENT_SECRET}"
+  authorization_endpoint: "${PALANTIR_AUTH_ENDPOINT}"
+  token_endpoint: "${PALANTIR_TOKEN_ENDPOINT}"
+  redirect_uri: "${PALANTIR_REDIRECT_URI}"
+  scopes:
+    - openid
+    - profile
+    - email
+    - api:read-data
+    - api:write-data
+  pkce_enabled: true
+
+# CAC/PIV certificate settings (via DoD IdP → Foundry OIDC)
+cac_piv:
+  enabled: true
+  pkcs11_library: "${PKCS11_LIB_PATH}"
+  certificate_slot: "9a"
+  require_pin: true
+  certificate_validation:
+    check_revocation: true
+    ocsp_enabled: true
+    trusted_ca_bundle: "${CAC_CA_BUNDLE_PATH}"
+
+# Ontology settings
+ontology:
+  rid: "${FOUNDRY_ONTOLOGY_RID}"          # compass/ontology/... RID
+  branch: "master"                         # or feature branch
+
+# AIP / LLM integration
+aip:
+  model_deployment_rid: "${AIP_MODEL_RID}"
+  agent_studio_enabled: false
+  max_tokens: 4096
+
+# Object type RIDs (project-specific — update after ontology setup)
+object_types:
+  # Example entries — replace with your project's object type RIDs
+  # aircraft: "ri.ontology.main.object-type.aircraft-xxxx"
+
+# Compass (file storage within Foundry)
+compass:
+  dataset_path: "/path/to/your/dataset"   # Compass path, not file system path
+  code_repo_rid: "${FOUNDRY_CODE_REPO_RID}"
+
+# Logging
+logging:
+  level: INFO
+  audit_log_enabled: true
+  audit_log_path: "${AUDIT_LOG_PATH}"
+
+# Proxy
+proxy:
+  http_proxy: "${HTTP_PROXY}"
+  https_proxy: "${HTTPS_PROXY}"
+  no_proxy: "localhost,127.0.0.1,.mil,.gov,.palantirfoundry.com,.palantirfoundry.gov"
