@@ -2,7 +2,7 @@
 
 The video feed was coming in at 30 frames per second from four separate drone platforms. Each frame was 1920x1080. The model had 400 milliseconds to decide — per frame, per camera — whether the object in the bounding box was a civilian vehicle, a military vehicle, or a known threat category. Not 400 milliseconds total. 400 milliseconds per inference, with all four feeds running simultaneously.
 
-Kevin Okafor had trained object detection models before. He'd done it at a computer vision startup, on AWS SageMaker, using open-source weights and public benchmark datasets. That was fine work. But it had never mattered the way this mattered.
+Kevin Adeyemi had trained object detection models before. He'd done it at a computer vision startup, on AWS SageMaker, using open-source weights and public benchmark datasets. That was fine work. But it had never mattered the way this mattered.
 
 The program office had approved the use of a YOLOv8 architecture fine-tuned on DoD-classified imagery. The production environment was Palantir Foundry running on Azure Government at IL5. The training had happened on Databricks with A10g GPU clusters. Kevin had four weeks to validate that the model's latency profile was within spec, that its false positive rate on civilian vehicles was below 0.3%, and that the entire inference pipeline could be audited — every prediction logged, every confidence score recorded, every human override captured.
 

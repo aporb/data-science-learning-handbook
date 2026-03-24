@@ -28,7 +28,7 @@ services:
       - mlflow_data:/app/mlruns
       - mlflow_artifacts:/app/mlartifacts
     environment:
-      - MLFLOW_BACKEND_STORE_URI=postgresql://mlflow:mlflow@postgres:5432/mlflow
+      - MLFLOW_BACKEND_STORE_URI=postgresql://${POSTGRES_USER:-mlflow}:${POSTGRES_PASSWORD:-mlflow}@postgres:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-mlflow}
       - MLFLOW_DEFAULT_ARTIFACT_ROOT=/app/mlartifacts
     depends_on:
       - postgres
@@ -40,9 +40,9 @@ services:
   postgres:
     image: postgres:15-alpine
     environment:
-      - POSTGRES_USER=mlflow
-      - POSTGRES_PASSWORD=mlflow
-      - POSTGRES_DB=mlflow
+      - POSTGRES_USER=${POSTGRES_USER:-mlflow}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-mlflow}
+      - POSTGRES_DB=${POSTGRES_DB:-mlflow}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -108,7 +108,7 @@ services:
       - grafana_data:/var/lib/grafana
       - ./docker/grafana/provisioning:/etc/grafana/provisioning:ro
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
       - GF_USERS_ALLOW_SIGN_UP=false
     depends_on:
       - prometheus

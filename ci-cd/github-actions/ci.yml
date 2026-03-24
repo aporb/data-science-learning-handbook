@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.8, 3.9, 3.10, 3.11]
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
     
     steps:
       - uses: actions/checkout@v4
@@ -107,29 +107,35 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+  # STUB: deploy-staging is a placeholder. Replace the run step below with real
+  # deployment commands (e.g., kubectl apply, helm upgrade, or cloud-provider CLI
+  # calls) before using this pipeline in a live environment.
   deploy-staging:
     needs: build-and-push
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/develop'
     environment: staging
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Deploy to staging
         run: |
           echo "Deploying to staging environment..."
           # Add staging deployment commands here
 
+  # STUB: deploy-production is a placeholder. Replace the run step below with real
+  # deployment commands (e.g., kubectl apply, helm upgrade, or cloud-provider CLI
+  # calls) before using this pipeline in a live environment.
   deploy-production:
     needs: build-and-push
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     environment: production
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Deploy to production
         run: |
           echo "Deploying to production environment..."

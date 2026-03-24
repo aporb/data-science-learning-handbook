@@ -85,8 +85,7 @@ python-jose[cryptography]>=3.3.0
 passlib[bcrypt]>=1.7.4
 python-multipart>=0.0.6
 PyJWT>=2.8.0
-requests>=2.31.0
-responses>=0.23.0
+# responses>=0.23.0  # testing only — install separately in test environments
 
 # LLM & Advanced ML
 openai>=1.0.0
