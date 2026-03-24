@@ -31,7 +31,7 @@ By the end of this chapter, you will be able to:
 
 Before clustering your first dataset, understand why unsupervised approaches dominate in federal data science.
 
-Government data is enormous in volume and sparse in human judgment about it. FPDS has 150 million contract action records. The Defense Logistics Agency manages 5 million National Stock Numbers. GFEBS processes millions of financial transactions per year across the Army alone. No team of analysts has labeled these records as "normal" or "anomalous," "competitive" or "non-competitive," "efficient" or "wasteful." The labels that do exist are often partial: a fraction of contracts have been audited, a fraction of invoices have been flagged for review.
+Government data is enormous in volume and sparse in human judgment about it. SAM.gov Contract Data (formerly FPDS-NG) has 150 million contract action records. The Defense Logistics Agency manages 5 million National Stock Numbers. GFEBS processes millions of financial transactions per year across the Army alone. No team of analysts has labeled these records as "normal" or "anomalous," "competitive" or "non-competitive," "efficient" or "wasteful." The labels that do exist are often partial: a fraction of contracts have been audited, a fraction of invoices have been flagged for review.
 
 That means if you wait for labeled data to do supervised learning, you will wait for years. Unsupervised methods let you find structure in the data now — and then bring the structure to domain experts who can tell you whether it maps to something real.
 

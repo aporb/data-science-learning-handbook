@@ -187,15 +187,15 @@ Access request: DD Form 2875 + data use agreement specifying the purpose and aut
 
 ---
 
-**Dataset B: FPDS contract award data (vendors, amounts, periods of performance)**
+**Dataset B: SAM.gov contract award data (formerly FPDS) (vendors, amounts, periods of performance)**
 
 Classification: **Unclassified / Public**
 
-FPDS data is published publicly at fpds.gov and through the USAspending API under the DATA Act. Vendor names, CAGE codes, award amounts, and performance dates for awarded contracts are a matter of public record. No CUI or PII markings apply.
+Contract award data is published publicly through SAM.gov (formerly at fpds.gov, retired Feb 2026) and through the USAspending API under the DATA Act. Vendor names, CAGE codes, award amounts, and performance dates for awarded contracts are a matter of public record. No CUI or PII markings apply.
 
 Authorized processing environments: Any network and any tool. You can pull this data from a personal laptop on home Wi-Fi without any security implications.
 
-Access request: None required for the public data. If you are querying internal FPDS-NG via a government system, standard network access and CAC authentication apply.
+Access request: None required for the public data. If you are querying contract data via SAM.gov on a government system, standard network access and CAC authentication apply.
 
 ---
 

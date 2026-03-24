@@ -702,7 +702,7 @@ is a significant analytical integrity risk.
 
 Two hundred non-data-literate users across 15 agencies, exploring contract awards
 associatively — this is exactly the use case Qlik's associative engine was designed for.
-Advana already hosts DoD-wide contract data (USASpending feeds, FPDS-NG), and Qlik's
+Advana already hosts DoD-wide contract data (USASpending feeds, SAM.gov Contract Data (formerly FPDS-NG)), and Qlik's
 point-and-click filtering requires no SQL knowledge from end users. FedRAMP Moderate
 covers unclassified SBU data.
 
@@ -715,7 +715,7 @@ covers unclassified SBU data.
 - Procurement threshold distribution: stacked bar showing micro-purchase vs. simplified
   acquisition vs. above-SAT by agency and FY
 
-**Biggest risk**: Data freshness. If FPDS-NG data in Advana lags by 30+ days, anomaly
+**Biggest risk**: Data freshness. If SAM.gov contract data in Advana lags by 30+ days, anomaly
 flags will be stale and contracting officers will lose trust in the tool. Mitigate by
 displaying a "data last refreshed" timestamp prominently on every sheet.
 

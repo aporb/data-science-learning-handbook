@@ -359,7 +359,7 @@ The Qlik Data Load Script is where your data transformation and association logi
 // Qlik Load Script: Procurement dashboard data model
 // Connects contract awards to vendor data and NAICS classifications
 
-// Table 1: Contract awards from FPDS-NG (via Advana data catalog)
+// Table 1: Contract awards from SAM.gov Contract Data (formerly FPDS-NG), via Advana data catalog
 CONTRACT_AWARDS:
 LOAD
     contract_award_unique_key              AS award_key,

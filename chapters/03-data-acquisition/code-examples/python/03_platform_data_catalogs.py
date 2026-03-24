@@ -574,7 +574,7 @@ if __name__ == "__main__":
         print("      Table: equipment_registry    (Silver tier, 24K rows)")
         print("    Schema: supply_chain")
         print("      Table: inventory_snapshot    (Gold tier, updated daily)")
-        print("      Table: vendor_contracts      (Gold tier, from FPDS feed)")
+        print("      Table: vendor_contracts      (Gold tier, from SAM.gov contract data feed (formerly FPDS))")
         print()
         print("  Catalog: navy_personnel")
         print("    Schema: readiness")

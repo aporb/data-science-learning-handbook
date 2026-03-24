@@ -102,7 +102,7 @@ Over 400 Pentagon business systems feed into Advana. The major ones data scienti
 
 **DMDC** — Defense Manpower Data Center. Personnel and human resources data.
 
-**FPDS-NG** — Federal Procurement Data System. Contract and procurement data across all DoD components.
+**SAM.gov Contract Data (formerly FPDS-NG)** — Federal procurement and contract data across all DoD components. Migrated from FPDS.gov in February 2026.
 
 Beyond these, the platform consolidates data from the full range of DoD functional areas: medical and health systems, readiness reporting systems, installation management, and force structure databases.
 
@@ -164,7 +164,7 @@ df = spark.sql("""
         award_date,
         naics_code,
         reporting_agency
-    FROM advana_catalog.procurement.fpds_awards_fy2024
+    FROM advana_catalog.procurement.fpds_awards_fy2024  -- table name reflects legacy FPDS source; do not rename
     WHERE reporting_agency = 'DEPARTMENT OF THE ARMY'
       AND obligation_amount > 1000000
 """)

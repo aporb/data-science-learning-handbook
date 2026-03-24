@@ -181,7 +181,7 @@ def extract_tables_from_pdf(
     or standard government report generators.
 
     Best results on:
-    - FPDS Award Details PDFs
+    - SAM.gov Contract Award Details (formerly FPDS)
     - Contract award notices
     - Program office reports exported to PDF from Excel/SSRS
 

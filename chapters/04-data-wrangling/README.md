@@ -72,11 +72,11 @@ df["data_quality_flag"] = df["base_and_all_options_value"].isnull().map(
 
 ### Deduplication: Government Data's Most Persistent Problem
 
-Government procurement data is routinely duplicated across source systems. The same obligation appears in the agency's contracting system, in FPDS-NG, and in the USASpending.gov aggregation — sometimes with slightly different values because they were captured at different points in time.
+Government procurement data is routinely duplicated across source systems. The same obligation appears in the agency's contracting system, in SAM.gov Contract Data (formerly FPDS-NG), and in the USASpending.gov aggregation — sometimes with slightly different values because they were captured at different points in time.
 
 ```python
 # Step 1: Identify your true primary key
-# In FPDS/USASpending: contract_award_unique_key + modification_number
+# In SAM.gov/USASpending (formerly FPDS): contract_award_unique_key + modification_number
 pk_cols = ["contract_award_unique_key", "modification_number"]
 duplicates = df[df.duplicated(subset=pk_cols, keep=False)]
 print(f"Duplicate records: {len(duplicates):,} ({len(duplicates)/len(df)*100:.1f}% of data)")

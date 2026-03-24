@@ -65,7 +65,7 @@ LONG_DOC_STRIDE = 128        # Overlap between chunks (avoids missing context at
 def generate_contract_dataset(n_samples: int = 5_000, seed: int = 42) -> pd.DataFrame:
     """
     Generate synthetic contract description text for each procurement category.
-    Mimics the language and structure of real FPDS/USASpending contract descriptions.
+    Mimics the language and structure of real SAM.gov/USASpending contract descriptions (formerly FPDS).
     """
     rng = np.random.RandomState(seed)
 

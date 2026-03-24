@@ -8,13 +8,13 @@ The model never got built. Not in those first six weeks, anyway.
 
 This is where most government data science projects actually start. Not with a clean API call and a DataFrame that pops up in thirty seconds. With a pile of files, a SharePoint link, and the quiet realization that the first month of your timeline just evaporated.
 
-Data acquisition in the federal government is not a solved problem. The data exists. Enormous quantities of it. FPDS has contract action records going back to 2004. USAspending.gov tracks every federal obligation down to the dollar. Census.gov publishes hundreds of datasets covering the entire American population. But getting from "the data exists" to "I have a clean, analyzable DataFrame" is the work this chapter is about.
+Data acquisition in the federal government is not a solved problem. The data exists. Enormous quantities of it. SAM.gov Contract Data (formerly FPDS-NG) has contract action records going back to 2004. USAspending.gov tracks every federal obligation down to the dollar. Census.gov publishes hundreds of datasets covering the entire American population. But getting from "the data exists" to "I have a clean, analyzable DataFrame" is the work this chapter is about.
 
 ## What You'll Build
 
 By the end of this chapter, you will be able to:
 
-- Connect to federal open data APIs (USAspending, data.gov, SAM, FPDS) and pull data programmatically
+- Connect to federal open data APIs (USAspending, data.gov, SAM Entity API, SAM.gov Contract Awards API) and pull data programmatically
 - Understand classification levels (CUI, FOUO, PII, PHI) and what that means for where your data can live and who can touch it
 - Use the Advana data catalog and Jupiter data catalog to discover what data exists before starting a project
 - Work with Palantir Foundry's Ontology to discover and access pre-integrated data objects
@@ -77,11 +77,13 @@ The API is RESTful, requires no authentication for public data, and returns JSON
 
 The data quality is imperfect. Vendor names are frequently inconsistent (you will find "BOOZ ALLEN HAMILTON INC", "Booz Allen Hamilton", and "BOOZ ALLEN & HAMILTON" as separate entities in the same dataset). NAICS codes are self-reported and occasionally wrong. Dollar amounts are accurate, but they represent obligated amounts, not disbursed amounts — a distinction that matters if you are tracking actual payments rather than contract ceiling.
 
-### FPDS-NG (Federal Procurement Data System)
+### SAM.gov Contract Awards API (formerly FPDS-NG)
 
-FPDS is the source system that feeds USAspending on the contract side. It is older, has a more granular data model, and has records back to 2004. The ATOM feed API returns XML and is rate-limited more aggressively. Most analysts use the USAspending API as their entry point, but if you need fields that USAspending does not expose (certain legacy award types, specific IDV hierarchy data), FPDS is the fallback.
+FPDS-NG (Federal Procurement Data System — Next Generation) was retired on February 24, 2026. Contract award data previously accessible through fpds.gov and its ATOM feed is now served through the SAM.gov Contract Awards API. The new API endpoint is `api.sam.gov/contract-awards/v1/search` and returns JSON rather than XML. An API key is required — registration is free through your SAM.gov profile.
 
-FPDS also has a legacy web interface at fpds.gov that supports manual queries — useful when you want to verify a specific award before committing to a bulk pull.
+Rate limits are tiered: 10 requests per day with no SAM role, 1,000 per day with a standard SAM role, and 10,000 per day for system accounts. For large data pulls, the bulk extract option supports up to 1 million records in JSON or CSV format, replacing the old ATOM feed pagination approach.
+
+The SAM.gov Contract Awards API has records dating back to FPDS-NG's 2004 inception. Field names have changed from the FPDS schema; a variance document is available at `open.gsa.gov/api/contract-awards/v1/FPDSvsSAM-ContractDataAPI.pdf`. DoD contracts carry a 90-day embargo on unrevealed award details. USAspending remains a valid alternative for public contract data and requires no API key.
 
 ### SAM.gov
 
@@ -260,7 +262,7 @@ Government data has not uniformly modernized to clean REST APIs with JSON respon
 
 Not all CSVs are created equal. Government legacy CSVs often have:
 
-- **Non-standard delimiters** — pipe-delimited (`|`) or tilde-delimited (`~`) are common in FPDS and some DoD financial system exports
+- **Non-standard delimiters** — pipe-delimited (`|`) or tilde-delimited (`~`) are common in legacy FPDS exports and some DoD financial system exports
 - **Fixed-width fields without headers** — ERP system extracts where you need a data dictionary to know what columns 1-15 mean
 - **Mixed encoding** — files created on Windows systems in Latin-1 or CP1252 encoding, not UTF-8; the default `pd.read_csv()` will throw a `UnicodeDecodeError` or, worse, silently misread characters
 - **Multi-line header rows** — some DON financial system exports have two or three header rows before the actual data starts
@@ -273,7 +275,7 @@ import pandas as pd
 df = pd.read_csv(
     "dod_financial_extract.csv",
     encoding="latin-1",          # Common for older Windows-generated files
-    sep="|",                      # Common in FPDS and DoD financial exports
+    sep="|",                      # Common in legacy FPDS and DoD financial exports
     skiprows=2,                   # Skip multi-row headers
     na_values=["NULL", "N/A", "#N/A", "None", "none", "-", ""],
     dtype=str,                    # Read everything as string first; cast later
@@ -436,7 +438,7 @@ Here is the actual first week of work:
 
 **Day 1:** Open Jupiter's Collibra catalog. Search for "maintenance work orders" and "parts requisitions." Find five relevant datasets. Two are Gold-tier with data stewards listed. Two are Silver-tier, pending Gold validation. One is Bronze-only — still raw from the source system. Contact the data steward for the Gold-tier datasets and submit access requests.
 
-**Day 2–3:** While waiting for access approval, use the public FPDS and USAspending APIs to pull contract data for relevant spare parts vendors (see `code-examples/python/01_api_connections.py`). This does not require a CAC and gives you a view of historical procurement patterns that will complement the internal maintenance data.
+**Day 2–3:** While waiting for access approval, use the SAM.gov Contract Awards API and USAspending API to pull contract data for relevant spare parts vendors (see `code-examples/python/01_api_connections.py`). This does not require a CAC and gives you a view of historical procurement patterns that will complement the internal maintenance data.
 
 **Day 4:** Access approved. Open Databricks notebook within Jupiter's analytics environment. Query the Gold-tier maintenance work order table. Run initial descriptive statistics. Discover immediately that work orders before FY2020 have a different status code schema — the catalog entry mentioned this but you confirmed it by looking. Identify the mapping table that resolves it.
 

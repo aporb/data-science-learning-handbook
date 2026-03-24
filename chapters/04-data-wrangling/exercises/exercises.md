@@ -8,7 +8,7 @@ Complete the exercises in order — they build on each other. Exercise 4 is the 
 
 ## Exercise 1: Null Handling and Type Coercion (Pandas)
 
-**Context:** You've received a DoD contract modification export from FPDS-NG. The export contains four years of modifications (FY2021–FY2024) for Navy ship repair contracts. Three columns are causing problems: `base_exercised_options_value` arrived with dollar signs and commas, `period_of_performance_start_date` is stored as strings in two different date formats, and `recipient_uei` is null for 11% of records (which you suspect are pre-2022 records that still carry DUNS numbers).
+**Context:** You've received a DoD contract modification export from SAM.gov (formerly FPDS-NG). The export contains four years of modifications (FY2021–FY2024) for Navy ship repair contracts. Three columns are causing problems: `base_exercised_options_value` arrived with dollar signs and commas, `period_of_performance_start_date` is stored as strings in two different date formats, and `recipient_uei` is null for 11% of records (which you suspect are pre-2022 records that still carry DUNS numbers).
 
 **Dataset:** Use this snippet to generate test data:
 

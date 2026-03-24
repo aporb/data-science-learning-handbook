@@ -66,7 +66,7 @@ c) What access request process is required
 
 **Dataset A:** A FOIA request response containing salary data for 5,000 Navy civilian employees, including names, job titles, GS grades, base pay, and duty station locations.
 
-**Dataset B:** Quarterly contract award data exported from FPDS for Navy IT contracts, containing vendor names, CAGE codes, award amounts, and period of performance dates. No individual names present.
+**Dataset B:** Quarterly contract award data exported from SAM.gov Contract Data (formerly FPDS) for Navy IT contracts, containing vendor names, CAGE codes, award amounts, and period of performance dates. No individual names present.
 
 **Dataset C:** Ship maintenance work order records from a classified Navy ERP system, containing equipment status codes, maintenance due dates, and operational readiness flags. The data is labeled SIPR.
 

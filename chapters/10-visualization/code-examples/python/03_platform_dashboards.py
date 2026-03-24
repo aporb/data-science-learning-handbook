@@ -202,7 +202,7 @@ QLIK_PROCUREMENT_LOAD_SCRIPT = """
 // ==========================================================
 
 // ---- Table 1: Contract Awards ----
-// Source: FPDS-NG data via Advana data catalog
+// Source: SAM.gov contract data (formerly FPDS-NG) via Advana data catalog
 // Key fields: award_key (unique contract ID), vendor_uei, naics_code
 
 CONTRACT_AWARDS:
