@@ -1,0 +1,1397 @@
+Data Science Learning Handbook — Product Requirements Document
+==============================================================
+Version: 1.0
+Date: 2026-03-23
+Author: Amyn Porbanderwala
+Status: ACTIVE — Primary source of truth for task generation and QA validation
+
+
+─────────────────────────────────────────────────────────────────────────────
+SECTION 1: PROJECT OVERVIEW AND VISION
+─────────────────────────────────────────────────────────────────────────────
+
+1.1 Vision Statement
+────────────────────
+The Data Science Learning Handbook is a standalone, publishable-quality
+educational resource for data science practitioners working on federal
+government platforms. It is not a textbook. It is not a blog post. It is the
+book a senior practitioner would hand to someone on their first day on a
+DoD contract and say: "Read this. Everything you need is in here."
+
+The handbook teaches the full data science lifecycle — from initial environment
+setup and data wrangling through machine learning, MLOps, visualization,
+deployment, governance, and the current frontier of generative AI — through the
+lens of the five platforms where federal data scientists actually work. Every
+chapter grounds its content in real operational scenarios, government compliance
+requirements, and platform-specific implementation patterns.
+
+The content must not sound AI-generated. It must read like a senior
+practitioner — confident, specific, direct, and willing to state opinions.
+The voice reference is Amyn Porbanderwala's "Shrink-Wrap It: The GovCon
+Productization Playbook."
+
+1.2 What This Resource Is
+─────────────────────────
+- A 13-chapter handbook covering the complete data science lifecycle
+- Platform-specific coverage of Advana, Qlik, Databricks, Navy Jupiter,
+  and Palantir AIP/Foundry
+- Working Python code examples for every major concept
+- Hands-on exercises with solutions
+- Platform comparison guides showing how the same task is accomplished across
+  all five environments
+- A reference that practitioners can use on active projects — not just study
+  for a certification
+
+1.3 What This Resource Is Not
+──────────────────────────────
+- Not a beginner's "learn to code" tutorial — the target audience already
+  programs; they need to know how to apply data science specifically in
+  federal environments
+- Not a platform marketing document — the handbook takes positions on where
+  each platform excels and where it falls short
+- Not a classified document — all content is based on publicly available
+  information about these platforms
+- Not a finished product at the start of execution — this PRD defines what
+  "done" means so that task generation, QA gates, and final sign-off have a
+  clear standard to measure against
+
+1.4 Success in One Sentence
+────────────────────────────
+A data scientist starting a new DoD contract reads this handbook and is
+immediately effective — they know how to access data, build and deploy models,
+satisfy compliance requirements, and get their work into production on the
+specific platform their customer is running.
+
+
+─────────────────────────────────────────────────────────────────────────────
+SECTION 2: TARGET AUDIENCE AND USER PERSONAS
+─────────────────────────────────────────────────────────────────────────────
+
+2.1 Primary Audience
+─────────────────────
+Data science practitioners (contractors and government civilians) working on
+federal and DoD projects. They have the foundational skills — they can write
+Python, they understand what a machine learning model is — but they've never
+worked inside a federal platform environment, or they've worked on one platform
+and need to get up to speed on another.
+
+This is not the audience for "what is machine learning." This is the audience
+for "how do I run a machine learning model on Advana under DISA IL4 constraints
+while maintaining proper audit trails."
+
+2.2 User Personas
+──────────────────
+
+Persona 1: The New Contractor
+Name: Priya Chandrasekaran
+Background: 3 years in commercial data science, just joined a defense contractor
+for the first time. Knows Python, scikit-learn, and basic ML workflows. Has
+never used a CAC card. Has never touched a government system.
+Pain point: She has skills but no context. She doesn't know which tools are
+available, what she's allowed to do, how data is classified, or what the right
+way to stand up a model in a DoD environment looks like.
+What the handbook does for her: Chapters 1-4 get her oriented. The platform
+guides tell her exactly how her specific platform works. Code examples she can
+adapt immediately.
+
+Persona 2: The Platform Switcher
+Name: Marcus Webb
+Background: 5 years on a Navy program running Navy Jupiter. His next contract is
+on Advana. Both are federal platforms but they have different access patterns,
+different data governance approaches, and different analytics stacks.
+Pain point: He knows federal data science generally, but the platform-specific
+differences are enough to slow him down for his first three months.
+What the handbook does for him: The platform comparison tables and
+platform-specific spotlight sections in each chapter. The Advana platform guide.
+
+Persona 3: The Technical Lead Who Needs to Scale
+Name: James Okafor
+Background: Lead data scientist on a mid-sized DoD analytics program. His team
+is growing from 4 to 12 people. He needs a resource he can hand to new hires
+that gets them productive fast without requiring him to mentor each one from
+scratch.
+Pain point: There is no single resource that covers federal platform data science
+in the depth his team needs. He's been cobbling together internal wikis,
+platform documentation, and ad hoc training.
+What the handbook does for him: He uses it as the team's shared reference.
+Chapters 9 (MLOps) and 11 (Deployment) are especially valuable for aligning
+the team on production standards.
+
+Persona 4: The Government Program Manager Turned Practitioner
+Name: Lieutenant Colonel (ret.) Sarah Donohue
+Background: 20 years in the Navy, including time in data and analytics billets.
+Now working as a contractor doing applied analytics on a Palantir Foundry
+program. Knows the domain cold, but her hands-on coding experience is limited.
+Pain point: She understands what needs to be done analytically but needs to
+bridge from conceptual to implementation — specifically on a platform she's
+just starting to use.
+What the handbook does for her: The practitioner scenarios speak her language.
+The Palantir AIP/Foundry platform guide covers the Ontology and Pipeline Builder
+patterns she needs. Exercises give her something to build.
+
+2.3 Secondary Audience
+───────────────────────
+- Data engineers transitioning into ML roles on federal programs
+- Government civilians with analytics responsibilities picking up programming
+- Technical managers who need to understand what their data science teams are
+  doing and why
+- Instructors and training coordinators looking for curriculum material for
+  federal data science training programs
+
+
+─────────────────────────────────────────────────────────────────────────────
+SECTION 3: CHAPTER DESCRIPTIONS — SCOPE, TOPICS, AND LEARNING OBJECTIVES
+─────────────────────────────────────────────────────────────────────────────
+
+Each chapter lives at: chapters/XX-chapter-name/README.md
+Each chapter contains: code-examples/python/, code-examples/r/ (optional),
+exercises/exercises.md, exercises/solutions/
+
+Minimum content requirement per chapter: 2500 words of substantive prose
+(not counting code blocks).
+
+──────────────────────────────────────────────────────────────
+CHAPTER 01: Introduction to Data Science in Government
+Directory: chapters/01-introduction/
+──────────────────────────────────────────────────────────────
+Scope:
+This chapter orients the practitioner to the federal data science environment
+specifically. It does not re-explain what data science is — it explains how
+data science is different when your customer is a government agency, your data
+is classified or sensitive, your platform is government-authorized, and your
+output has to survive a 90-day Authority to Operate process.
+
+Topics:
+- The federal data landscape: how government data is structured, governed, and
+  classified (FOUO, CUI, Controlled Unclassified Information, classified tiers)
+- The five platforms covered in this handbook and why they matter: Advana
+  (DoD's enterprise analytics hub), Qlik (BI layer on Advana and standalone),
+  Databricks (lakehouse for heavy ML workloads), Navy Jupiter (DON enterprise
+  data environment), Palantir AIP/Foundry (ontology-based AI platform)
+- The data science lifecycle in a federal context: where CRISP-DM meets ATO
+  requirements, compliance checkpoints, and acquisition cycles
+- Tools and languages: Python (required), R (preferred), SQL, and when to use
+  which on which platform
+- Environment access patterns: CAC/PIV authentication, NIPRNET vs. SIPRNET,
+  cloud vs. on-premises constraints per platform
+- The DoD data strategy and CDAO context: why these platforms exist and what
+  policy drives them (DoD Data Strategy 2020, EO 13960 on AI in government,
+  CDAO charter)
+- How to think about security from Day 1 — not as an afterthought
+
+Learning Objectives:
+After this chapter, the practitioner can explain what makes federal data science
+distinct from commercial practice, name the five platforms and their primary
+use cases, and knows which authentication method and network they'll need for
+each platform.
+
+Platform Coverage: All five platforms introduced at overview level.
+Code Examples: Environment setup and CAC-aware authentication skeleton for each
+platform. Python environment configuration with DoD proxy settings.
+
+──────────────────────────────────────────────────────────────
+CHAPTER 02: Python and R Foundations for Federal Data Science
+Directory: chapters/02-python-r-foundations/
+──────────────────────────────────────────────────────────────
+Scope:
+Not a Python tutorial. This chapter covers the specific Python and R patterns,
+libraries, and idioms that matter most in federal data science work — with
+attention to what works on constrained government environments (limited internet
+access, air-gapped networks, approved software lists).
+
+Topics:
+- Environment management on government systems: conda, pip, and approved package
+  repositories; managing dependencies without internet access; handling approved
+  software lists (ASL) and software approval processes
+- The essential federal data science library stack: pandas, NumPy, scikit-learn,
+  matplotlib/seaborn, sqlalchemy, requests — and their government-environment
+  gotchas
+- Working with data in classified environments: in-memory handling practices,
+  not writing intermediate data to unapproved locations, audit logging
+- Python for platform APIs: requests patterns for Advana, Databricks REST API,
+  Qlik Engine API, Palantir Foundry API
+- R in government contexts: when R is available, typical use cases (statistical
+  reporting, actuarial work), integration with Python workflows
+- Code quality standards for government deliverables: type hints, docstrings,
+  reproducibility, version control in CAC-authenticated git environments
+- Jupyter notebooks on government platforms: differences between local Jupyter,
+  Databricks notebooks, and Palantir Foundry Code Workbook
+
+Learning Objectives:
+After this chapter, the practitioner knows which libraries and patterns to reach
+for in a federal environment, can configure a working Python environment on a
+government system, and can write production-quality code that meets government
+delivery standards.
+
+Platform Coverage: All five platforms for environment setup; Databricks and
+Palantir in depth for notebook-based workflows.
+Code Examples: pip/conda environment with proxy configuration; Databricks
+cluster setup script; Palantir Code Workbook initialization pattern.
+
+──────────────────────────────────────────────────────────────
+CHAPTER 03: Data Acquisition in Federal Environments
+Directory: chapters/03-data-acquisition/
+──────────────────────────────────────────────────────────────
+Scope:
+Getting data in a federal environment is harder than in commercial work — not
+because the technology is harder, but because the access control, approval, and
+governance layers are thicker. This chapter is about getting the data you need
+while staying inside the compliance boundary.
+
+Topics:
+- Federal data sources: USASpending.gov, Data.gov, FPDS-NG (Federal Procurement
+  Data System), FRED (economic data), agency-specific data portals — how to
+  access each programmatically
+- Advana data catalog: how Advana ingests from 1,200+ DoD business systems;
+  how to discover what datasets exist; how to request access
+- Navy Jupiter data discovery: finding datasets, understanding the metadata
+  layer, submitting data access requests
+- Databricks data sources: Unity Catalog metadata browsing, Delta Lake ingestion
+  patterns, external data connector configuration in government cloud
+- Palantir Foundry: the Ontology model for data discovery; Dataset Browser;
+  connecting to external systems via Foundry connectors
+- Qlik data connections: loading data from SQL databases, REST APIs, and file
+  sources via Qlik Data Load Editor and QVD optimization
+- API-based data acquisition: handling CAC/certificate authentication in Python
+  requests; rate limiting; pagination patterns for large government datasets
+- Streaming and real-time ingestion patterns available per platform
+- Data governance before you touch the data: data use agreements, Memoranda of
+  Understanding (MOUs), read vs. write access, OPSEC considerations
+
+Learning Objectives:
+After this chapter, the practitioner can discover and access datasets on each
+of the five platforms, connect to common federal data APIs programmatically,
+and navigate the access approval processes without slowing down their project.
+
+Platform Coverage: All five platforms with platform-specific acquisition
+patterns. Deepest coverage on Advana data catalog and Palantir Ontology.
+Code Examples: FPDS-NG API data pull; Advana catalog query; Databricks Unity
+Catalog metadata scan; Palantir Foundry dataset load.
+
+──────────────────────────────────────────────────────────────
+CHAPTER 04: Data Wrangling and Cleaning
+Directory: chapters/04-data-wrangling/
+──────────────────────────────────────────────────────────────
+Scope:
+Government data is messy in specific ways — inconsistent agency codes, fiscal
+year date formats that don't match calendar year conventions, NAICS/PSC codes
+that change meaning across contract years, legacy system exports with 1980s
+encoding artifacts. This chapter covers the full wrangling toolkit with
+examples drawn from actual government data patterns.
+
+Topics:
+- Pandas fundamentals for wrangling: the operations practitioners actually use
+  (merge, groupby, pivot, melt, str.extract) versus what textbooks teach
+- Handling government-specific data formats: fiscal year (FY) dates, DoD
+  DODAAC codes, contract numbers (PIID format), UEI/DUNS vendor identifiers,
+  NAICS/PSC/SIC codes, agency codes (TAS, BEA)
+- Missing data strategies: when to impute, when to drop, when to escalate to
+  the data steward — with specific guidance for federal datasets where missing
+  data often has a meaning (undisclosed, restricted, pending)
+- Deduplication: entity resolution on vendor names, address standardization,
+  identifying duplicate contract modifications
+- Data type enforcement and schema validation: using pandera and Great
+  Expectations for data quality checks in government pipelines
+- Large-scale wrangling on platforms: PySpark on Databricks for multi-gigabyte
+  federal datasets; Palantir Foundry transforms; Advana pipeline patterns
+- Qlik data load scripting: QVD optimization, incremental loading, set analysis
+  for fiscal year period handling
+- Data lineage documentation: tracking transformations for audit purposes
+
+Learning Objectives:
+After this chapter, the practitioner can clean and transform common federal
+government datasets using Python/pandas and platform-native tools, validate
+data quality programmatically, and document their transformations to satisfy
+audit requirements.
+
+Platform Coverage: All five platforms. PySpark/Databricks and Palantir
+Transforms in depth for large-scale wrangling.
+Code Examples: Federal contract data cleaner (FPDS-NG); PySpark pipeline for
+DoD financial data; Palantir Transform for ontology-linked entity resolution.
+
+──────────────────────────────────────────────────────────────
+CHAPTER 05: Exploratory Data Analysis
+Directory: chapters/05-exploratory-analysis/
+──────────────────────────────────────────────────────────────
+Scope:
+EDA in a federal context has constraints commercial data science doesn't:
+you often cannot share your findings in public notebooks, your visualizations
+may need to be classified, and your "interesting finding" might be something
+your government customer is legally prohibited from acting on without a formal
+analysis report. This chapter covers EDA techniques and the federal context
+they operate in.
+
+Topics:
+- Descriptive statistics with government data: what summary statistics reveal
+  about procurement data, personnel data, readiness data, financial data — and
+  what they hide
+- Visualization for federal audiences: choosing charts for non-technical
+  government stakeholders; what works in briefings to flag officers and SES
+  officials; Qlik visualization patterns for executive dashboards
+- Feature engineering for government datasets: deriving useful features from
+  contract data (days-to-award, modification frequency, recompete history);
+  time series features from financial data; categorical encodings for
+  agency/command hierarchies
+- Outlier detection in government context: distinguishing anomalies from
+  legitimate exceptions (supplemental appropriations, emergency contract
+  actions, directed buys)
+- Correlation and causation in policy analysis: pitfalls unique to government
+  data (Simpson's paradox in agency-level rollups, survivorship bias in
+  contract award analysis)
+- EDA on each platform: Databricks notebooks with plotly/matplotlib; Palantir
+  Foundry Analysis objects; Qlik sheet design for exploratory work; Advana
+  workspace-based analysis
+- Documenting EDA for knowledge transfer: markdown notebooks, version-
+  controlled analysis outputs, briefing-ready export patterns
+
+Learning Objectives:
+After this chapter, the practitioner can run rigorous EDA on federal government
+datasets, produce visualizations appropriate for government audiences, and
+document their analytical process to support peer review and audit.
+
+Platform Coverage: All five platforms. Qlik sheet design and Palantir Analysis
+in depth.
+Code Examples: Government contract EDA notebook; Qlik set analysis for fiscal
+year comparisons; Databricks profiling with ydata-profiling.
+
+──────────────────────────────────────────────────────────────
+CHAPTER 06: Supervised Machine Learning
+Directory: chapters/06-supervised-ml/
+──────────────────────────────────────────────────────────────
+Scope:
+This chapter covers supervised learning from the perspective of a practitioner
+building models for actual government use cases — fraud detection in contracting,
+readiness prediction, classification of acquisition anomalies, budget forecasting.
+The focus is on model selection judgment, evaluation rigor, and what it takes to
+get a model approved for government use.
+
+Topics:
+- Classification and regression on government datasets: concrete use cases
+  (contract award prediction, audit risk scoring, supply chain anomaly
+  detection, personnel readiness classification)
+- Algorithm selection in practice: when to use logistic regression vs. gradient
+  boosting vs. random forest on federal datasets; the performance/explainability
+  tradeoff in government contexts where decisions must be defensible
+- Feature engineering for ML: what carries signal in procurement data,
+  financial data, and readiness data
+- Cross-validation and evaluation: confusion matrices, ROC/AUC, precision-
+  recall tradeoffs for government decision use cases; evaluating against
+  imbalanced datasets (rare events in fraud/anomaly detection)
+- Model explainability requirements: SHAP values, LIME, and the DoD
+  requirements for explainable AI (DoD AI Ethics Principles, algorithmic
+  accountability)
+- Hyperparameter tuning on platform: scikit-learn pipelines; Databricks
+  Hyperopt; Palantir Foundry model training workflow
+- MLflow experiment tracking: logging parameters, metrics, and artifacts for
+  government deliverables; tracking experiments in Databricks
+- scikit-learn on Databricks: distributed model training with pandas_udf and
+  Spark ML
+- Getting a model approved for use: ATO considerations for ML models, model
+  cards, bias testing requirements per the DoD AI ethical principles
+
+Learning Objectives:
+After this chapter, the practitioner can build, evaluate, and document
+supervised ML models for government use cases and understands the approval
+requirements for deploying a model in a federal environment.
+
+Platform Coverage: Databricks and Palantir AIP in depth for training workflows;
+all five platforms for deployment patterns.
+Code Examples: Contract award risk classifier (scikit-learn + MLflow); Spark ML
+pipeline for large-scale government dataset; Palantir Foundry model training.
+
+──────────────────────────────────────────────────────────────
+CHAPTER 07: Unsupervised Machine Learning
+Directory: chapters/07-unsupervised-ml/
+──────────────────────────────────────────────────────────────
+Scope:
+Unsupervised learning is underused on government programs because results are
+harder to explain to program managers and contracting officers. This chapter
+focuses on making unsupervised results interpretable and defensible for
+government audiences — while covering the techniques that actually surface
+useful patterns in federal data.
+
+Topics:
+- Clustering for government use cases: vendor behavior segmentation, entity
+  grouping in procurement data, anomaly cluster identification in financial
+  transactions, operational pattern analysis
+- K-means vs. DBSCAN vs. hierarchical clustering: when to use each on
+  government datasets; how cluster count selection translates to briefing
+  narrative
+- Dimensionality reduction: PCA for high-dimensional procurement data; UMAP
+  and t-SNE for visualization; what reduction reveals about latent structure
+  in agency-level data
+- Anomaly detection: isolation forests, autoencoders, and one-class SVM for
+  audit flag generation; the difference between statistical anomaly and
+  operational significance in a DoD context
+- Topic modeling for government text data: LDA on contract solicitation
+  documents, safety reports, maintenance records; BERT embeddings for more
+  modern approaches
+- Association rules for procurement analysis: finding unexpected co-occurrence
+  patterns in multi-award contracts, vendor relationships, agency purchasing
+  patterns
+- Platform-specific implementations: Databricks MLlib for large-scale
+  clustering; Palantir Foundry for ontology-aware entity grouping; Qlik for
+  visualization of cluster outputs
+
+Learning Objectives:
+After this chapter, the practitioner can apply unsupervised learning to
+government datasets, explain cluster and anomaly results to non-technical
+government stakeholders, and document findings in a format that supports
+further analysis and formal reporting.
+
+Platform Coverage: Databricks MLlib in depth; Palantir Foundry entity
+resolution and grouping; Qlik for cluster visualization.
+Code Examples: Vendor segmentation with K-means on FPDS data; anomaly
+detection pipeline for financial transactions; LDA on contract solicitations.
+
+──────────────────────────────────────────────────────────────
+CHAPTER 08: Deep Learning and Neural Networks
+Directory: chapters/08-deep-learning/
+──────────────────────────────────────────────────────────────
+Scope:
+Deep learning on federal platforms means working around GPU availability
+constraints, long approval processes for framework deployment, and the reality
+that most government data science problems do not require deep learning. This
+chapter teaches practitioners to know when deep learning is warranted and how to
+execute it on the platforms that support it.
+
+Topics:
+- When to use deep learning and when not to: the honest evaluation of whether
+  a government use case benefits from neural networks vs. gradient boosting;
+  compute costs on government platforms
+- Neural network fundamentals through a practical lens: what a practitioner
+  needs to understand vs. what is academic background
+- Computer vision for government applications: satellite imagery analysis,
+  document digitization (OCR for legacy paper records), facility inspection
+  image classification — with platform-specific implementation
+- NLP in government context: classification of FOIA requests, sentiment
+  analysis on contractor performance reports, entity extraction from
+  contracting documents
+- Deep learning frameworks on federal platforms: PyTorch and TensorFlow on
+  Databricks with GPU-enabled clusters; Palantir AIP for LLM integration;
+  availability constraints on Advana and Navy Jupiter
+- Transfer learning: fine-tuning pre-trained models on government domain data
+  (domain-specific text, government document formats, geospatial data)
+- Training infrastructure on Databricks: GPU cluster configuration, distributed
+  training with Horovod/DeepSpeed, cost management
+- Model compression for deployment in resource-constrained government
+  environments: quantization, pruning, ONNX export
+
+Learning Objectives:
+After this chapter, the practitioner can evaluate whether a use case warrants
+deep learning, configure GPU compute on Databricks, implement computer vision
+or NLP pipelines for government-relevant tasks, and export models for
+deployment.
+
+Platform Coverage: Databricks GPU compute in depth; Palantir AIP for LLM
+integration; coverage of constraints on Advana/Jupiter for deep learning.
+Code Examples: Document classification with fine-tuned BERT; satellite image
+classifier on Databricks GPU cluster; ONNX model export for edge deployment.
+
+──────────────────────────────────────────────────────────────
+CHAPTER 09: MLOps and Production Pipelines
+Directory: chapters/09-mlops/
+──────────────────────────────────────────────────────────────
+Scope:
+MLOps in a government context means navigating software approval processes,
+ATO requirements, change management boards, and network restrictions that
+commercial practitioners don't face. This chapter covers the full production
+ML lifecycle from experiment to decommission — with federal-specific process
+overlays.
+
+Topics:
+- The government ML production lifecycle: from experiment in a notebook to
+  approved production model — what gates exist, who approves what, and how
+  long it actually takes (reality check: 6-18 months for a new ML capability
+  in a typical DoD program)
+- MLflow in practice: experiment tracking, model registry, model versioning,
+  promotion workflows (Staging → Production) on Databricks
+- Feature stores: concepts, why they matter for government programs with
+  multiple models using the same data, Databricks Feature Store implementation
+- Model monitoring and drift detection: what to watch for in production;
+  monitoring pipelines on Databricks; when to retrain
+- CI/CD for ML in government: GitHub Actions or Azure DevOps with CAC
+  authentication constraints; Databricks Asset Bundles for workspace
+  deployment; automated testing for ML pipelines
+- Palantir Foundry Pipeline Builder: scheduled pipelines, incremental
+  processing, dependency graphs, monitoring in Foundry
+- Model governance documentation: model cards, data sheets, bias evaluations —
+  what government programs actually require before deploying a model
+- Rollback and incident response for production ML: what happens when a
+  government model produces wrong outputs; audit trails; notification chains
+- Containerization for ML: Docker patterns for ML serving; what the repo's
+  11-service Docker stack does and how to extend it
+
+Learning Objectives:
+After this chapter, the practitioner can build a complete MLOps workflow for a
+government program, use MLflow for experiment and model management, set up
+production monitoring, and understand the documentation requirements for a
+deployable government ML model.
+
+Platform Coverage: Databricks MLflow and Asset Bundles in depth; Palantir
+Foundry Pipeline Builder; CI/CD integration patterns for all platforms.
+Code Examples: MLflow multi-run experiment with model promotion; Databricks
+Asset Bundle deployment script; model drift detection pipeline.
+
+──────────────────────────────────────────────────────────────
+CHAPTER 10: Data Visualization and Dashboards
+Directory: chapters/10-visualization/
+──────────────────────────────────────────────────────────────
+Scope:
+Most government data visualization fails for the same reason: it was built for
+data scientists, not for the generals, admirals, and SES officials who have to
+make decisions with it. This chapter covers building dashboards and
+visualizations that actually get used by government decision-makers — on the
+platforms those decision-makers have access to.
+
+Topics:
+- Visualization design for government audiences: the rules that hold when your
+  audience is a three-star general with 12 minutes; color, density, and
+  annotation standards for classified environments
+- Qlik Sense for government: building apps and sheets, set analysis for
+  complex filtering, server-side extensions for custom visualizations,
+  embedding Qlik content into portals, performance optimization for large
+  government datasets (Qlik's associative model)
+- Advana dashboards: Qlik as the visualization layer on Advana; workspace-
+  based analytics; mashup development for DoD portal integration
+- Databricks SQL Warehouses and dashboards: Databricks SQL for BI workloads;
+  building dashboards in Databricks; connecting external BI tools (Tableau,
+  Power BI, Qlik) to Databricks
+- Palantir Foundry Slate and Workshop: building operational dashboards in
+  Foundry; Workshop for action-oriented applications; Slate for custom
+  embedded visualizations
+- Python visualization for government reports: matplotlib, seaborn, plotly for
+  publication-quality figures; generating briefing-ready exports (PDF, PNG)
+  at classification-appropriate markings
+- Geospatial visualization: geopandas, Folium, and deck.gl for operational
+  maps; NIPRNET vs. SIPRNET constraints on map tile access
+- Building dashboard systems that don't require a data scientist to maintain:
+  refresh scheduling, data connection management, version control for Qlik
+  apps
+
+Learning Objectives:
+After this chapter, the practitioner can design and build decision-ready
+dashboards in Qlik, Databricks SQL, and Palantir Foundry — and can produce
+briefing-quality static visualizations for government reports and formal
+presentations.
+
+Platform Coverage: Qlik and Palantir Foundry in depth; Databricks SQL and
+Advana workspace coverage; cross-platform comparison of BI capabilities.
+Code Examples: Qlik mashup for DoD portal; Python figure generation for
+classified briefing; Databricks SQL dashboard definition; Plotly choropleth
+for federal geospatial data.
+
+──────────────────────────────────────────────────────────────
+CHAPTER 11: Deployment and Scaling
+Directory: chapters/11-deployment/
+──────────────────────────────────────────────────────────────
+Scope:
+Deployment on federal platforms means more than clicking "deploy." It means
+passing an ATO, getting through a change management board, surviving a STIG
+review, and operating within the network boundary of a DoD enclave. This
+chapter covers the full deployment picture — from model serving to
+containerization to government network constraints.
+
+Topics:
+- Deployment options on each platform: Palantir AIP Logic for function
+  deployment; Databricks Model Serving for real-time inference; Qlik SSE for
+  custom analytics functions; Advana API patterns for integrated workflows
+- Containerization in government: Docker on government systems, approved base
+  images, STIG-hardened containers, the repo's existing Docker stack (Jupyter,
+  MLflow, PostgreSQL, Redis, Grafana, Prometheus, Nginx, Vault, cac-auth)
+- FedRAMP and DoD IL compliance for deployment: what it means for a service to
+  be IL4 vs. IL5 authorized; why Databricks AWS GovCloud DoD at IL5 matters;
+  which platforms can process which data classifications
+- REST API development for government ML models: FastAPI patterns; auth
+  integration (CAC/OAuth); rate limiting and audit logging for government API
+  endpoints
+- Scaling considerations: Databricks autoscaling clusters for batch inference;
+  Palantir Foundry's managed compute for production pipelines; load balancing
+  patterns for multi-user government dashboards
+- Model serving latency and SLA considerations in government environments:
+  what "real-time" means when your API goes through a government reverse proxy
+- Monitoring production deployments: Prometheus and Grafana for ML serving
+  metrics; alerting in DoD environments; the escalation chain when a
+  production model fails
+- Decommissioning models: the often-neglected end of the lifecycle — how to
+  sunset a model without breaking downstream consumers
+
+Learning Objectives:
+After this chapter, the practitioner can deploy ML models and data applications
+to federal platforms, configure monitoring for production deployments, and
+understands the compliance requirements that govern federal software deployment.
+
+Platform Coverage: Palantir AIP Logic and Databricks Model Serving in depth;
+all five platforms for deployment pattern comparison.
+Code Examples: FastAPI model serving endpoint with CAC auth; Docker
+compose production stack configuration; Prometheus alerting rule for model
+serving; Databricks model serving endpoint definition.
+
+──────────────────────────────────────────────────────────────
+CHAPTER 12: Ethics, Governance, and Compliance
+Directory: chapters/12-ethics-governance/
+──────────────────────────────────────────────────────────────
+Scope:
+Ethics and compliance in federal AI/ML is not a philosophical exercise — it
+is a legal and contractual requirement with specific standards, specific
+certifications, and specific people whose job it is to enforce them. This
+chapter covers what practitioners actually have to do to satisfy those
+requirements, not just what they mean in theory.
+
+Topics:
+- DoD AI Ethics Principles (2020): the five principles (responsible,
+  equitable, traceable, reliable, governable) and what each means for a
+  practitioner building a model — not the policy language, the implementation
+  checklist
+- Algorithmic accountability in federal programs: who is responsible when a
+  model produces a bad outcome; what documentation is required; how to write
+  a model card that satisfies a DoD program office
+- Bias testing requirements: what protected categories matter in federal
+  contexts; fairness metrics (demographic parity, equalized odds) and when
+  the government requires you to test for them; tools (Fairlearn, AIF360)
+- Data privacy in government: Privacy Act of 1974, PII handling requirements,
+  what is and is not permissible in analysis involving personnel data
+- Cybersecurity requirements for ML practitioners: DoD 8570/8140 IA workforce
+  requirements; what certifications matter for which roles; NIST SP 800-53
+  controls applicable to ML systems; STIGs for software used in ML workflows
+- FedRAMP: what it is, which platforms in this handbook have it (Databricks
+  FedRAMP High on AWS GovCloud and Azure Government, Qlik FedRAMP), and what
+  it means for what you can and cannot do on those platforms
+- NIST AI Risk Management Framework (AI RMF 1.0): the four functions (Govern,
+  Map, Measure, Manage) and how to apply them in a DoD program context
+- Zero Trust Architecture principles and their application to ML pipelines
+- Data governance in practice: data stewardship roles, data dictionaries, data
+  quality SLAs — and who enforces what in a DoD program
+- Responsible AI at the DoD: CDAO's RAI toolkit, responsible AI assessments,
+  operational test and evaluation considerations for AI systems
+
+Learning Objectives:
+After this chapter, the practitioner can produce the documentation required
+for a model to clear ethics review in a DoD program, can run standard bias
+evaluations, understands PII handling requirements, and knows which security
+certifications and compliance frameworks apply to their work.
+
+Platform Coverage: Databricks Unity Catalog for governance/lineage; Palantir
+Foundry governance features; Advana compliance context; general compliance
+requirements applicable across all platforms.
+Code Examples: Fairlearn bias evaluation on a classification model; pandas
+PII detection and masking pipeline; model card template in code; NIST AI RMF
+assessment checklist.
+
+──────────────────────────────────────────────────────────────
+CHAPTER 13: Advanced Topics — GenAI, RAG, and LLMs on Federal Platforms
+Directory: chapters/13-advanced-topics/
+──────────────────────────────────────────────────────────────
+Scope:
+As of 2026, generative AI has arrived in the federal space — not as a
+research curiosity, but as a deployed capability on multiple DoD programs.
+Palantir AIP is running in production on DoD contracts. Databricks has DBRX
+and full LLM serving capabilities. The question practitioners face is not
+whether to use LLMs, but how to use them responsibly within federal
+constraints. This chapter covers the current state of GenAI in the federal
+space with the specificity that practitioners need.
+
+Topics:
+- The GenAI landscape for federal practitioners (2025-2026): what has been
+  authorized, what is in pilot, what remains prohibited — with specific
+  platform context (which capabilities are IL4/IL5 authorized)
+- Large Language Models: how they work at a practitioner level (not a
+  researcher level); what fine-tuning vs. RAG vs. prompt engineering each
+  accomplishes; when to use which on a government program
+- Retrieval-Augmented Generation (RAG) for government use cases:
+  grounding LLM responses in authoritative government documents (policy,
+  doctrine, contract data, intelligence reports at unclassified level);
+  RAG architecture patterns; vector databases on federal platforms
+- Palantir AIP: the AI Platform layer built on Foundry; AIP Logic for
+  function-level LLM integration; AIP Agents for autonomous task execution;
+  the Ontology as the grounding layer for AI actions; what Palantir's
+  "defense AI" positioning means in practice
+- Databricks AI and GenAI: Mosaic AI (formerly Databricks ML); LLM fine-tuning
+  on Databricks; Vector Search for RAG; AI Playground; mlflow.langchain
+  integration; DBRX and open-source LLM options for air-gapped environments
+- LLM deployment on IL4/IL5 environments: the challenge of air-gapped LLM
+  deployment; open-source models (Llama, Mistral, Falcon) as alternatives to
+  cloud API LLMs; on-premises inference with Ollama and similar tools
+- Prompt engineering for government work: effective prompt patterns for document
+  analysis, contract review, report generation, and question-answering over
+  government datasets; adversarial prompting and defense
+- Evaluation of LLM outputs in federal contexts: RAGAS, factuality scoring,
+  hallucination detection; why evaluation is more critical when an LLM is
+  advising on policy or operational decisions
+- AI governance for GenAI in DoD: the DoD Generative AI Policy (2023);
+  CDAO guidance on responsible use; contractor obligations; what you cannot
+  automate with GenAI (decision authorities, personnel actions, classified
+  analysis without human review)
+- Case study: building a RAG system for DoD policy document Q&A on Databricks
+  with open-source components
+
+Learning Objectives:
+After this chapter, the practitioner understands the current state of GenAI
+deployment on federal platforms, can build a basic RAG pipeline using
+platform-native tooling, and knows the governance requirements and prohibited
+uses for LLMs in federal government work.
+
+Platform Coverage: Palantir AIP and Databricks Mosaic AI in depth;
+Advana GenAI capabilities; Navy Jupiter AI features; Qlik AI/ML integration.
+Code Examples: RAG pipeline on Databricks Vector Search; Palantir AIP Logic
+function implementation; fine-tuning Llama 3 on Databricks GPU cluster;
+LLM hallucination evaluation with RAGAS.
+
+
+─────────────────────────────────────────────────────────────────────────────
+SECTION 4: PLATFORM GUIDE REQUIREMENTS
+─────────────────────────────────────────────────────────────────────────────
+
+Five standalone platform guides live in: platform-guides/[platform-name]/
+
+Each platform guide is a standalone reference document. A practitioner who
+has just been assigned to a program running that platform should be able to
+read the guide and be operationally ready: authentication working, first
+dataset loaded, first analysis running.
+
+4.1 Standard Structure for All Platform Guides
+────────────────────────────────────────────────
+Every platform guide must contain these sections:
+
+1. Platform Overview
+   - What it is, who owns it, who has access, what it is authorized for
+     (FedRAMP level, DoD IL level)
+   - When to use this platform vs. the others
+   - Current version / state of the platform as of 2026
+
+2. Access and Authentication
+   - Step-by-step: how to request access, how long it takes, what approvals
+     are required
+   - Authentication method (CAC, OAuth, API key, service account)
+   - Network requirements (NIPRNET, SIPRNET, Internet, GovCloud)
+   - Common access issues and how to resolve them
+
+3. Data Access and Discovery
+   - How to find available datasets
+   - How to query and load data programmatically
+   - Data governance model (who owns data, how to request new access)
+   - Platform-specific data format conventions
+
+4. Analytics and ML Capabilities
+   - What analytical workloads the platform supports natively
+   - ML/AI capabilities and their maturity level
+   - Performance characteristics for common workloads
+
+5. Development Patterns
+   - Preferred development environment (notebook, IDE, CLI)
+   - Version control integration
+   - Code examples for the most common tasks
+
+6. Deployment and Production
+   - How to deploy analytics or ML models on this platform
+   - Scheduling and automation options
+   - Monitoring and alerting
+
+7. Compliance and Security Controls
+   - Platform-specific security controls practitioners must observe
+   - Data classification handling on this platform
+   - Audit logging capabilities
+
+8. Known Limitations and Gotchas
+   - Where this platform is weak
+   - Common mistakes and how to avoid them
+   - What to do when it breaks
+
+9. Reference and Resources
+   - Official documentation links
+   - Training resources
+   - Community and support channels
+
+4.2 Platform-Specific Requirements
+────────────────────────────────────
+
+ADVANA (platform-guides/advana/)
+- Cover: CDAO ownership, 1,200+ source system integrations, 7,000+ user base
+- Authentication: DoD network access, CAC required, workspace-based access model
+- Visualization layer: Qlik Sense as primary BI tool; GameChanger application
+- Data catalog: how Advana's common data models standardize DoD business data
+- Analytics: Databricks as the compute engine behind Advana's ML capabilities
+- Access process: Advana Help Desk, sponsor requirements, training prerequisites
+- Compliance: DISA IL4, CDAO data governance policy
+- Must document: the relationship between Advana, Databricks, and Qlik as
+  integrated layers (not three separate tools)
+
+QLIK (platform-guides/qlik/)
+- Cover: Qlik Sense (SaaS and client-managed), Qlik View (legacy awareness),
+  Qlik Cloud
+- Authentication: OAuth 2.0, JWT, API Keys, CSRF tokens — when to use each
+- Developer APIs: QIX Engine API, Capability APIs, @qlik/api library,
+  nebula.js for custom visualizations, qlik-embed for portal integration
+- Data modeling: QVD optimization, incremental loading, set analysis,
+  associative data model (Qlik's fundamental architecture differentiator)
+- Deployment architectures: small (single node), medium (multi-node with load
+  balancing), large (dedicated reload/consumer nodes), extra-large
+- FedRAMP: Qlik Cloud Government authorization status and implications
+- Server-side extensions (SSEs): how to add Python/R analytics functions
+  as callable extensions from Qlik apps
+- Must document: Qlik's role as the BI layer on Advana and what that means
+  for practitioners who access Advana data through Qlik
+
+DATABRICKS (platform-guides/databricks/)
+- Cover: Lakehouse architecture (Delta Lake, Unity Catalog, Databricks SQL,
+  MLflow, Mosaic AI); government deployment options
+- Government access: Databricks AWS GovCloud DoD (IL5, DoD only); Databricks
+  AWS GovCloud Community (non-DoD federal); Azure Databricks on MAG (FedRAMP
+  High, expanding capabilities in 2026)
+- Procurement: available via Carahsoft Technology Corp
+- Authentication: Azure AD / Entra ID integration, SCIM provisioning, service
+  principals for CI/CD
+- Cluster management: cluster types (job, all-purpose, SQL warehouse), auto-
+  scaling, GPU-enabled clusters for deep learning, cluster policies for
+  governance
+- Unity Catalog: the governance layer — centralized access control, data
+  lineage, column-level masking, row-level security, audit logs
+- Delta Lake 4.0: ACID transactions, time travel, schema enforcement on
+  government datasets
+- MLflow 3.0: experiment tracking, model registry, AI observability
+- Mosaic AI: LLM serving, Vector Search for RAG, AI Playground, model fine-
+  tuning; available on government cloud deployments
+- Databricks Asset Bundles: the CI/CD mechanism for workspace deployment
+- Must document: the FedRAMP High vs. IL5 distinction and what each allows
+  in terms of data classification
+
+NAVY JUPITER (platform-guides/navy-jupiter/)
+- Cover: DON CIO ownership, mission (enterprise data environment for Navy),
+  launch April 2020
+- Access: CAC/PIV authentication, free for all DON personnel, DoD network
+  required, Baseline Access memo requirements
+- Capabilities: decision support analytics, context-rich data presentation,
+  advanced analytics tools, ML capability (launched ~2024)
+- Financial management depth: general ledger consolidation, $1.7B daily
+  transaction volume monitoring, 15-minute processing increments
+- Use cases: readiness assessment, financial audit automation, personnel
+  analytics, cross-service data sharing
+- Integration: HHS, FEMA, and cross-service (Army, Air Force) data sharing
+- RPA: Robotic Process Automation capabilities and how data scientists can
+  trigger/integrate with RPA workflows
+- Constraints: document what is and is not available to contractors vs.
+  government civilians; network access requirements
+- Must document: data export processes, what practitioners can take off-
+  platform, and the audit trail requirements for doing so
+
+PALANTIR AIP/FOUNDRY (platform-guides/palantir-aip-foundry/)
+- Cover: Foundry as the data integration/analytics platform; AIP as the AI
+  layer built on Foundry; government/DoD deployment context (IL4/IL5)
+- The Ontology: Palantir's core differentiator — object-based data model that
+  links data across sources into semantic entities; how to build and navigate
+  ontologies; why it matters for DoD programs with complex, multi-source data
+- Foundry core capabilities: Dataset Browser, Contour (exploration),
+  Transforms (ETL pipeline authoring), Code Workbook (notebook environment),
+  Pipeline Builder (scheduled pipelines), Quiver (analytics), Workshop
+  (operational apps), Slate (embedded visualizations)
+- AIP capabilities: AIP Logic (function-level LLM integration), AIP Agents
+  (autonomous AI task execution), AIP for Defense (DoD-specific capabilities)
+- Data integration: Foundry connectors for common sources; ontology-linked
+  entity resolution; external system integration
+- Authentication: Multipass (Palantir's auth system), SAML/SSO integration,
+  service account patterns for pipeline automation
+- Development workflow: Code Repository integration, Foundry CI/CD patterns,
+  Transforms SDK for Python/Java/Scala pipelines
+- Compliance: IL4/IL5 authorization details, what data can be processed in
+  Palantir's government cloud, CUI handling
+- Procurement: GSA Schedule, DoD contract vehicle availability
+- Must document: the Ontology concept in enough depth that a practitioner
+  arriving from a relational database background understands what it is and
+  why it changes how they should think about data integration
+
+
+─────────────────────────────────────────────────────────────────────────────
+SECTION 5: INFRASTRUCTURE REQUIREMENTS
+─────────────────────────────────────────────────────────────────────────────
+
+5.1 What Exists
+────────────────
+The following infrastructure was built as part of the project setup:
+
+Docker Stack (11 services, docker-compose.yml):
+- Jupyter Lab (port 8888) — interactive development environment
+- MLflow (port 5000) — experiment tracking and model registry
+- PostgreSQL (port 5432) — MLflow backend database
+- Redis (port 6379) — caching and message broker
+- Grafana (port 3000) — monitoring dashboards
+- Prometheus (port 9090) — metrics collection
+- Nginx (ports 80/443) — reverse proxy and load balancer
+- Documentation server (port 8080) — project docs
+- Vault — secrets management
+- cac-auth — CAC authentication service
+- Security service — security scanning
+
+Repository structure (created, mostly empty):
+- chapters/ — 13 directories matching chapter names (content not yet created)
+- platform-guides/ — 5 directories (advana, qlik, databricks, navy-jupiter,
+  palantir-aip-foundry), content not yet created
+- code-examples/ — exists, largely empty
+- api-docs/ — exists
+- docker/ — Dockerfiles and service configurations (functional)
+- ci-cd/ — CI/CD pipeline configurations (needs completion)
+- security-compliance/ — security policy and scanning framework (partially
+  complete — 25/36 subtasks done per implementation plan)
+- validation/ — content validation framework (exists)
+- scripts/ — automation scripts (partially complete)
+- docs/ — IMPLEMENTATION_PLAN.md, STYLE_GUIDE.md, CHAPTER_WRITING_SPEC.md
+  (all complete and functional)
+- research/ — platform and data science research documents (complete)
+
+Task Master tasks (from tasks.json):
+- Task 1 (Project Setup & Infrastructure): DONE (8/8 subtasks)
+- Task 2 (Multi-Platform Auth & Security): IN PROGRESS (25/36 subtasks)
+- Task 5 (Content Management & Templates): DONE (8/8 subtasks)
+- Tasks 3, 4, 6, 7, 8, 9, 10: PENDING (0% completion)
+
+5.2 What Needs Completion — Infrastructure
+────────────────────────────────────────────
+REQUIRED before chapter content is usable:
+
+Task 2 Completion — Security (11 remaining subtasks):
+- Complete remaining authentication modules (CAC auth integration)
+- Finish security scanning configurations for CI/CD
+- Complete compliance documentation templates
+
+Task 3 — Platform Integration APIs (20 subtasks):
+- Advana API client module (Python)
+- Qlik REST API client (Python)
+- Databricks REST API client (Python) with workspace management
+- Navy Jupiter API client (Python)
+- Palantir Foundry API client (Python) — must include dataset read/write,
+  transform execution, ontology access
+- Shared authentication utilities (CAC, OAuth, service account patterns)
+- Error handling, retry logic, rate limiting for each platform API
+
+Task 4 — Core Data Pipeline/ETL (11 subtasks):
+- Base ETL pipeline framework compatible with all five platforms
+- Delta Lake read/write utilities for Databricks
+- Palantir Transforms-compatible pipeline structure
+- Data quality validation hooks (pandera/Great Expectations integration)
+- Audit logging pipeline for compliance
+
+Task 6 — Interactive Code Examples Framework (9 subtasks):
+- Executable example scripts for each platform
+- Self-contained examples with dependencies documented
+- Test harness to verify examples run correctly
+
+Task 7 — MLOps & Model Lifecycle (11 subtasks):
+- MLflow integration in Docker stack (exists but needs configuration)
+- Model serving template with FastAPI
+- Model monitoring pipeline with Prometheus metrics
+- Model registry automation scripts
+
+Tasks 8, 9, 10 — Advanced Analytics, Visualization, Deployment:
+- Advanced analytics framework code (12 subtasks)
+- Dashboard framework code (9 subtasks)
+- Deployment and monitoring framework code (11 subtasks)
+
+5.3 Content Infrastructure
+────────────────────────────
+Chapter directories exist. Each chapter directory requires:
+- README.md — main chapter content (minimum 2500 words)
+- code-examples/python/ — minimum 3 Python script files
+- code-examples/r/ — R examples (optional but preferred)
+- exercises/exercises.md — minimum 3 exercises
+- exercises/solutions/ — solutions for all exercises
+
+Platform guide directories exist. Each requires:
+- README.md — full platform guide per Section 4 structure
+- code-examples/ — platform-specific code samples
+- Authentication setup guide
+
+5.4 CI/CD Requirements
+───────────────────────
+- GitHub Actions workflow for content validation on PR
+- Automated check: no banned AI words/phrases in chapter content
+- Automated check: minimum word count per chapter
+- Automated check: required files present per chapter directory
+- Docker compose build verification on infrastructure changes
+- Python syntax check on all code examples
+
+
+─────────────────────────────────────────────────────────────────────────────
+SECTION 6: CONTENT QUALITY STANDARDS
+─────────────────────────────────────────────────────────────────────────────
+
+These standards are the immutable quality bar for all content. They are
+defined in docs/STYLE_GUIDE.md and docs/CHAPTER_WRITING_SPEC.md and cannot
+be modified by content-writing agents.
+
+6.1 Voice and Writing Standards
+─────────────────────────────────
+The reference voice is Amyn Porbanderwala's "Shrink-Wrap It: The GovCon
+Productization Playbook." Content must match these characteristics:
+
+REQUIRED:
+- Open sections with concrete practitioner scenarios (not definitions,
+  not thesis statements)
+- Use second person ("you") addressing the practitioner directly
+- State opinions plainly without hedging in main prose
+- Use specific numbers, names, and data points
+- Vary sentence length deliberately (short punches after long setups)
+- Raise objections before answering them
+- End chapters with three-block close: one thing to remember / Monday action /
+  what comes next
+- Put caveats in Note: or Sanity check: blocks, not in prose
+
+PROHIBITED (these are AI-writing tells and will fail QA):
+- Banned words: delve, leverage (as verb), landscape (as in "the landscape"),
+  navigate (as in "navigate challenges"), crucial, robust, seamless, empower,
+  harness (as in "harness the power"), unlock, game-changer, paradigm shift,
+  synergy, comprehensive, foster, facilitate, bolster, spearhead
+- Banned structural patterns: uniform paragraph length, balanced pros/cons
+  without a point of view, "Firstly/Secondly/Thirdly" enumeration, wrapping
+  every section in intro-body-summary sandwich, opening with "In this chapter
+  we will explore...", using bullet points for everything
+
+6.2 Technical Accuracy Standards
+──────────────────────────────────
+- All technical claims must be based on publicly verifiable information
+- No invented API endpoints, made-up platform features, or fabricated
+  compliance requirements
+- Platform-specific code must use actual API conventions for each platform
+  (or be clearly marked as pseudocode where the API is proprietary)
+- Security and compliance claims must cite the correct standards (e.g., when
+  saying a platform has IL4 authorization, this must be publicly documented)
+- Government data use cases must be realistic — not Iris dataset, not
+  generic retail data, not Titanic survival prediction
+
+6.3 Code Quality Standards
+───────────────────────────
+- Python 3.11+ compatible syntax required
+- Code examples must be syntactically correct and runnable (or clearly marked
+  as pseudocode/illustrative for platform-specific APIs)
+- All code includes comments explaining non-obvious lines
+- All code includes sample output where it aids understanding
+- No truncation with "# ... more code here" — examples are complete
+- No secrets, credentials, or PII in any code example
+- Code examples use realistic government/defense data scenarios (not toy
+  datasets where a real scenario exists)
+
+6.4 Completeness Standards
+───────────────────────────
+Per chapter minimum requirements:
+- 2500+ words of substantive prose (not counting code blocks)
+- 3+ working code examples (Python required, R optional)
+- 1+ Mermaid diagram
+- 3+ hands-on exercises with solutions
+- Coverage of at least 3 of 5 platforms where the topic is relevant
+- Zero TODO/TBD/[insert]/placeholder markers
+- Chapter opens with a concrete practitioner scenario
+- Chapter ends with the three-block close
+- Cross-references to related chapters where appropriate
+
+
+─────────────────────────────────────────────────────────────────────────────
+SECTION 7: TECHNICAL REQUIREMENTS — CODE EXAMPLES, EXERCISES, DIAGRAMS
+─────────────────────────────────────────────────────────────────────────────
+
+7.1 Code Example Requirements
+───────────────────────────────
+Every code example in the handbook must:
+
+1. Be clearly attributed to a platform or indicate cross-platform applicability
+2. Include a descriptive comment header explaining what the example does and
+   what platform it targets
+3. Use realistic scenario context (federal/DoD data scenario, not toy data)
+4. Be self-contained — all imports at the top, no hidden dependencies
+5. Show expected output as a comment where applicable
+6. Handle errors or edge cases that practitioners actually encounter
+7. For platform-specific examples: clearly note any authentication or
+   environment setup required to run the example
+
+Example categories required per chapter:
+- Environment setup / configuration (Chapter 01, 02)
+- Data access / API calls (Chapter 01, 02, 03)
+- Data transformation / cleaning (Chapter 03, 04)
+- Analysis / statistical computation (Chapter 04, 05)
+- Model training / evaluation (Chapter 06, 07, 08)
+- Pipeline / workflow orchestration (Chapter 09, 11)
+- Visualization / dashboard (Chapter 10)
+- Compliance / governance tooling (Chapter 12)
+- GenAI / LLM integration (Chapter 13)
+
+7.2 Exercise Requirements
+──────────────────────────
+Exercises must be:
+- Hands-on: not "explain the concept of X" — practitioners build something
+- Realistic: use government data sources or realistic simulated government data
+- Graduated in difficulty: exercises 1-3 progress from foundational to applied
+- Platform-aware: at least one exercise per chapter specifies which platform
+  to use
+- Accompanied by complete solutions in exercises/solutions/
+
+Exercise format:
+- exercises.md: exercise description, context, objectives, hints (optional),
+  data sources to use
+- solutions/: one file per exercise with complete working solution
+
+7.3 Diagram Requirements
+─────────────────────────
+Mermaid diagrams required for:
+- Data flow architectures (Chapter 01, 03, 04, 09, 11)
+- ML pipeline stages (Chapter 06, 07, 08, 09)
+- Decision trees for algorithm/tool selection (Chapter 06, 07, 08, 13)
+- Platform architecture overview (all platform guides)
+- System architecture for deployment patterns (Chapter 11)
+- Workflow/process flows (Chapter 09, 12)
+
+Diagram constraints:
+- Maximum 15 nodes per diagram
+- Caption required below each diagram
+- No Mermaid for information that belongs in a table
+- Complex architectures split into multiple focused diagrams
+
+
+─────────────────────────────────────────────────────────────────────────────
+SECTION 8: SECURITY AND COMPLIANCE REQUIREMENTS
+─────────────────────────────────────────────────────────────────────────────
+
+8.1 Content Security Requirements
+────────────────────────────────────
+- No classified or controlled information in any chapter or platform guide
+- No operational security-sensitive details (specific network architectures,
+  system vulnerabilities, operational data sources for active programs)
+- All external references point to publicly accessible, non-restricted URLs
+- No PII in code examples (use synthetic data, clearly fake names, anonymized
+  identifiers)
+- No real credentials, API keys, or authentication tokens in code or config
+  files — use placeholder patterns that are obviously fake
+  (e.g., "your-api-key-here", not actual key formats that could be mistaken
+  for real keys)
+
+8.2 Repository Security Requirements
+──────────────────────────────────────
+The existing security infrastructure (partially complete) must be finished:
+- Automated secret scanning in CI/CD pipeline (prevent credential commits)
+- SAST (static application security testing) on Python code examples
+- Dependency vulnerability scanning on requirements.txt
+- STIG-compliance check template for Docker images
+
+8.3 Compliance Topics by Chapter
+──────────────────────────────────
+Compliance must be treated as a natural part of each chapter, not an
+afterthought or separate section:
+
+Chapter 01: CDAO data strategy, DoD data classification (CUI/FOUO), NIPRNET
+  vs. SIPRNET data handling constraints
+Chapter 02: Software approval lists, approved repositories for package
+  installation, code review requirements for government delivery
+Chapter 03: Data use agreements, MOU requirements for cross-agency data
+  sharing, Privacy Act considerations for personnel data
+Chapter 04: Data lineage documentation for audit, transformation logging
+Chapter 05: Classification markings on visualizations and analysis outputs
+Chapter 06: Model cards, DoD AI Ethics Principles, explainability requirements,
+  algorithmic accountability
+Chapter 07: Unsupervised model output documentation, human-in-the-loop
+  requirements for high-stakes applications
+Chapter 08: GPU compute authorization on classified networks, model export
+  controls
+Chapter 09: ATO process for ML capabilities, software change management board
+  requirements, model versioning for compliance
+Chapter 10: Classification marking on dashboards and exported figures,
+  visualization security for distributed systems
+Chapter 11: FedRAMP High vs. IL4 vs. IL5 distinctions, STIG compliance for
+  containerized deployments, network boundary constraints
+Chapter 12: DoD 8570/8140 workforce requirements, NIST 800-53 applicable
+  controls, FedRAMP implications, Privacy Act, DoD AI Ethics Principles,
+  NIST AI RMF, Zero Trust Architecture
+Chapter 13: DoD Generative AI Policy (2023), prohibited uses of GenAI in
+  federal environments, data classification constraints for LLM input,
+  CDAO RAI toolkit application to GenAI systems
+
+
+─────────────────────────────────────────────────────────────────────────────
+SECTION 9: SUCCESS CRITERIA AND DEFINITION OF DONE
+─────────────────────────────────────────────────────────────────────────────
+
+9.1 Chapter-Level Definition of Done
+──────────────────────────────────────
+A chapter is DONE when ALL of the following are true:
+
+Content:
+[ ] README.md exists and contains 2500+ words of substantive prose
+[ ] Chapter opens with a concrete practitioner scenario (not a definition or
+    "In this chapter...")
+[ ] Chapter ends with the three-block close (one thing / Monday action /
+    what comes next)
+[ ] Zero banned words/phrases from the style guide
+[ ] Zero placeholder markers (TODO, TBD, [insert], lorem ipsum)
+[ ] Specific numbers, data points, and platform details used throughout
+
+Code:
+[ ] Minimum 3 code examples in code-examples/python/
+[ ] All code is syntactically correct (passes python3 -m py_compile)
+[ ] No secrets, credentials, or PII in code examples
+[ ] Code uses realistic government/defense scenarios
+
+Exercises:
+[ ] exercises/exercises.md contains 3+ exercises
+[ ] exercises/solutions/ contains complete solutions for all exercises
+
+Diagrams:
+[ ] At least 1 Mermaid diagram with caption
+
+Platform coverage:
+[ ] At least 3 of 5 platforms covered where applicable
+[ ] Platform-specific sections reference actual, publicly documented
+    platform capabilities
+
+Technical accuracy:
+[ ] All technical claims are verifiable from public sources
+[ ] Compliance requirements cited correctly with proper standard names
+
+9.2 Platform Guide Definition of Done
+───────────────────────────────────────
+A platform guide is DONE when ALL of the following are true:
+
+[ ] README.md contains all 9 required sections (overview through resources)
+[ ] Access and authentication steps are complete and accurate
+[ ] Minimum 3 working code examples in code-examples/
+[ ] Known limitations section is honest and specific
+[ ] All external documentation links are real and accessible
+[ ] Guide follows consistent structure compared to other 4 platform guides
+[ ] FedRAMP/IL authorization status is documented and accurate
+
+9.3 Infrastructure Definition of Done
+───────────────────────────────────────
+Infrastructure is DONE when:
+
+[ ] All 10 Task Master tasks marked DONE with all subtasks complete
+[ ] Task 2 (Security): All 36 subtasks done; CAC auth, secret scanning,
+    SAST, and dependency scanning all functional
+[ ] Task 3 (Platform APIs): Python API clients for all 5 platforms exist
+    with authentication, basic CRUD, and error handling
+[ ] Task 4 (ETL): Base pipeline framework runnable end-to-end
+[ ] Task 6 (Code Examples): Framework with at least 1 running example per
+    platform
+[ ] Task 7 (MLOps): MLflow registry functional, model serving template works
+[ ] Tasks 8-10: Framework code exists and is non-trivial
+[ ] requirements.txt reflects all dependencies used across all code examples
+[ ] docker-compose.yml builds without errors
+[ ] CI/CD pipeline validates content on commit (word count, banned words,
+    required files)
+
+9.4 Project-Level Definition of Done
+──────────────────────────────────────
+The project is DONE when:
+
+[ ] All 13 chapters meet the chapter-level definition of done
+[ ] All 5 platform guides meet the platform guide definition of done
+[ ] All infrastructure meets the infrastructure definition of done
+[ ] Cross-reference integrity: all links between chapters resolve correctly
+[ ] README.md accurately reflects the project structure and content
+[ ] CLAUDE.md is updated with current project scope and status
+[ ] Implementation plan (docs/IMPLEMENTATION_PLAN.md) has all QA gate
+    results filled in
+[ ] No orphaned content (files that exist but are not referenced anywhere)
+[ ] Voice consistency review completed across all chapters: style is
+    consistent throughout the handbook
+[ ] Final validation framework run passes all automated checks
+
+
+─────────────────────────────────────────────────────────────────────────────
+SECTION 10: OUT OF SCOPE
+─────────────────────────────────────────────────────────────────────────────
+
+The following are explicitly out of scope for this version of the handbook.
+They may be added in future versions but should not be built, referenced as
+pending, or planned for during the current execution:
+
+10.1 Platforms Not Covered
+────────────────────────────
+- Microsoft Power BI (except as a connector to Databricks)
+- Tableau (except as a connector to Databricks)
+- Esri ArcGIS / ArcGIS Online (mentioned briefly for geospatial context)
+- Amazon SageMaker (covered only where it underlies a platform in scope)
+- Google Vertex AI
+- Azure ML Studio (separate from Azure Databricks)
+- GFEBS, GCSS-Army, or other ERP systems (may be data sources but not
+  analytics platforms)
+- Any intelligence community (IC)-specific platforms (TS//SCI environments
+  require separate treatment)
+
+10.2 Content Areas Not Covered
+────────────────────────────────
+- Full-length data science curriculum for beginners — this handbook assumes
+  practitioners who already know Python and basic ML concepts
+- Business intelligence licensing and procurement (beyond what a practitioner
+  needs to understand access)
+- Database administration (practitioners consume data, they do not admin it)
+- Network engineering or infrastructure administration
+- Formal academic treatment of statistical theory — the handbook is applied,
+  not theoretical
+- Reinforcement learning (too narrow/specialized for this audience)
+- Quantum computing (too early-stage for federal operational context)
+- Blockchain / distributed ledger applications
+
+10.3 Delivery Formats Not In Scope
+─────────────────────────────────────
+- PDF or print-ready formatting — the handbook is markdown/web-first
+- Video content, screencasts, or interactive tutorials
+- SCORM packages or LMS-compatible formats
+- Translated versions (English only for this version)
+- Printed textbook layout with ISBN
+
+10.4 Infrastructure Not In Scope
+──────────────────────────────────
+- Production deployment of the handbook itself to a government-authorized
+  hosting environment — this is a repository, not a deployed application
+- Formal Authority to Operate (ATO) for the handbook repository
+- ITAR/EAR compliance review (content is unclassified public information)
+- Formal Section 508 accessibility compliance audit (though markdown should
+  be accessible by default)
+- Integration with a Learning Management System (LMS)
+
+
+─────────────────────────────────────────────────────────────────────────────
+SECTION 11: DEPENDENCIES AND RISKS
+─────────────────────────────────────────────────────────────────────────────
+
+11.1 Key Dependencies
+───────────────────────
+- Platform research files (research/*.md) are the authoritative source for
+  platform-specific claims; chapter writers must read them before writing
+- docs/STYLE_GUIDE.md is the immutable voice reference; no content-writing
+  agent may modify it
+- docs/CHAPTER_WRITING_SPEC.md is the immutable writing spec; no content-
+  writing agent may modify it
+- Platform guide content must be complete before chapter cross-references
+  to platform guides will resolve correctly
+- MLflow Docker service must be functional before MLOps chapter code examples
+  can be tested
+
+11.2 Known Risks
+─────────────────
+- Palantir AIP/Foundry public information is sparser than other platforms;
+  content writers should focus on publicly documented Foundry capabilities
+  and clearly note where AIP/Defense capabilities require government access
+  to fully evaluate
+- Platform capabilities change rapidly (especially Databricks Unity Catalog
+  and Mosaic AI); content should note version context (e.g., "as of 2025-2026")
+  for features that may have changed
+- Air-gapped/classified network constraints affect what code examples can
+  be fully tested; examples requiring internet access should be clearly marked
+  and alternative offline patterns provided
+- Chapter voice consistency across 13 chapters written by different agents
+  requires careful QA review; the Phase C3 and Phase E QA gates are the
+  primary safeguard
+
+11.3 PRD Refinement Plan
+──────────────────────────
+This PRD will be updated when:
+- Additional platform research (Advana, Qlik, Navy Jupiter, Palantir AIP)
+  completes — chapter descriptions may be refined with more platform-specific
+  detail
+- Infrastructure tasks complete — chapter code examples will be updated to
+  align with the actual API clients built in Task 3
+- QA gate reviews identify scope drift — chapter boundary adjustments will
+  be reflected here
+
+The PRD version number will increment with each substantive update.
+
+
+─────────────────────────────────────────────────────────────────────────────
+END OF DOCUMENT
+─────────────────────────────────────────────────────────────────────────────
+Version: 1.0 | Data Science Learning Handbook | 2026-03-23
