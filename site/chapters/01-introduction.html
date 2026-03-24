@@ -8,8 +8,19 @@
   <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/prism-theme.css">
+  <!-- UX-021: Theme init in <head> to prevent flash of wrong theme -->
+  <script>
+    (function() {
+      var saved = localStorage.getItem('theme');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      var theme = saved || (prefersDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
 </head>
 <body>
+<!-- UX-011: Skip-to-content link -->
+<a href="#main-content" class="skip-to-content sr-only">Skip to main content</a>
 
 <!-- TOP NAV -->
 <nav class="site-nav" role="navigation" aria-label="Main navigation">
@@ -55,6 +66,8 @@
       </svg>
     </button>
   </div>
+  <!-- UX-016: aria-live region for theme toggle announcements -->
+  <span id="theme-status" class="sr-only" aria-live="polite" aria-atomic="true"></span>
 </nav>
 
 <!-- SIDEBAR OVERLAY -->
@@ -62,6 +75,15 @@
 
 <!-- SIDEBAR -->
 <aside class="sidebar" id="sidebar" role="complementary" aria-label="Navigation">
+  <!-- UX-007: Home link for mobile navigation -->
+  <div class="sidebar-section">
+    <span class="sidebar-label">Navigation</span>
+    <nav aria-label="Site navigation">
+      <ul class="sidebar-nav" role="list">
+        <li><a href="../index.html">Home</a></li>
+      </ul>
+    </nav>
+  </div>
   <div class="sidebar-section">
     <span class="sidebar-label">Chapters</span>
     <nav aria-label="Chapter list">

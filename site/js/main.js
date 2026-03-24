@@ -7,13 +7,8 @@
 'use strict';
 
 // ---- Dark Mode ----
-
-(function initTheme() {
-  var saved = localStorage.getItem('theme');
-  var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  var theme = saved || (prefersDark ? 'dark' : 'light');
-  document.documentElement.setAttribute('data-theme', theme);
-})();
+// UX-021: Theme initialization moved to inline <script> in <head> to prevent
+// flash of wrong theme on load. This IIFE is intentionally removed from here.
 
 function toggleTheme() {
   var current = document.documentElement.getAttribute('data-theme');
@@ -21,6 +16,11 @@ function toggleTheme() {
   document.documentElement.setAttribute('data-theme', next);
   localStorage.setItem('theme', next);
   updateThemeIcon(next);
+  // UX-016: Announce theme change to screen readers via aria-live region
+  var statusEl = document.getElementById('theme-status');
+  if (statusEl) {
+    statusEl.textContent = next === 'dark' ? 'Dark mode enabled' : 'Light mode enabled';
+  }
 }
 
 function updateThemeIcon(theme) {
@@ -292,6 +292,7 @@ function initCodeCopy() {
     btn.appendChild(makeCopySvg());
     btn.appendChild(document.createTextNode(' Copy'));
 
+    // UX-020: Use high-contrast colors for floating copy button (was ~2.1:1, now ~6:1)
     Object.assign(btn.style, {
       position: 'absolute',
       top: '0.5rem',
@@ -302,9 +303,9 @@ function initCodeCopy() {
       padding: '0.25rem 0.625rem',
       fontSize: '0.7rem',
       fontWeight: '500',
-      color: 'rgba(255,255,255,0.5)',
-      background: 'rgba(27,42,74,0.6)',
-      border: '1px solid rgba(255,255,255,0.1)',
+      color: 'rgba(255,255,255,0.85)',
+      background: 'rgba(27,42,74,0.85)',
+      border: '1px solid rgba(255,255,255,0.15)',
       borderRadius: '4px',
       cursor: 'pointer',
       transition: 'all 0.15s',
@@ -312,13 +313,13 @@ function initCodeCopy() {
     });
 
     btn.addEventListener('mouseenter', function() {
-      btn.style.color = 'rgba(255,255,255,0.9)';
-      btn.style.background = 'rgba(27,42,74,0.9)';
+      btn.style.color = '#FFFFFF';
+      btn.style.background = 'rgba(27,42,74,0.98)';
     });
     btn.addEventListener('mouseleave', function() {
       if (!btn.classList.contains('copied')) {
-        btn.style.color = 'rgba(255,255,255,0.5)';
-        btn.style.background = 'rgba(27,42,74,0.6)';
+        btn.style.color = 'rgba(255,255,255,0.85)';
+        btn.style.background = 'rgba(27,42,74,0.85)';
       }
     });
 

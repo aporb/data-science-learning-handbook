@@ -8,6 +8,15 @@
   <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/prism-theme.css">
+  <!-- UX-021: Theme init in <head> to prevent flash of wrong theme -->
+  <script>
+    (function() {
+      var saved = localStorage.getItem('theme');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      var theme = saved || (prefersDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
   <style>
     .platform-hero { background: #FF3621; color: white; padding: 4rem; position: relative; overflow: hidden; }
     .platform-hero::before { content: ''; position: absolute; top: -40%; right: -10%; width: 500px; height: 500px; border-radius: 50%; background: rgba(255,255,255,0.04); pointer-events: none; }
@@ -25,6 +34,8 @@
   </style>
 </head>
 <body>
+<!-- UX-011: Skip-to-content link -->
+<a href="#main-content" class="skip-to-content sr-only">Skip to main content</a>
 <nav class="site-nav" role="navigation" aria-label="Main navigation">
   <button class="btn-icon mobile-menu-btn" id="mobile-menu-btn" aria-label="Open menu" aria-expanded="false">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
@@ -45,9 +56,18 @@
       <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
     </button>
   </div>
+  <!-- UX-016: aria-live region for theme toggle announcements -->
+  <span id="theme-status" class="sr-only" aria-live="polite" aria-atomic="true"></span>
 </nav>
 <div class="sidebar-overlay" id="sidebar-overlay" aria-hidden="true"></div>
 <aside class="sidebar" id="sidebar" role="complementary" aria-label="Navigation">
+  <!-- UX-007: Home link for mobile navigation -->
+  <div class="sidebar-section">
+    <span class="sidebar-label">Navigation</span>
+    <nav aria-label="Site navigation"><ul class="sidebar-nav" role="list">
+      <li><a href="../index.html">Home</a></li>
+    </ul></nav>
+  </div>
   <div class="sidebar-section">
     <span class="sidebar-label">Platform Guides</span>
     <nav aria-label="Platform guides"><ul class="sidebar-nav" role="list">
@@ -58,13 +78,15 @@
       <li><a href="palantir.html"><span class="platform-dot" style="background:#1B2A4A"></span> Palantir AIP/Foundry</a></li>
     </ul></nav>
   </div>
+  <!-- UX-029: Labeled "Related Chapters" with link to all chapters -->
   <div class="sidebar-section">
-    <span class="sidebar-label">Chapters</span>
-    <nav aria-label="Chapter list"><ul class="sidebar-nav" role="list">
+    <span class="sidebar-label">Related Chapters</span>
+    <nav aria-label="Related chapters"><ul class="sidebar-nav" role="list">
       <li><a href="../chapters/01-introduction.html"><span class="chapter-num">01</span> Introduction</a></li>
       <li><a href="../chapters/02-python-r-foundations.html"><span class="chapter-num">02</span> Python &amp; R</a></li>
       <li><a href="../chapters/04-data-wrangling.html"><span class="chapter-num">04</span> Data Wrangling</a></li>
       <li><a href="../chapters/09-mlops.html"><span class="chapter-num">09</span> MLOps</a></li>
+      <li><a href="../index.html#chapters" style="font-size:var(--text-xs);color:var(--text-muted);padding-top:0.25rem">View all 13 chapters &rarr;</a></li>
     </ul></nav>
   </div>
 </aside>
@@ -84,14 +106,15 @@
       </div>
     </div>
 
-    <div class="platform-facts" role="list">
-      <div class="platform-fact" role="listitem"><span class="platform-fact-label">Authorization</span><span class="platform-fact-value">FedRAMP High (Feb 2025)</span></div>
-      <div class="platform-fact" role="listitem"><span class="platform-fact-label">Impact Level</span><span class="platform-fact-value">IL2, IL4, IL5</span></div>
-      <div class="platform-fact" role="listitem"><span class="platform-fact-label">Networks</span><span class="platform-fact-value">NIPRNET, IL5</span></div>
-      <div class="platform-fact" role="listitem"><span class="platform-fact-label">Infrastructure</span><span class="platform-fact-value">AWS GovCloud / Azure Gov</span></div>
-      <div class="platform-fact" role="listitem"><span class="platform-fact-label">Governance</span><span class="platform-fact-value">Unity Catalog (Dec 2025+)</span></div>
-      <div class="platform-fact" role="listitem"><span class="platform-fact-label">Users</span><span class="platform-fact-value">80%+ federal exec depts</span></div>
-    </div>
+    <!-- UX-018: Converted to dl/dt/dd for semantic label-value pairs -->
+    <dl class="platform-facts">
+      <div class="platform-fact"><dt class="platform-fact-label">Authorization</dt><dd class="platform-fact-value">FedRAMP High (Feb 2025)</dd></div>
+      <div class="platform-fact"><dt class="platform-fact-label">Impact Level</dt><dd class="platform-fact-value">IL2, IL4, IL5</dd></div>
+      <div class="platform-fact"><dt class="platform-fact-label">Networks</dt><dd class="platform-fact-value">NIPRNET, IL5</dd></div>
+      <div class="platform-fact"><dt class="platform-fact-label">Infrastructure</dt><dd class="platform-fact-value">AWS GovCloud / Azure Gov</dd></div>
+      <div class="platform-fact"><dt class="platform-fact-label">Governance</dt><dd class="platform-fact-value">Unity Catalog (Dec 2025+)</dd></div>
+      <div class="platform-fact"><dt class="platform-fact-label">Users</dt><dd class="platform-fact-value">80%+ federal exec depts</dd></div>
+    </dl>
 
     <div class="chapter-layout">
       <article class="chapter-main">
@@ -331,12 +354,21 @@ LIMIT 20;
 
   </main>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
-<script src="../js/mermaid-init.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
-<script src="../js/main.js"></script>
+<!-- UX-025: Added defer to CDN scripts to avoid render-blocking; added integrity (SRI) for security -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js" defer></script>
+<script src="../js/mermaid-init.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"
+  integrity="sha512-hpZ5pDCF2bRCweL5WoA0/N1elet1NPMokenOoo9DQVL/ScN773UmE8xBkUWQrz8+I8cqAliNEJkBTK2O4ymrw=="
+  crossorigin="anonymous" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"
+  integrity="sha512-AKaNmg8COK0zEbjTdMHJAPJ0z6VeNqvRvH4/d5M4sHJbQQUToMBtodq4HaV4fa+WV2UTfoperEws9Pi97ZJNQ=="
+  crossorigin="anonymous" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"
+  integrity="sha512-At8aR7bqpHIlOVACEFmFy/TERCZCVzq+PGZEPHfpfIB+bUMGbTTDUAU2BqLh5TKKy7bFhlFzXE+KVl+9PJHSA=="
+  crossorigin="anonymous" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"
+  integrity="sha512-35RBtvuCKWANuRid6RXP2gYm4D5RMieVL/xbp6KiMXlIqgNrI7XRUh9HurE8lKHW4aRpC0TZU3ZfqG8qmQ3Dg=="
+  crossorigin="anonymous" defer></script>
+<script src="../js/main.js" defer></script>
 </body>
 </html>

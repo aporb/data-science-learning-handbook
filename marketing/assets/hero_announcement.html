@@ -4,8 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Federal Data Science Learning Handbook — Announcement</title>
+<!-- UX-040: Replaced @import with <link> for faster font loading -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -23,9 +26,10 @@
     --border:    #2A3A4E;
   }
 
+  /* UX-032: Resized from 1600x840 to 1200x627 for standard LinkedIn link share format */
   html, body {
-    width: 1600px;
-    height: 840px;
+    width: 1200px;
+    height: 627px;
     overflow: hidden;
     font-family: 'Inter', system-ui, sans-serif;
     background: var(--bg);
@@ -33,10 +37,10 @@
   }
 
   .hero {
-    width: 1600px;
-    height: 840px;
+    width: 1200px;
+    height: 627px;
     display: grid;
-    grid-template-columns: 1fr 420px;
+    grid-template-columns: 1fr 320px;
     position: relative;
     overflow: hidden;
   }
@@ -67,9 +71,9 @@
     );
   }
 
-  /* Left panel */
+  /* Left panel — padding reduced proportionally for 1200x627 canvas */
   .left {
-    padding: 72px 80px 64px 80px;
+    padding: 54px 60px 48px 60px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -100,8 +104,9 @@
     background: var(--advana);
   }
 
+  /* Font sizes reduced proportionally for smaller canvas */
   .title-block h1 {
-    font-size: 62px;
+    font-size: 46px;
     font-weight: 800;
     line-height: 1.05;
     letter-spacing: -0.03em;
@@ -112,11 +117,11 @@
   .title-block h1 .accent { color: var(--advana); }
 
   .title-block h2 {
-    font-size: 28px;
+    font-size: 20px;
     font-weight: 300;
     color: var(--text-muted);
     letter-spacing: -0.01em;
-    margin-top: 16px;
+    margin-top: 12px;
   }
 
   .divider {
@@ -182,14 +187,14 @@
     margin-top: 2px;
   }
 
-  /* Right panel */
+  /* Right panel — padding reduced for smaller canvas */
   .right {
     background: var(--surface);
     border-left: 1px solid var(--border);
-    padding: 72px 40px 64px 40px;
+    padding: 54px 28px 48px 28px;
     display: flex;
     flex-direction: column;
-    gap: 28px;
+    gap: 16px;
     position: relative;
     z-index: 1;
   }
@@ -244,12 +249,12 @@
     background: linear-gradient(135deg, rgba(27,42,74,0.6), rgba(0,59,92,0.6));
     border: 1px solid rgba(197,165,114,0.2);
     border-radius: 10px;
-    padding: 20px 24px;
+    padding: 14px 18px;
     text-align: center;
   }
 
   .chapters-badge .big-num {
-    font-size: 56px;
+    font-size: 42px;
     font-weight: 900;
     line-height: 1;
     color: var(--advana);

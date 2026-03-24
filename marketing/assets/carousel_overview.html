@@ -14,8 +14,11 @@
   ============================================================
 -->
 
+<!-- UX-040: Replaced @import with <link> for faster font loading -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -570,20 +573,21 @@
     <div class="grid-bg"></div>
     <div class="slide-content s3">
       <h2>13 chapters.<br><span>Everything you need.</span></h2>
+      <!-- UX-003: Chapter titles updated to match actual site chapter titles from index.html -->
       <div class="chapters-grid">
-        <div class="ch-item"><span class="ch-num">01</span><span class="ch-name">Introduction to the Federal Analytics Ecosystem</span></div>
-        <div class="ch-item"><span class="ch-num">02</span><span class="ch-name">Data Governance &amp; Policy Frameworks</span></div>
-        <div class="ch-item"><span class="ch-num">03</span><span class="ch-name">Palantir Foundry: Pipelines &amp; Ontologies</span></div>
-        <div class="ch-item"><span class="ch-num">04</span><span class="ch-name">Databricks on Federal Infrastructure</span></div>
-        <div class="ch-item"><span class="ch-num">05</span><span class="ch-name">Qlik Sense for Government BI</span></div>
-        <div class="ch-item"><span class="ch-num">06</span><span class="ch-name">Navy Jupiter &amp; JupyterHub Deployment</span></div>
-        <div class="ch-item"><span class="ch-num">07</span><span class="ch-name">ML in Classified Environments</span></div>
-        <div class="ch-item"><span class="ch-num">08</span><span class="ch-name">Pipeline Orchestration &amp; DataOps</span></div>
-        <div class="ch-item"><span class="ch-num">09</span><span class="ch-name">Data Engineering Patterns for DoD</span></div>
-        <div class="ch-item"><span class="ch-num">10</span><span class="ch-name">Analytics Engineering &amp; dbt</span></div>
-        <div class="ch-item"><span class="ch-num">11</span><span class="ch-name">Visualization &amp; Mission Dashboarding</span></div>
-        <div class="ch-item"><span class="ch-num">12</span><span class="ch-name">Security, Compliance &amp; ATO Processes</span></div>
-        <div class="ch-item"><span class="ch-num">13</span><span class="ch-name">Career &amp; Professional Development</span></div>
+        <div class="ch-item"><span class="ch-num">01</span><span class="ch-name">Introduction to Data Science in Government</span></div>
+        <div class="ch-item"><span class="ch-num">02</span><span class="ch-name">Python and R Foundations for Federal Platforms</span></div>
+        <div class="ch-item"><span class="ch-num">03</span><span class="ch-name">Data Acquisition in the Federal Ecosystem</span></div>
+        <div class="ch-item"><span class="ch-num">04</span><span class="ch-name">Data Wrangling at Scale</span></div>
+        <div class="ch-item"><span class="ch-num">05</span><span class="ch-name">Exploratory Data Analysis</span></div>
+        <div class="ch-item"><span class="ch-num">06</span><span class="ch-name">Supervised Machine Learning</span></div>
+        <div class="ch-item"><span class="ch-num">07</span><span class="ch-name">Unsupervised Machine Learning</span></div>
+        <div class="ch-item"><span class="ch-num">08</span><span class="ch-name">Deep Learning and Neural Networks</span></div>
+        <div class="ch-item"><span class="ch-num">09</span><span class="ch-name">MLOps in the Federal Environment</span></div>
+        <div class="ch-item"><span class="ch-num">10</span><span class="ch-name">Data Visualization and Dashboards</span></div>
+        <div class="ch-item"><span class="ch-num">11</span><span class="ch-name">Deploying Models to Production</span></div>
+        <div class="ch-item"><span class="ch-num">12</span><span class="ch-name">Ethics and AI Governance</span></div>
+        <div class="ch-item"><span class="ch-num">13</span><span class="ch-name">Advanced Topics and Emerging Capabilities</span></div>
       </div>
     </div>
     <div class="slide-footer">

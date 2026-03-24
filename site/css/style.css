@@ -465,6 +465,8 @@ img {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  /* UX-008: Prevents horizontal overflow on tablet breakpoints when flex-wrap kicks in */
+  min-width: 0;
 }
 
 .stat-value {
@@ -479,7 +481,8 @@ img {
   font-size: var(--text-xs);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: rgba(255,255,255,0.5);
+  /* UX-014: Increased opacity from 0.5 to 0.65 for WCAG AA contrast (~4.7:1) */
+  color: rgba(255,255,255,0.65);
 }
 
 .hero-actions {
@@ -1175,7 +1178,8 @@ img {
   font-family: var(--font-mono);
   font-size: 0.875em;
   background: var(--bg-code);
-  color: var(--databricks-red);
+  /* UX-013: Darkened from #FF3621 to #CC2A17 for WCAG AA contrast (4.5:1+) on #F1F0EC background */
+  color: #CC2A17;
   padding: 0.15em 0.4em;
   border-radius: 4px;
   border: 1px solid var(--border-light);
@@ -1507,6 +1511,28 @@ img {
   border-width: 0;
 }
 
+/* UX-011: Skip-to-content link — visible on keyboard focus */
+.skip-to-content:focus {
+  position: fixed;
+  top: 0.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: auto;
+  height: auto;
+  padding: 0.625rem 1.25rem;
+  clip: auto;
+  overflow: visible;
+  white-space: nowrap;
+  background: var(--advana-gold);
+  color: #1A1A1A;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  border-radius: 8px;
+  z-index: 9999;
+  text-decoration: none;
+  box-shadow: var(--shadow-md);
+}
+
 .text-center { text-align: center; }
 .font-mono { font-family: var(--font-mono); }
 
@@ -1521,6 +1547,12 @@ img {
 
   .chapter-toc {
     display: none;
+  }
+
+  /* UX-006: Center the prose column when TOC is hidden to prevent orphaned whitespace */
+  .chapter-main {
+    max-width: 72ch;
+    margin: 0 auto;
   }
 }
 

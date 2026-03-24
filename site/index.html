@@ -7,9 +7,19 @@
   <title>Federal Data Science Learning Handbook</title>
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
   <link rel="stylesheet" href="css/style.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <!-- UX-021: Theme init runs before first paint to prevent flash of wrong theme -->
+  <script>
+    (function() {
+      var saved = localStorage.getItem('theme');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      var theme = saved || (prefersDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
 </head>
 <body>
+<!-- UX-011: Skip-to-content link for keyboard and screen reader navigation -->
+<a href="#main-content" class="skip-to-content sr-only">Skip to main content</a>
 
 <!-- ======================================================
      TOP NAVIGATION
@@ -57,6 +67,8 @@
       </svg>
     </button>
   </div>
+  <!-- UX-016: aria-live region announces theme changes to screen readers -->
+  <span id="theme-status" class="sr-only" aria-live="polite" aria-atomic="true"></span>
 </nav>
 
 <!-- ======================================================
@@ -65,6 +77,15 @@
 <div class="sidebar-overlay" id="sidebar-overlay" aria-hidden="true"></div>
 
 <aside class="sidebar" id="sidebar" role="complementary" aria-label="Table of contents">
+  <!-- UX-007: Home link at top of sidebar for mobile navigation -->
+  <div class="sidebar-section">
+    <span class="sidebar-label">Navigation</span>
+    <nav aria-label="Site navigation">
+      <ul class="sidebar-nav" role="list">
+        <li><a href="index.html" class="active">Home</a></li>
+      </ul>
+    </nav>
+  </div>
   <div class="sidebar-section">
     <span class="sidebar-label">Chapters</span>
     <nav aria-label="Chapters">
@@ -146,26 +167,27 @@
       </p>
 
       <!-- STATS NOTE: These figures are manually maintained. Update when chapter/exercise counts change. -->
+      <!-- UX-012: Each stat wrapped in role="group" with aria-label for screen reader context -->
       <div class="hero-stats" aria-label="Handbook statistics">
-        <div class="stat-item">
-          <span class="stat-value">96K</span>
-          <span class="stat-label">Words</span>
+        <div class="stat-item" role="group" aria-label="96K Words">
+          <span class="stat-value" aria-hidden="true">96K</span>
+          <span class="stat-label" aria-hidden="true">Words</span>
         </div>
-        <div class="stat-item">
-          <span class="stat-value">13</span>
-          <span class="stat-label">Chapters</span>
+        <div class="stat-item" role="group" aria-label="13 Chapters">
+          <span class="stat-value" aria-hidden="true">13</span>
+          <span class="stat-label" aria-hidden="true">Chapters</span>
         </div>
-        <div class="stat-item">
-          <span class="stat-value">41</span>
-          <span class="stat-label">Code Files</span>
+        <div class="stat-item" role="group" aria-label="41 Code Files">
+          <span class="stat-value" aria-hidden="true">41</span>
+          <span class="stat-label" aria-hidden="true">Code Files</span>
         </div>
-        <div class="stat-item">
-          <span class="stat-value">67</span>
-          <span class="stat-label">Exercises</span>
+        <div class="stat-item" role="group" aria-label="67 Exercises">
+          <span class="stat-value" aria-hidden="true">67</span>
+          <span class="stat-label" aria-hidden="true">Exercises</span>
         </div>
-        <div class="stat-item">
-          <span class="stat-value">5</span>
-          <span class="stat-label">Platforms</span>
+        <div class="stat-item" role="group" aria-label="5 Platforms">
+          <span class="stat-value" aria-hidden="true">5</span>
+          <span class="stat-label" aria-hidden="true">Platforms</span>
         </div>
       </div>
 

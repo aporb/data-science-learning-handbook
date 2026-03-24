@@ -149,7 +149,8 @@ pre[class*="language-"] {
 [data-theme="dark"] .token.prolog,
 [data-theme="dark"] .token.doctype,
 [data-theme="dark"] .token.cdata {
-  color: #606876;
+  /* UX-023: Lightened from #606876 to #7A8290 for ~4:1 contrast on #161B26 background */
+  color: #7A8290;
   font-style: italic;
 }
 
