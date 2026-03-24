@@ -403,7 +403,12 @@ _(Updated as phases complete)_
 | 2026-03-24 ~T12 | Monitor check #4 | 4/13 done. Ch05-07 READMEs written. Ch08 starting. 10 new files. |
 | 2026-03-24 ~T13 | Ch06 complete | 4,371 words, all 6 files. chapter-02-writer → Ch12. |
 | 2026-03-24 ~T13 | Ch08 complete | 4,324 words, 7 files (4 py). chapter-04-writer → Ch13 (final chapter). |
-| 2026-03-24 ~T14 | Monitor check #5 | 8/13 done. Ch09(5951w) Ch10(4996w) Ch11(4593w) finishing. Ch12 starting. Ch13 queued. 25 new files. |
+| 2026-03-24 ~T14 | Monitor check #5 | 8/13 done. Ch09-11 finishing. Ch12 starting. 25 new files. |
+| 2026-03-24 ~T15 | Ch09, Ch10, Ch11 complete | All confirmed with full files. 11/13 done. |
+| 2026-03-24 ~T15 | Commits pushed | 4 commits: Ch01-04, Ch05-08, Ch09-13, docs update. All pushed to origin. |
+| 2026-03-24 ~T15 | Idle writers shut down | ch01-writer, ch03-writer, ch09-writer shut down. |
+| 2026-03-24 ~T16 | Ch13 writer spawned | Fresh chapter-13-writer for capstone GenAI/RAG chapter. |
+| 2026-03-24 ~T17 | Monitor check #6 | 11/13 done. Ch12(5722w+3py+ex) needs sols. Ch13(4922w) needs code+ex+sols. 21 new files. Both active. |
 | | | |
 
 ---
