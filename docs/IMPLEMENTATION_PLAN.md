@@ -411,7 +411,8 @@ _(Updated as phases complete)_
 | 2026-03-24 ~T17 | Monitor check #6 | 11/13 done. Ch12 and Ch13 in progress. 21 new files. |
 | 2026-03-24 ~T18 | Ch12 complete | 5,722 words, 3 py, exercises + solutions. DoD AI Ethics, NIST AI RMF, bias audit. |
 | 2026-03-24 ~T18 | 12/13 chapters done | Only Ch13 (GenAI/RAG/LLMs) remains. README 4,922w + 1 py written. |
-| 2026-03-24 ~T18 | Writers shut down | ch01, ch02, ch04 shut down. Only ch13-writer + commit-agent active. |
+| 2026-03-24 ~T18 | Writers shut down | ch01, ch02, ch04, ch05 shut down. Only ch13-writer + commit-agent active. |
+| 2026-03-24 ~T19 | Monitor check #7 | 12/13 done. Ch13 has README+3py+exercises. Only solutions.md remaining. |
 | | | |
 
 ---

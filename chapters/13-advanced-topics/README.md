@@ -34,7 +34,7 @@ So the question is not "which LLM is best?" The question is "which LLM is author
 
 ### The Authorization Matrix
 
-The landscape as of March 2026:
+The authorization picture as of March 2026:
 
 | Model / Provider | Unclassified (CUI) | IL4 | IL5 | IL6 |
 |---|---|---|---|---|
