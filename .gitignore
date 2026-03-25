@@ -175,10 +175,8 @@ kubeconfig*
 *.kubeconfig
 k8s-secrets/
 
-# === TASK MANAGEMENT (Commented for Development) ===
-# .taskmaster/
-# tasks.json
-# tasks/ 
+# === TASK MANAGEMENT ===
+.taskmaster/
 
 # === VAULT AND SECRETS (Specific Patterns) ===
 vault/data/
@@ -192,12 +190,12 @@ vault/tls/
 vault-backup-*.snap
 consul/data/
 
-# === AI ASSISTANT CONFIGS (Local Development) ===
-#CLAUDE.md
+# === AI ASSISTANT CONFIGS ===
+# CLAUDE.md, AGENTS.md, .claude/, .clinerules/, .opencode/, and .cursorrules
+# are intentionally tracked — they contain agent commands and context for this repo.
+# The patterns below ignore other tools' runtime/cache directories only.
 GEMINI.md
-#.claude/
 .gemini/
-.clinerules/
 .cursor/
 .continue/
 .cline/
@@ -217,9 +215,5 @@ test-data/
 htmlcov/
 .tox/
 
-# === TASKMASTER LOCAL CONFIGS (Optional) ===
-# Uncomment if you want to keep taskmaster configs local
-# .taskmaster/config.json
-# .taskmaster/reports/
 
 # === MISCELLANEOUS ===

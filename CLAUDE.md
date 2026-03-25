@@ -1,108 +1,128 @@
-# Project Status: COMPLETE
+# Federal Data Science Handbook
 
-**Completed:** 2026-03-24
-**Opus verdict:** READY
+A completed practitioner's guide to data science on federal government platforms. 96,000+ words across 13 chapters, 5 platform guides, 43 Python code examples, and a reference security implementation. All content is QA-signed-off and frozen.
 
-This project is complete. All deliverables have been written, QA-reviewed, and committed.
+**This is a reference repository, not a project to build.** Use it to look things up, generate compliant code, and teach concepts.
 
-| Metric | Count |
-|--------|------:|
-| Chapters | 13 |
-| Platform guides | 5 |
-| Total words | 96,376+ |
-| Python code example files | 41 |
-| Exercise sets with solutions | 13 |
+## How To Use This Repo
 
-**All QA gates passed.** Key docs:
-- `docs/FINAL_SIGNOFF.md` — Opus final review and verdict
-- `docs/IMPLEMENTATION_PLAN.md` — Full execution log
-- `docs/QA_REPORT.md` — Content quality verification
+### Mode 1: REFERENCE
+User is coding on a federal platform and needs a quick answer.
+- Chapter READMEs: `chapters/NN-name/README.md`
+- Platform guides: `platform-guides/PLATFORM/README.md`
+- Code patterns: `chapters/NN-name/code-examples/python/`
+- Security patterns: `security-compliance/MODULE/`
 
----
+### Mode 2: CODE GENERATION
+User wants boilerplate for a federal context.
+- Use `/generate-federal-code` command
+- ALWAYS check platform constraints in `chapters/02-python-r-foundations/` first
+- Match the existing docstring header format (see Code Quality section below)
+- Never hardcode credentials — every platform uses env vars or secret management
 
-# Task Master AI - Claude Code Integration Guide
+### Mode 3: TEACHING
+User wants to understand a concept.
+- Use `/teach` command
+- Walk through chapter README narrative + corresponding code examples together
+- Anchor explanations in federal context, not generic data science
 
-## Essential Commands
+## Content Map
 
-### Core Workflow Commands
+| Ch | Title | Key Topics | Platforms |
+|----|-------|-----------|-----------|
+| 01 | Introduction to Data Science in Government | Clearances, CAC auth, Impact Levels, ATO, platform overview | All 5 |
+| 02 | Python and R Foundations | Air-gapped pip, conda on IL4/IL5, platform-specific imports | All 5 |
+| 03 | Data Acquisition | USASpending, SAM.gov, data.gov, platform data catalogs | Advana, Jupiter, Foundry |
+| 04 | Data Wrangling | pandas at scale, PySpark, Delta Lake, 47M-row procurement data | Databricks, Jupiter, Advana |
+| 05 | Exploratory Analysis | Headless EDA, statistical profiling, no-notebook platforms | All 5 |
+| 06 | Supervised ML | XGBoost, classification on DoD data, MILSTRIP feature engineering | Databricks, Advana |
+| 07 | Unsupervised ML | Anomaly detection on GFEBS, clustering readiness data | Databricks, Advana |
+| 08 | Deep Learning | CNN on drone video, 400ms inference budget, PyTorch/ONNX | Databricks, local Docker |
+| 09 | MLOps | MLflow tracking, model registries, drift detection, ATO implications | Databricks, Foundry |
+| 10 | Visualization | Qlik, Advana dashboards, Databricks SQL, briefing-ready design | Qlik, Advana |
+| 11 | Deployment | Containers, artifact registries, API gateways, ATO as risk event | All 5 |
+| 12 | Ethics and Governance | DoD AI Ethics Principles, NIST AI RMF, bias auditing, model cards | All 5 |
+| 13 | Advanced Topics — GenAI | RAG at IL4/IL5, Palantir AIP Logic, fine-tuning classified data | Foundry, Databricks |
 
-```bash
-# Project Setup
-task-master init                                    # Initialize Task Master in current project
-task-master parse-prd .taskmaster/docs/prd.txt      # Generate tasks from PRD document
-task-master models --setup                        # Configure AI models interactively
+### Platform Guides
 
-# Daily Development Workflow
-task-master list                                   # Show all tasks with status
-task-master next                                   # Get next available task to work on
-task-master show <id>                             # View detailed task information (e.g., task-master show 1.2)
-task-master set-status --id=<id> --status=done    # Mark task complete
+| Platform | IL Levels | Auth | Primary Use Case |
+|----------|-----------|------|-----------------|
+| Advana | IL4, IL5 | CAC/PIV | DoD enterprise analytics — JupyterHub, Qlik, 100+ data sources |
+| Databricks | IL2, IL4, IL5 | CAC + OAuth | ML pipelines, lakehouse, Unity Catalog on AWS GovCloud / Azure Gov |
+| Navy Jupiter | IL4, IL5 | CAC/PIV | Dept of Navy — bronze/silver/gold data tiers, DON subtenant of Advana |
+| Palantir AIP/Foundry | IL4, IL5, IL6 | CAC + OAuth | Ontology-based analytics, Pipeline Builder, AIP Logic for LLMs |
+| Qlik | IL2, IL4 | CAC/PIV | Associative analytics, federal BI — NIPRNet and Advana-hosted |
 
-# Task Management
-task-master add-task --prompt="description" --research        # Add new task with AI assistance
-task-master expand --id=<id> --research --force              # Break task into subtasks
-task-master update-task --id=<id> --prompt="changes"         # Update specific task
-task-master update --from=<id> --prompt="changes"            # Update multiple tasks from ID onwards
-task-master update-subtask --id=<id> --prompt="notes"        # Add implementation notes to subtask
+## Code Quality Indicators
 
-# Analysis & Planning
-task-master analyze-complexity --research          # Analyze task complexity
-task-master complexity-report                      # View complexity analysis
-task-master expand --all --research               # Expand all eligible tasks
+Each of the 43 Python code examples has a docstring header with `Platform:` and `Usage:` fields. Follow those exactly.
 
-# Dependencies & Organization
-task-master add-dependency --id=<id> --depends-on=<id>       # Add task dependency
-task-master move --from=<id> --to=<id>                       # Reorganize task hierarchy
-task-master validate-dependencies                            # Check for dependency issues
-task-master generate                                         # Update task markdown files (usually auto-called)
-```
+**Runnable locally** (with Docker stack or standard Python):
+- `chapters/01-*/code-examples/python/03_environment_verification.py`
+- `chapters/05-*/code-examples/python/01_statistical_profiling.py`
+- `chapters/12-*/code-examples/python/` (all three — bias audit, model card, NIST RMF)
+- Most files marked `Platform: Local` or `Platform: Any`
 
-## Key Files & Project Structure
+**Platform-specific** (paste into platform notebook/workspace):
+- Files marked `Platform: Databricks` → Databricks notebook cell
+- Files marked `Platform: Foundry Code Workspace` → Foundry terminal
+- Files marked `Platform: Advana` → Advana JupyterHub
 
-### Core Files
+**Security-compliance/** — mixed runability. See `security-compliance/CLAUDE.md` for module-by-module classification.
 
-- `.taskmaster/tasks/tasks.json` - Main task data file (auto-managed)
-- `.taskmaster/config.json` - AI model configuration (use `task-master models` to modify)
-- `.taskmaster/docs/prd.txt` - Product Requirements Document for parsing
-- `.taskmaster/tasks/*.txt` - Individual task files (auto-generated from tasks.json)
-- `.env` - API keys for CLI usage
+## Docker Development Environment
 
-### Claude Code Integration Files
+`docker-compose.yml` runs 13 services mirroring federal platform constraints:
 
-- `CLAUDE.md` - Auto-loaded context for Claude Code (this file)
-- `.claude/settings.json` - Claude Code tool allowlist and preferences
-- `.claude/commands/` - Custom slash commands for repeated workflows
-- `.mcp.json` - MCP server configuration (project-specific)
+| Service | Port | Purpose |
+|---------|------|---------|
+| Jupyter | 8888 | Development notebooks (+ Streamlit:8501, Dash:8050) |
+| MLflow | 5000 | Experiment tracking and model registry |
+| PostgreSQL | 5432 | Relational database |
+| Redis | 6379 | Caching and session store |
+| Nginx | 80/443 | Reverse proxy with TLS |
+| Prometheus | 9090 | Metrics collection |
+| Grafana | 3000 | Monitoring dashboards |
+| Vault | 8200 | Secret management |
+| Consul | 8500 | Service discovery |
+| CAC-auth | 8001 | CAC/PIV authentication simulator |
 
-### Directory Structure
+Quick start: `cp .env.example .env && docker compose up -d`
 
-```
-project/
-├── .taskmaster/
-│   ├── tasks/              # Task files directory
-│   │   ├── tasks.json      # Main task database
-│   │   ├── task-1.md      # Individual task files
-│   │   └── task-2.md
-│   ├── docs/              # Documentation directory
-│   │   ├── prd.txt        # Product requirements
-│   ├── reports/           # Analysis reports directory
-│   │   └── task-complexity-report.json
-│   ├── templates/         # Template files
-│   │   └── example_prd.txt  # Example PRD template
-│   └── config.json        # AI models & settings
-├── .claude/
-│   ├── settings.json      # Claude Code configuration
-│   └── commands/         # Custom slash commands
-├── .env                  # API keys
-├── .mcp.json            # MCP configuration
-└── CLAUDE.md            # This file - auto-loaded by Claude Code
-```
+Full setup: `docs/LOCAL_ENVIRONMENT.md`
 
-## Workflow Strategies
+## Agent Commands
 
-### Key Development Approach
+| Command | Purpose |
+|---------|---------|
+| `/compliance-check` | Review code against federal compliance rules (NIST 800-53, DoD AI Ethics, FedRAMP, IL requirements) |
+| `/generate-federal-code` | Generate platform-appropriate Python with correct headers and security patterns |
+| `/teach` | Interactive tutor — walks through handbook content with narrative + code |
 
-- **ALWAYS CREATE A PLAN BASED ON THE TASK THEN SPIN UP MULTIPLE AGENTS THAT CAN RUN CONCURRENTLY ON VARIOUS TASKS AND SUB-TASKS RELATED TO THE CURRENT GOAL.**
-- **ALWAYS CREATE A DETAILED PLAN THEN SPIN UP MULTIPLE AGENTS CONCURRENTLY TO ADDRESS TASKS AND SUB-TASKS.**
+## Cross-Repo Reference
 
-[Rest of the existing content remains the same...]
+**Companion site**: `site/` submodule → https://aporb.github.io/federal-ds-handbook-site/
+- Site has rendered HTML versions of all chapters and platform guides
+- When working on site content, switch to `../site/` and read `site/CLAUDE.md`
+
+**Section-level context** (auto-loaded when working in these directories):
+- `chapters/CLAUDE.md` — chapter index, code file mapping, learning objectives
+- `platform-guides/CLAUDE.md` — platform selection matrix, guide structure
+- `security-compliance/CLAUDE.md` — module classification, architecture flow
+
+## Content Rules
+
+- **Do NOT modify** chapter READMEs, platform guide READMEs, or exercise files — content is QA-signed-off
+- **Style guide**: `docs/STYLE_GUIDE.md` — practitioner voice, specific details, scenes not thesis statements
+- **Writing spec**: `docs/CHAPTER_WRITING_SPEC.md`
+- **Code header format** — every generated code file must include:
+  ```
+  """
+  Title
+  Description
+  Platform: [Databricks | Foundry | Advana | Local | Any]
+  Usage: [how to run]
+  """
+  ```
+- **Security**: never hardcode credentials, never send government data to external APIs, self-hosted models only at IL4+
