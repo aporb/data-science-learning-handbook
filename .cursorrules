@@ -1,0 +1,49 @@
+# Federal Data Science Handbook — Cursor Rules
+
+## Identity
+This is a completed reference handbook (96K+ words, 43 Python examples, 13 chapters, 5 platform guides). Content is QA-signed-off and frozen. Do NOT modify chapter READMEs, platform guides, or exercise files.
+
+Read `CLAUDE.md` for the full content map. Read `AGENTS.md` for agent workflows.
+
+## Code Generation Rules
+
+1. ALWAYS read `chapters/02-python-r-foundations/code-examples/python/02_platform_specific_imports.py` before generating platform-specific code
+2. Every generated file MUST include the docstring header:
+   ```python
+   """
+   Title
+   Description
+   Platform: [Databricks | Foundry | Advana | Local | Any]
+   Usage: [how to run]
+   """
+   ```
+3. Platform constraints:
+   - **Databricks**: No `pip install` in notebook cells. Use cluster-installed libraries. Use `dbutils.secrets` for credentials.
+   - **Foundry**: Use `palantir_models` for model publishing, Pipeline Builder for orchestration. No direct file I/O — use transforms.
+   - **Advana/Jupiter**: Assume JupyterHub on shared cluster. No sudo. Use conda environments.
+   - **Qlik**: Server-side scripts only. No direct Python execution in dashboards.
+4. Security code MUST reference patterns in `security-compliance/` — do not invent compliance patterns
+5. At IL4+: no external API calls with data, self-hosted models only, self-hosted embeddings for RAG
+6. Never hardcode tokens, passwords, or credentials. Use environment variables or platform secret management.
+
+## Sensitivity Rules
+
+- NEVER suggest sending government data to external APIs (even USASpending data — it should be cached locally)
+- RAG pipelines at IL4+ must use self-hosted embeddings (see `chapters/13-advanced-topics/code-examples/python/02_rag_pipeline.py`)
+- Check the LLM authorization matrix in chapter 13 README before recommending any model
+- Do not generate code that bypasses CAC/PIV authentication
+
+## Quick Reference
+
+| Content | Path |
+|---------|------|
+| Chapter N content | `chapters/NN-name/README.md` |
+| Chapter N code | `chapters/NN-name/code-examples/python/` |
+| Platform guide | `platform-guides/PLATFORM/README.md` |
+| Platform auth | `platform-guides/PLATFORM/cac-piv-integration.md` |
+| Security patterns | `security-compliance/MODULE/` |
+| Security policy | `security-compliance/security-policy.md` |
+| Docker stack | `docker-compose.yml` (13 services) |
+| Setup guide | `docs/LOCAL_ENVIRONMENT.md` |
+| Style guide | `docs/STYLE_GUIDE.md` |
+| Site companion | `../site/` → https://aporb.github.io/federal-ds-handbook-site/ |

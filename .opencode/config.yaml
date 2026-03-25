@@ -1,0 +1,62 @@
+# OpenCode Agent Configuration — Federal Data Science Handbook
+# A completed reference handbook for data science on federal government platforms.
+# Content is QA-signed-off. This repo is a knowledge base, not a project to build.
+
+project:
+  name: "Federal Data Science Handbook"
+  description: "Practitioner's guide to data science on Advana, Databricks, Navy Jupiter, Palantir AIP/Foundry, and Qlik"
+  type: "reference-repository"
+
+agent:
+  context_files:
+    - CLAUDE.md
+    - AGENTS.md
+
+  instructions: |
+    This is a completed reference handbook (96K+ words, 43 Python examples, 13 chapters, 5 platform guides).
+    Content is frozen and QA-signed-off. Do NOT modify chapter READMEs, platform guides, or exercises.
+
+    Three usage modes:
+    1. REFERENCE — look up answers in chapter READMEs and platform guides
+    2. CODE GENERATION — generate compliant code using chapter examples as templates
+    3. TEACHING — walk through handbook content with narrative + code
+
+    Always check platform constraints in chapters/02-python-r-foundations/ before generating code.
+    Never hardcode credentials. Never send government data to external APIs. Self-hosted models only at IL4+.
+
+  code_generation:
+    platform_constraints_file: "chapters/02-python-r-foundations/code-examples/python/02_platform_specific_imports.py"
+    security_patterns_dir: "security-compliance/"
+    code_header_format: |
+      """
+      Title
+      Description
+      Platform: [Databricks | Foundry | Advana | Local | Any]
+      Usage: [how to run]
+      """
+
+  prohibited:
+    - modify_files_matching: "chapters/*/README.md"
+    - modify_files_matching: "platform-guides/*/README.md"
+    - modify_files_matching: "chapters/*/exercises/*"
+
+workflows:
+  compliance-check:
+    description: "Review code for federal compliance"
+    reads:
+      - security-compliance/security-policy.md
+      - security-compliance/compliance/
+      - chapters/12-ethics-governance/README.md
+      - chapters/11-deployment/README.md
+
+  generate-federal-code:
+    description: "Generate platform-appropriate federal code"
+    reads:
+      - chapters/02-python-r-foundations/code-examples/python/02_platform_specific_imports.py
+      - chapters/{relevant_chapter}/code-examples/python/
+
+  teach:
+    description: "Walk through handbook content interactively"
+    reads:
+      - chapters/{target_chapter}/README.md
+      - chapters/{target_chapter}/code-examples/python/
