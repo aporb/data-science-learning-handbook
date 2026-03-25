@@ -17,9 +17,8 @@ This handbook is written for practitioners in federal data science environments.
 
 Each chapter follows a consistent structure defined in the chapter spec. If you are adding a new chapter or extending an existing one:
 
-- Use the templates in `templates/` as starting points
-- Include working Python code examples in `code-examples/python/`
-- Include exercises with solutions in `exercises/`
+- Include working Python code examples in `chapters/<chapter>/code-examples/python/`
+- Include exercises with solutions in `chapters/<chapter>/exercises/`
 - Cover all five platforms where the topic applies
 
 ### Code Examples
