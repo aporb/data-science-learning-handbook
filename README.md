@@ -12,6 +12,12 @@
 
 ---
 
+<p align="center">
+  <a href="https://aporb.github.io/federal-ds-handbook-site/">
+    <img src="assets/site_header.png" alt="Federal Data Science Handbook" width="800">
+  </a>
+</p>
+
 ## The Problem
 
 We spend billions on federal data platforms. We hire analysts with degrees and certifications. And then we hand them a login and tell them to figure it out.
@@ -49,14 +55,6 @@ We believe this is the first reference resource for a regulated industry domain 
 | **Any agent** | `AGENTS.md` | Read on first query |
 
 **How it works:** The agent interface layer encodes 96,000 words of non-inferable federal domain knowledge into structured context files — what Impact Level means, why IL4+ prohibits external API calls, what CAC/PIV authentication requires, which packages are available on each platform. Your agent doesn't need to hallucinate or ask you to explain your environment. It reads the handbook.
-
----
-
-<p align="center">
-  <a href="https://aporb.github.io/federal-ds-handbook-site/">
-    <img src="assets/site_header.png" alt="Federal Data Science Handbook" width="800">
-  </a>
-</p>
 
 ---
 
