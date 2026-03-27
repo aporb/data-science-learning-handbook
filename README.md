@@ -1,33 +1,14 @@
+# Federal Data Science Handbook
+
+**A practitioner's guide to data science on federal government platforms — and the first reference resource for a regulated domain designed to work natively with AI coding agents.**
+
 [![License: MIT + CC BY 4.0](https://img.shields.io/badge/License-MIT%20%2B%20CC%20BY%204.0-blue.svg)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/aporb/data-science-learning-handbook?style=social)](https://github.com/aporb/data-science-learning-handbook)
 [![Last Commit](https://img.shields.io/github/last-commit/aporb/data-science-learning-handbook)](https://github.com/aporb/data-science-learning-handbook/commits/main)
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](https://python.org)
 [![Agent-Ready](https://img.shields.io/badge/Agent--Ready-Claude%20%7C%20Cursor%20%7C%20OpenCode%20%7C%20Cline-00B87C?logo=robot&logoColor=white)](#-agent-ready--works-with-your-ai-coding-agent)
 
-<p align="center">
-  <a href="https://aporb.github.io/federal-ds-handbook-site/">
-    <img src="assets/site_header.png" alt="Federal Data Science Handbook" width="800">
-  </a>
-</p>
-
-# Federal Data Science Handbook
-
-**A practitioner's guide to data science on federal government platforms — and the first reference resource for a regulated domain designed to work natively with AI coding agents.**
-
 **[Read online](https://aporb.github.io/federal-ds-handbook-site/)** · **[Agent Integration](https://aporb.github.io/federal-ds-handbook-site/agents.html)** · **[Chapters](#chapters)** · **[Platform Guides](#platform-guides)** · **[Agent Commands](#-agent-ready--works-with-your-ai-coding-agent)** · **[Docker Environment](#local-development-environment)**
-
----
-
-<table>
-<tr>
-<td align="center"><strong>96K+</strong><br>Words</td>
-<td align="center"><strong>13</strong><br>Chapters</td>
-<td align="center"><strong>43</strong><br>Python Files</td>
-<td align="center"><strong>5</strong><br>Platforms</td>
-<td align="center"><strong>4</strong><br>Agent Platforms</td>
-<td align="center"><strong>67</strong><br>Exercises</td>
-</tr>
-</table>
 
 ---
 
@@ -57,7 +38,7 @@ We believe this is the first reference resource for a regulated industry domain 
 | **`/generate-federal-code`** | Generates platform-appropriate Python with correct headers, security patterns, and IL-level constraints. Knows that Databricks doesn't allow pip install in cells, that Foundry uses `palantir_models`, and that IL4+ means no external API calls. |
 | **`/teach`** | Interactive tutor mode. Opens with the chapter's narrative hook, walks through concepts with code, tracks which learning objectives you've covered. |
 
-### Supported platforms
+### Supported agent platforms
 
 | AI Coding Agent | Config File | Auto-loaded? |
 |----------------|-------------|-------------|
@@ -68,6 +49,38 @@ We believe this is the first reference resource for a regulated industry domain 
 | **Any agent** | `AGENTS.md` | Read on first query |
 
 **How it works:** The agent interface layer encodes 96,000 words of non-inferable federal domain knowledge into structured context files — what Impact Level means, why IL4+ prohibits external API calls, what CAC/PIV authentication requires, which packages are available on each platform. Your agent doesn't need to hallucinate or ask you to explain your environment. It reads the handbook.
+
+---
+
+<p align="center">
+  <a href="https://aporb.github.io/federal-ds-handbook-site/">
+    <img src="assets/site_header.png" alt="Federal Data Science Handbook" width="800">
+  </a>
+</p>
+
+---
+
+## Get Started in 30 Seconds
+
+**New to federal data science?** Read chapters 1 through 4 in order. They cover the environment, access model, where data lives, and how to work with it.
+
+**Using an AI coding agent?** Clone this repo, open it in your agent's IDE, and use the [pre-built commands](#-agent-ready--works-with-your-ai-coding-agent) above. The agent picks up context automatically.
+
+**Switching platforms?** Go directly to the platform guide for your new environment. Each is self-contained.
+
+**Need a specific capability?** Jump to the relevant chapter (ML, MLOps, visualization, deployment, ethics). Each includes platform-specific implementation notes.
+
+**Building an AI/LLM application?** Chapter 13 and the Palantir AIP guide cover the current landscape. Read chapter 12 (Ethics and Governance) in parallel.
+
+---
+
+## Who This Is For
+
+- **Junior analysts** onboarding to any of the five platforms — skip the 18-month learning curve
+- **Team leads** building data science practices inside DoD programs
+- **GovCon firms** winning data task orders and needing to stand up teams fast
+- **AI coding agent users** who want their agent to understand federal constraints without re-explaining them every session
+- **Anyone** who's ever said "I can't find good training for [federal platform]"
 
 ---
 
@@ -107,20 +120,6 @@ Each guide is self-contained: access, setup, development environment, code patte
 
 ---
 
-## Quick Start
-
-**New to federal data science?** Read chapters 1 through 4 in order. They cover the environment, access model, where data lives, and how to work with it.
-
-**Switching platforms?** Go directly to the platform guide for your new environment. Each is self-contained.
-
-**Need a specific capability?** Jump to the relevant chapter (ML, MLOps, visualization, deployment, ethics). Each includes platform-specific implementation notes.
-
-**Building an AI/LLM application?** Chapter 13 and the Palantir AIP guide cover the current landscape. Read chapter 12 (Ethics and Governance) in parallel.
-
-**Using an AI coding agent?** Clone this repo, open it in your agent's IDE, and use the [pre-built commands](#-agent-ready--works-with-your-ai-coding-agent) above. The agent picks up context automatically.
-
----
-
 ## Local Development Environment
 
 This handbook ships with a Docker Compose stack that mirrors federal platform constraints locally:
@@ -156,16 +155,6 @@ The `security-compliance/` directory contains reference implementations for fede
 - **Audit logging** with immutable trails and 7-year retention policies
 
 See [security-compliance/CLAUDE.md](security-compliance/CLAUDE.md) for a module-by-module guide.
-
----
-
-## Who This Is For
-
-- **Junior analysts** onboarding to any of the five platforms — skip the 18-month learning curve
-- **Team leads** building data science practices inside DoD programs
-- **GovCon firms** winning data task orders and needing to stand up teams fast
-- **AI coding agent users** who want their agent to understand federal constraints without re-explaining them every session
-- **Anyone** who's ever said "I can't find good training for [federal platform]"
 
 ---
 
