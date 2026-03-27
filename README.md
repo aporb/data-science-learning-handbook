@@ -8,7 +8,7 @@
 
 **A practitioner's guide to data science on federal government platforms — and the first reference resource for a regulated domain designed to work natively with AI coding agents.**
 
-**[Read online](https://aporb.github.io/federal-ds-handbook-site/)** · **[Chapters](#chapters)** · **[Platform Guides](#platform-guides)** · **[Agent Commands](#-agent-ready--works-with-your-ai-coding-agent)** · **[Docker Environment](#local-development-environment)**
+**[Read online](https://aporb.github.io/federal-ds-handbook-site/)** · **[Agent Integration](https://aporb.github.io/federal-ds-handbook-site/agents.html)** · **[Chapters](#chapters)** · **[Platform Guides](#platform-guides)** · **[Agent Commands](#-agent-ready--works-with-your-ai-coding-agent)** · **[Docker Environment](#local-development-environment)**
 
 ---
 
@@ -178,4 +178,4 @@ Content is based on publicly available information. Nothing in this repository i
 
 ---
 
-**[Read online](https://aporb.github.io/federal-ds-handbook-site/)** · **[Star this repo](https://github.com/aporb/data-science-learning-handbook)** · **[Report an issue](https://github.com/aporb/data-science-learning-handbook/issues)**
+**[Read online](https://aporb.github.io/federal-ds-handbook-site/)** · **[Agent Integration Guide](https://aporb.github.io/federal-ds-handbook-site/agents.html)** · **[Star this repo](https://github.com/aporb/data-science-learning-handbook)** · **[Report an issue](https://github.com/aporb/data-science-learning-handbook/issues)**
