@@ -4,6 +4,12 @@
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](https://python.org)
 [![Agent-Ready](https://img.shields.io/badge/Agent--Ready-Claude%20%7C%20Cursor%20%7C%20OpenCode%20%7C%20Cline-00B87C?logo=robot&logoColor=white)](#-agent-ready--works-with-your-ai-coding-agent)
 
+<p align="center">
+  <a href="https://aporb.github.io/federal-ds-handbook-site/">
+    <img src="assets/site_header.png" alt="Federal Data Science Handbook" width="800">
+  </a>
+</p>
+
 # Federal Data Science Handbook
 
 **A practitioner's guide to data science on federal government platforms — and the first reference resource for a regulated domain designed to work natively with AI coding agents.**
