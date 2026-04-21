@@ -74,13 +74,13 @@ graph TD
 
 ### Advana: The Pentagon's Data Platform
 
-Advana — short for "Advancing Analytics" — is the DoD's enterprise-wide data and analytics platform. Built originally by Booz Allen Hamilton under a $674 million GSA contract, it was designed to aggregate data from thousands of incompatible DoD business systems for one specific purpose: pass the Pentagon's financial audit.
+Advana — short for "Advancing Analytics" — is the DoD's enterprise-wide data and analytics platform. Built originally by Booz Allen Hamilton under a $674 million GSA contract, it was designed to aggregate data from thousands of incompatible DoD business systems for one specific purpose: pass the Pentagon's financial audit. The platform's statutory basis is FY18 NDAA Sections 911-913 (financial data transparency and enterprise analytics capability), reinforced by the May 2021 Deputy SecDef memo designating it as the single enterprise authoritative data platform for all DoD components.
 
 That narrow origin explains a lot about how Advana evolved. Starting from financial management, it grew to cover logistics, readiness, procurement, personnel, and health — all the domains DoD cares about measuring. As of 2024, it serves more than 100,000 users across 55+ organizations with 3,000+ NIPRNET data sources ingested and 250-300 applications in production.
 
 The CDAO (Chief Digital and Artificial Intelligence Office) owns it. That is important because the CDAO is also where the government's AI strategy lives. Advana is not just a data warehouse; it is the intended foundation for DoD-wide AI application development.
 
-Here is the hard part: as of early 2026, Advana is mid-restructuring. The January 2026 Hegseth memo split it into three tracks — a War Data Platform for AI development, a Financial Management track for audit remediation, and an Application Services track for consolidating legacy tools. The CDAO lost approximately 60% of its civilian workforce in 2025. The $15 billion AAMAC recompete was halted. The platform still serves 100,000+ users, but the institutional machinery around it is thinner than it was two years ago.
+Here is the hard part: as of early 2026, Advana is mid-restructuring. The January 2026 Hegseth memo split it into three tracks — a War Data Platform for AI development, a Financial Management track for audit remediation, and an Application Services track for consolidating legacy tools. The CDAO lost approximately 60% of its civilian workforce in 2025, with losses concentrated in the legacy DDS and JAIC teams. The gap has been partially filled by borrowed government labor from other organizations, but the institutional machinery around the platform is thinner than it was two years ago. The $15 billion AAMAC recompete was halted. The platform still serves 100,000+ users.
 
 **What this means for you:** If you are working at the OSD level, on a combatant command analytics project, or anywhere that touches DoD-wide financial or logistics data, Advana is your platform. Get your DD Form 2875 filed early. Access Advana University for onboarding. Understand that the restructuring affects contracting vehicles, not day-to-day platform access — the data and tools are still there.
 
@@ -157,13 +157,13 @@ The framework you need to understand is Impact Levels.
 
 Most commercial federal data science work operates at IL2-IL4. The platforms covered in this handbook have the following clearances:
 
-| Platform | IL2 | IL4 | IL5 | IL6/Classified |
-|----------|-----|-----|-----|----------------|
-| Advana | Yes | Yes | Yes (SIPR) | SIPR accreditation |
-| Navy Jupiter | Yes | Yes | Yes | JWICS accreditation |
-| Databricks | Yes | Yes | Yes | No public IL6 |
-| Qlik | Yes | Yes | Not confirmed | No |
-| Palantir AIP/Foundry | Yes | Yes | Yes | Yes (via Azure Gov Top Secret) |
+| Platform | IL2 | IL4 | IL5 | IL6/Classified | JWICS |
+|----------|-----|-----|-----|----------------|-------|
+| Advana (WDP) | Yes | Yes | Yes | Yes | Yes |
+| Navy Jupiter | Yes | Yes | Yes | Yes | Yes (shared stack with WDP) |
+| Databricks | Yes | Yes | Yes (SaaS) | No | In progress (expected early 2027) |
+| Qlik | Yes | Yes | Not confirmed | No | No |
+| Palantir AIP/Foundry | Yes | Yes | Yes | Yes (via Azure Gov Top Secret) | Yes (via Azure Gov Top Secret) |
 
 The classification level of your data determines which platform you can use to process it. This is not a guideline. It is a legal requirement.
 
@@ -241,12 +241,13 @@ For local development (when permitted by your program), install:
 | Primary use | DoD enterprise analytics, AI development | DON-specific analytics + ML | Data engineering, ML, AI | BI, dashboards, analytics | Operational AI, ontology-based integration |
 | Managed by | CDAO | DON CIO/CDO | Commercial (deployed on GovCloud) | Commercial (deployed on AWS GovCloud) | Commercial (deployed on Azure/AWS Gov) |
 | User scale | 100,000+ | 4,000+ | 80% of federal executive depts | Federal civilian + DoD | DoD + civilian agencies |
-| Networks | NIPR, SIPR | NIPR, SIPR, JWICS | IL2-IL5 | IL2-IL4 | IL2-IL6 (Azure Gov Top Secret) |
+| Networks | NIPR, SIPR, IL5, IL6, JWICS | NIPR, SIPR, JWICS (shared stack with WDP) | IL2-IL5 (SaaS), JWICS expected 2027 | IL2-IL4 | IL2-IL6, JWICS (Azure Gov Top Secret) |
 | PII/PHI | Yes | Yes (explicit approval) | With IL5 controls | With data governance | With ATO |
-| Key tools | Qlik, Databricks, MLflow, Collibra | iQuery, Qlik, Databricks, Collibra, Tableau | Spark, MLflow, Unity Catalog, Mosaic AI | QIX Engine, Predict, SSE, Answers | Ontology, AIP Logic, Agent Studio, Workshop |
-| ML capability | Via Databricks/DataRobot | Via Databricks | Native (full MLOps) | No-code via Qlik Predict | Full (models + LLM agents) |
+| Key tools | Qlik, Databricks, MLflow, Collibra | iQuery, Qlik, Databricks, Collibra, Tableau (under review for divestment) | Spark, MLflow, Unity Catalog, Mosaic AI | QIX Engine, Predict, SSE, Answers | Ontology, AIP Logic, Agent Studio, Workshop |
+| ML capability | Via Databricks (DataRobot phasing out; C3 AI under review) | Via Databricks | Native (full MLOps) | No-code via Qlik Predict | Full (models + LLM agents) |
 | Access mechanism | CAC + DD Form 2875 | CAC/PIV baseline | Via GovCloud tenant | Via JWCC / FedRAMP marketplace | Via FedRAMP / Army EA |
 | Audit/compliance | DoD ATO; NIPR/SIPR accreditation | DoD ATO; tri-network | FedRAMP High, IL5 | FedRAMP Moderate, IL4 | FedRAMP High, IL5/IL6 |
+| Cost model | Program-funded (BAH prime); transitioning to WDP budget lines | Program-funded (inherits Advana infrastructure) | Consumption (DBU-based); Carahsoft GSA / JWCC Marketplace | License-based; FedRAMP Moderate tier | Enterprise contract (Army EA up to $10B); consumption for other agencies |
 | When to use | Pentagon-level, DoD-wide | DON-specific, multi-network | Heavy ML, data engineering | Dashboards, exploration | Operational AI, classified |
 
 ## Where This Goes Wrong

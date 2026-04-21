@@ -20,6 +20,8 @@ The platform serves Navy and Marine Corps military personnel, civilians, and con
 
 Structurally, Jupiter is the DON subtenant of Advana, the DoD-wide analytics platform managed by the Chief Digital and AI Office (CDAO). This relationship matters in practice: Jupiter operates within the same technical infrastructure as Advana, shares many of the same tool components, and provides DON-specific data governance and community spaces layered on top of the enterprise foundation. You get DON data sovereignty and Navy-specific governance, with Advana's enterprise tooling available underneath.
 
+**Shared infrastructure, shared accreditation.** Jupiter and WDP (Advana) run on the same stack. The underlying platform is accredited at IL2, IL5, IL6, and JWICS. Jupiter's tri-network presence (NIPRNET, SIPRNET, JWICS) inherits from and contributes to this shared accreditation. If you are tracking classification-level coverage for your program, know that Jupiter inherits the full IL2/IL5/IL6/JWICS stack, not just the three networks individually.
+
 The platform's three core mission areas track the Navy's primary operational categories:
 
 - **Warfighting**: readiness, maintenance, and operations data

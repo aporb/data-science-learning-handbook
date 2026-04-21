@@ -371,6 +371,16 @@ In Palantir Foundry, all four of these are handled at the platform level: datase
 
 **What to do instead:** Set up the GitHub Actions workflow (or equivalent) during the first sprint, before the first model is trained. The setup cost is a few days. The payoff is years of reliable, auditable deployments. For ATO purposes, an automated deployment pipeline with version-controlled approval gates is more defensible than a manual checklist process.
 
+### Cross-Domain Deployment: "Code Low, Deploy High"
+
+On DoD programs that span classification levels, the deployment pipeline has an additional dimension: promoting code and models from lower classification environments (IL2/IL4) to higher ones (IL5, IL6, JWICS). The DoD Enterprise DevSecOps Reference Design (September 2022) formalizes this as the "code low, deploy high" pattern.
+
+For ML pipelines, this means your training, testing, and validation happen at IL2 or IL4 where iteration is fast. The CI/CD pipeline then promotes validated artifacts to the higher-classification environment through an approved cross-domain transfer mechanism. The model runs against classified data at deployment time, not during development.
+
+Practically, this means keeping your business logic and model code classification-agnostic. Data paths, classification-specific configurations, and environment variables should be externalized, not hardcoded. The Databricks Workflows or Palantir Pipeline Builder job that works at IL4 should be the same job definition that runs at IL6 — just pointed at different data sources and compute resources.
+
+Reference: https://dodcio.defense.gov/Portals/0/Documents/Library/DoDRefDesignCloudGithub.pdf
+
 ## Practical Takeaway: The MLOps Readiness Checklist
 
 Before any model goes to production on a federal program, verify these items. This is not aspirational — it is the minimum that makes a production deployment defensible.

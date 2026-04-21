@@ -24,6 +24,16 @@ The original prime contractor is Booz Allen Hamilton, working under a five-year,
 
 Advana's data domains span financial management and audit readiness, procurement and contracting, logistics and supply chain, personnel and health, readiness and training, infrastructure tracking, and force management and campaign planning. During COVID-19, it tracked PPE stockpiles in real time across HHS, FEMA, and DoD simultaneously. The platform's scope is genuinely broad — broad enough that the problem in recent years has been focus, not capability.
 
+### Statutory and Policy Foundation
+
+Advana did not emerge from a vendor pitch. It has a statutory and policy basis that matters for understanding why the platform exists and why the mandate to use it carries weight.
+
+**FY18 NDAA Sections 911-913** required the DoD to improve financial management data transparency and auditability. Sections 911 and 912 established requirements for financial data standards and audit readiness. Section 913 directed the creation of an enterprise data analytics capability. Advana is the platform built to fulfill that direction.
+
+**Deputy Secretary of Defense Memorandum, May 5, 2021** formally designated Advana as "the single enterprise authoritative data management and analytics platform" for the Office of the Secretary of Defense and all DoD components. That memo gave Advana its enterprise mandate. Every DoD component is directed to use Advana as the authoritative data platform rather than building separate analytics infrastructure. The memo is publicly available at: https://media.defense.gov/2021/May/10/2002638551/-1/-1/0/DEPUTY-SECRETARY-OF-DEFENSE-MEMORANDUM.PDF
+
+The January 2026 Hegseth restructuring memo is the most recent policy directive. It reaffirms the statutory basis and reorganizes the platform into the three tracks described in the Current State section below.
+
 ---
 
 ## Getting Access
@@ -74,6 +84,8 @@ The tool catalog inside Advana is extensive. What follows is what public DoD doc
 
 **DataRobot** and **C3 AI** provide automated ML capabilities. DataRobot is particularly useful for rapid prototyping — you can run a dataset through it, get a baseline model, understand feature importance, and know what kind of performance ceiling you're working against before you invest time in custom model development.
 
+> ⚠️ **Tool Rationalization Watch (2026):** DataRobot is being phased out as part of a DoD-wide tool consolidation driven by Palantir's expanded deployment. New projects should plan for Databricks or Palantir AIP as the primary ML platforms. C3 AI is under review for similar divestment. Expected completion: post-September 2026.
+
 **Amazon SageMaker** is available for model training and deployment. This is the path for teams that need more GPU-backed compute than the default notebook environments provide, or that need to operationalize models at scale.
 
 ### Data Governance
@@ -118,8 +130,11 @@ Advana operates on multiple DoD networks:
 
 | Network | Level | What Lives There |
 |---|---|---|
-| NIPRNET | Unclassified (CUI/FOUO) | Business operations data; 3,000+ sources |
-| SIPRNET | Secret | Classified analytics and force planning data |
+| NIPRNET | Unclassified (CUI/FOUO) / IL2 / IL4 | Business operations data; 3,000+ sources |
+| SIPRNET | Secret / IL5 | Classified analytics and force planning data |
+| IL6 / JWICS | Classified / TS-SCI | Higher-classification operational planning |
+
+WDP (Advana) and Jupiter share the same underlying infrastructure stack, accredited at IL2, IL5, IL6, and JWICS. The IL5 and IL6 paths are separate from the older SIPRNET deployment and represent the expanded accreditation that followed the January 2026 restructuring.
 
 Most financial, logistics, procurement, and personnel analytics work happens on NIPRNET at the CUI or FOUO sensitivity level, which maps to Impact Level 4 in the DoD cloud security framework. IL4 requires U.S.-territory data residency and NIPRNET connectivity — your work environment needs to meet those requirements.
 
@@ -139,7 +154,7 @@ Advana supports four meaningfully different user types, and the platform is set 
 
 **Analysts** build custom dashboards in Qlik, combine data across sources using the Qlik mashup API, and use natural language discovery tools for ad-hoc data exploration. This is the right tier for someone who knows data but doesn't want to manage compute infrastructure.
 
-**Data scientists** work in Databricks notebooks. Python, PySpark, SQL. Full access to MLflow for experiment tracking, DataRobot and C3 AI for automated ML, and SageMaker for scaled deployment. This is where model development happens.
+**Data scientists** work in Databricks notebooks. Python, PySpark, SQL. Full access to MLflow for experiment tracking, and SageMaker for scaled deployment. (DataRobot and C3 AI were previously available for automated ML; both are being phased out — see the Tool Rationalization Watch note above.) This is where model development happens.
 
 **Data engineers** build and maintain pipelines, set up real-time replication feeds, manage data quality monitoring through ARES/ADVANA, and work with the MySQL/S3/SAP HANA integration layers.
 
@@ -237,18 +252,22 @@ IL5 applies to data that requires stronger protections than IL4 — certain Nati
 
 SIPRNET access is a separate tier entirely. It requires a Secret clearance, and the physical access requirements are stricter. Most DoD data science work happens at NIPRNET/IL4.
 
+As of early 2026, the WDP stack (which includes both Advana and Jupiter tenants) holds accreditation at IL2, IL5, IL6, and JWICS in addition to the legacy IL4/SIPR coverage. This expanded accreditation is a direct outcome of the January 2026 restructuring memo, which called for DoD-wide AI capabilities across all classification levels.
+
 ```mermaid
 graph TD
     A[Data Source Systems] --> B[Advana Ingestion Layer]
     B --> C{Classification Level?}
-    C -->|Unclassified CUI/FOUO| D[NIPRNET - IL4]
-    C -->|Secret| E[SIPRNET - IL5]
-    D --> F[Databricks Notebooks]
-    D --> G[Qlik Dashboards]
-    D --> H[DataRobot / SageMaker]
-    E --> I[Classified Analytics Apps]
-    F --> J[MLflow Model Registry]
-    G --> K[Program Office Consumers]
+    C -->|Unclassified CUI/FOUO| D[NIPRNET - IL2/IL4]
+    C -->|Secret / IL5| E[SIPRNET - IL5]
+    C -->|TS-SCI / IL6| F[JWICS - IL6]
+    D --> G[Databricks Notebooks]
+    D --> H[Qlik Dashboards]
+    D --> I[SageMaker]
+    E --> J[Classified Analytics Apps]
+    F --> K[TS-SCI Analytics Apps]
+    G --> L[MLflow Model Registry]
+    H --> M[Program Office Consumers]
 ```
 
 *Figure: Advana data flow by classification level. NIPRNET and SIPRNET are separate pipelines with separate access controls and compute environments.*
@@ -275,7 +294,9 @@ If you are starting DoD data science work in 2025 or 2026, you need to understan
 
 ### The Workforce Reduction
 
-In February and March of 2025, following Defense Secretary Hegseth's directive for 5–8% civilian workforce cuts, CDAO lost approximately 60% of its workforce. That includes two of the top architects of the Advana platform. Contracted support staff was reduced by roughly 80%. Alex O'Toole, the program officer most closely associated with Advana's technical direction, departed for Databricks in January 2025 before the cuts.
+In February and March of 2025, following Defense Secretary Hegseth's directive for 5–8% civilian workforce cuts, CDAO lost approximately 60% of its workforce. The losses fell hardest on the legacy DDS and JAIC teams that had built the original AI infrastructure. That includes two of the top architects of the Advana platform. Contracted support staff was reduced by roughly 80%. Alex O'Toole, the program officer most closely associated with Advana's technical direction, departed for Databricks in January 2025 before the cuts.
+
+Advana itself was hit harder by the loss of institutional leadership than by raw labor reduction. The platform still runs, but the people who understood why specific architectural decisions were made are largely gone. The gap has been partially filled by borrowed government labor from other organizations, but that supplementation is ad hoc and varies by functional area.
 
 The practical result: platform development slowed, some capabilities that required active maintenance degraded, and the institutional knowledge embedded in those positions walked out the door. Officials described data reverting to silos and intelligence sharing returning to "phone calls and PDFs" in some cases. That is not hyperbole from critics — those are characterizations from people inside the building.
 
@@ -312,6 +333,16 @@ The implementation timeline runs through 45-day status update intervals, with fu
 CDAO itself was relocated under the Under Secretary of Defense for Research and Engineering (Emil Michael) in August 2025. Michael was given a 120-day clock to recommend a path forward for Advana and Maven Smart System and announced plans to push AI capabilities to all 3 million DoD users across classification levels by December 2025. Whether those targets are met will become clear over the next budget cycle.
 
 > **Note:** Advana was omitted from the DoD's FY 2025 Agency Financial Report for the first time since the platform's inception. The reason was not stated publicly. This is a transparency gap worth tracking if you are working on programs that depend on Advana continuity.
+
+### "Code Low, Deploy High": The DevSecOps Pattern for WDP
+
+The January 2026 restructuring memo references a deployment pattern that practitioners will encounter as the WDP matures: develop at lower classification levels, deploy at higher ones. The DoD Enterprise DevSecOps Reference Design (September 2022) documents this pattern formally.
+
+The idea is straightforward. Your data scientists and ML engineers do their development work at IL2 or IL4 — where compute is cheaper, access is easier, and iteration is faster. When the code, model, and pipeline are validated, the deployment pipeline promotes them to IL5, IL6, or JWICS environments where the operational data actually lives. The CI/CD pipeline handles the cross-domain transfer through approved transfer mechanisms.
+
+This pattern is not new — it is how defense software has been built for years — but the WDP restructuring formalizes it for the data and AI stack. For your work on Advana, this means: design your pipelines to be classification-agnostic from the start. Keep business logic separate from classification-specific configurations. Build your CI/CD pipeline to validate at IL2/IL4 and promote to higher levels, rather than developing directly in a classified environment where iteration cycles are measured in days, not hours.
+
+The DoD Enterprise DevSecOps Reference Design is available at: https://dodcio.defense.gov/Portals/0/Documents/Library/DoDRefDesignCloudGithub.pdf
 
 ---
 
@@ -380,10 +411,11 @@ Advana does not exist in isolation. Federal data scientists typically encounter 
 | Scope | DoD-wide enterprise | Data lakehouse compute | BI/visualization | Department of Navy | Mission-specific ontology |
 | Primary users | All DoD components | Data engineers, ML engineers | Analysts, program managers | Navy/USMC only | Analysts, operators |
 | Data ingestion | 3,000+ pre-connected sources | You build the pipelines | Connects to external sources | Navy ERP/logistics systems | Structured integration layer |
-| ML capabilities | Databricks + DataRobot + SageMaker | Native Databricks MLflow | Limited (via SSE) | Limited | AIP AI layer, Gotham |
+| ML capabilities | Databricks + SageMaker (DataRobot phasing out; C3 AI under review) | Native Databricks MLflow | Limited (via SSE) | Limited | AIP AI layer, Gotham |
 | Access mechanism | CAC + DD 2875 + sponsor | CAC + FedRAMP auth | CAC + FedRAMP auth | Navy credentials | Contract-dependent |
-| Classification | NIPRNET (IL4) + SIPRNET | IL2/IL4 FedRAMP | IL2/IL4 FedRAMP | NIPRNET + SIPRNET | IL4/IL5 |
+| Classification | IL2/IL4 (NIPRNET), IL5, IL6, JWICS | IL2/IL4, IL5 (SaaS), JWICS expected 2027 | IL2/IL4 FedRAMP | NIPRNET + SIPRNET + JWICS (shared with WDP) | IL4/IL5/IL6, JWICS |
 | Institutional stability | In restructuring (2025-26) | Stable | Stable | Stable | Stable (Maven POR candidacy) |
+| Cost model | Program-funded (BAH prime); transitioning to WDP budget lines | Consumption (DBU-based); Carahsoft GSA / JWCC | License-based | Program-funded (inherits WDP infrastructure) | Enterprise contract (Army EA) |
 | Best for | Cross-DoD analytics, audit, readiness | Heavy ML, pipeline work | Executive dashboards, BI | Navy-specific data | Operational AI, ontology-linked data |
 
 The key architectural distinction: Advana is a data platform that includes analytics tools. Palantir Foundry is an ontology platform that includes data access. Databricks (as a standalone deployment) is a compute platform that requires you to bring your own data. When you are doing cross-DoD analytics work — pulling procurement, logistics, personnel, and financial data from multiple military services — Advana is the right starting point because the connections already exist. When you are doing specialized ML work and need GPUs, PySpark cluster customization, or Python environment flexibility that a government-configured Databricks doesn't allow, a standalone Databricks deployment on a FedRAMP-authorized cloud may be faster to work in.

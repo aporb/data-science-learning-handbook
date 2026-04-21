@@ -351,9 +351,13 @@ The full compliance picture for Databricks government deployments as of early 20
 | DoD IL5 | AWS GovCloud | GA (Feb 2025) |
 | DoD IL5 | Azure Government | Authorized (2021) |
 | ITAR Ready | AWS GovCloud | Confirmed |
+
+**Accreditation specifics:** Databricks is installed at all Impact Levels up to IL5. The SaaS offering (managed Databricks on GovCloud) is accredited at IL5. For IL6/classified workloads, Databricks is not currently available as a managed service; Palantir or on-premises enclaves fill that gap. JWICS SaaS availability is expected in early 2027.
 | HIPAA | AWS GovCloud Community | Eligible |
 
 IL6 (classified, SECRET and above) is not supported on Databricks. Do not architect a solution that requires classified processing. That is Palantir's domain, or an on-premises classified enclave.
+
+**JWICS accreditation:** Databricks is pursuing JWICS accreditation for its government SaaS offering, with availability expected in early 2027. This would extend Databricks' reach to TS/SCI workloads. Until that accreditation is finalized, JWICS-classified workloads should use Palantir Foundry/Gotham or an on-premises classified enclave. Track this timeline if your program has future classified compute requirements that could be served by a managed lakehouse.
 
 ### What the Compliance Security Profile Does
 
@@ -384,6 +388,8 @@ Single-use refresh tokens for OAuth applications became configurable in 2025. To
 Databricks and Palantir formalized a strategic partnership in 2025. The technical integration is meaningful: Palantir Foundry can read directly from Databricks Unity Catalog tables via **zero-copy integration** — Foundry reads the underlying Delta files without duplicating data into Palantir's storage. This matters for programs that use Palantir for operational decision-making and Databricks for data engineering and ML training. The data engineering work stays in Databricks. The operator-facing workflows run in Foundry. The same data serves both without the cost and governance complexity of dual ingestion.
 
 Delta Sharing enables this and similar patterns with other platforms. An agency can share a Delta table with a mission partner, a BI tool, or a downstream platform via an open protocol. The receiving party does not need a Databricks account.
+
+In a DoD context, Delta Sharing is particularly relevant for cross-command data sharing. A combatant command's Databricks workspace can share curated datasets with a service-level analytics team, or with a mission partner operating on a separate cloud tenant, without duplicating data or managing separate transfer mechanisms. The protocol respects Unity Catalog access controls at the sharing boundary, so the data provider controls exactly which tables and columns the recipient can access. For programs that need to share data across organizational boundaries while maintaining governance, this is the mechanism to plan around.
 
 ### Advana
 

@@ -12,15 +12,25 @@
 | BI dashboards, associative analytics | **Qlik** | FedRAMP Moderate, NIPRNet or Advana-hosted, associative engine |
 | Ontology-backed AI, LLM workflows | **Palantir AIP/Foundry** | IL4-IL6, FedStart, Pipeline Builder, AIP Logic |
 
+### Cost Considerations
+
+| Platform | Cost Model | Notes |
+|----------|-----------|-------|
+| Advana (WDP) | Program-funded (BAH prime) | Transitioning to WDP budget lines; no per-unit billing to users |
+| Databricks | Consumption (DBU-based) | Carahsoft GSA Schedule or JWCC Marketplace; watch idle cluster costs |
+| Navy Jupiter | Program-funded | Inherits WDP infrastructure; no separate billing |
+| Palantir | Enterprise contract | Army EA up to $10B/10yr; consumption-based for other agencies |
+| Qlik | License-based | FedRAMP Moderate tier; JWCC Marketplace available |
+
 ## Classification Level Coverage
 
-| Platform | IL2 | IL4 | IL5 | IL6 | FedRAMP |
-|----------|-----|-----|-----|-----|---------|
-| Advana | - | Yes | Yes | - | Inherits DoD |
-| Databricks | Yes | Yes | Yes | - | Moderate+ |
-| Navy Jupiter | - | Yes | Yes | - | Inherits DoD |
-| Palantir | - | Yes | Yes | Yes | FedStart |
-| Qlik | Yes | Yes | - | - | Moderate |
+| Platform | IL2 | IL4 | IL5 | IL6 | JWICS | FedRAMP |
+|----------|-----|-----|-----|-----|-------|---------|
+| Advana (WDP) | Yes | Yes | Yes | Yes | Yes | Inherits DoD |
+| Databricks | Yes | Yes | Yes (SaaS) | - | Expected early 2027 | Moderate+ |
+| Navy Jupiter | Yes | Yes | Yes | Yes | Yes (shared with WDP) | Inherits DoD |
+| Palantir | Yes | Yes | Yes | Yes | Yes | FedStart |
+| Qlik | Yes | Yes | - | - | - | Moderate |
 
 ## Guide Structure (consistent across all 5)
 

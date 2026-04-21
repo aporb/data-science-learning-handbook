@@ -197,6 +197,8 @@ schema_info = spark.sql("DESCRIBE TABLE EXTENDED navy_logistics.maintenance.work
 schema_info.show(truncate=False)
 ```
 
+**Delta Sharing for cross-command data exchange.** When your program needs to share data across organizational boundaries — a combatant command sharing curated intelligence feeds with a service-level analytics team, or a DoD agency sharing procurement data with a mission partner on a separate cloud tenant — Delta Sharing provides an open protocol that respects Unity Catalog access controls at the sharing boundary. The data provider controls exactly which tables and columns the recipient can access, and the recipient does not need a Databricks account. This is the mechanism to plan around for governed data sharing across DoD components that operate on separate infrastructure.
+
 ## CAC-Authenticated Systems and Network Access
 
 Here is the friction point nobody warns you about in your first week: the data you actually need is almost never accessible from the public internet.
