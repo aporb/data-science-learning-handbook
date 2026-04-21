@@ -280,7 +280,7 @@ The Collibra data catalog maintains data classification tags for datasets. Befor
 
 ### The Audit Situation
 
-This is worth naming plainly because it affects how the platform works and why it's being restructured. The DoD has failed seven consecutive independent financial audits. Advana was built partly to solve this problem — to make DoD financial data legible enough to audit. It hasn't worked yet. The FY 2025 SOC-1 audit of Advana itself produced an adverse result; the specific control deficiencies were classified as CUI and not publicly released.
+This is worth naming plainly because it affects how the platform works and why it's being restructured. The DoD has failed seven consecutive independent financial audits. Advana was built partly to solve this problem — to make DoD financial data legible enough to audit. It hasn't worked yet. The FY 2025 SOC-1 audit of Advana itself produced an adverse result related to financial documentation and change request approval processes — not to data accuracy, platform security controls, or technical capability. The specific control deficiencies were classified as CUI and not publicly released.
 
 This is not an indictment of the platform's utility for data science work. Advana hosts 100,000-plus users and generates real operational value across logistics, readiness, and force planning. But the audit failure is why the January 2026 restructuring happened, and it is why the Financial Management track of the restructured platform has hard targets: a clean audit on the FY 2027 Defense Working Capital Fund and a clean audit on the FY 2028 agency-wide financial statements.
 

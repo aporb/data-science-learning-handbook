@@ -352,12 +352,12 @@ The full compliance picture for Databricks government deployments as of early 20
 | DoD IL5 | Azure Government | Authorized (2021) |
 | ITAR Ready | AWS GovCloud | Confirmed |
 
-**Accreditation specifics:** Databricks is installed at all Impact Levels up to IL5. The SaaS offering (managed Databricks on GovCloud) is accredited at IL5. For IL6/classified workloads, Databricks is not currently available as a managed service; Palantir or on-premises enclaves fill that gap. JWICS SaaS availability is expected in early 2027.
+**Accreditation specifics:** Databricks is installed at all classification levels. The SaaS offering (managed Databricks on GovCloud) is accredited at IL5. For IL6/classified workloads, Databricks is not currently available as a managed service; Palantir or on-premises enclaves fill that gap. JWICS SaaS availability is expected in early 2027, with SIPR accreditation expected to follow.
 | HIPAA | AWS GovCloud Community | Eligible |
 
-IL6 (classified, SECRET and above) is not supported on Databricks. Do not architect a solution that requires classified processing. That is Palantir's domain, or an on-premises classified enclave.
+IL6 (classified, SECRET and above) is not currently supported as a managed SaaS service on Databricks. Databricks can be installed on-premises at IL6, but for managed classified processing, Palantir or on-premises enclaves remain the primary options until JWICS SaaS accreditation is finalized.
 
-**JWICS accreditation:** Databricks is pursuing JWICS accreditation for its government SaaS offering, with availability expected in early 2027. This would extend Databricks' reach to TS/SCI workloads. Until that accreditation is finalized, JWICS-classified workloads should use Palantir Foundry/Gotham or an on-premises classified enclave. Track this timeline if your program has future classified compute requirements that could be served by a managed lakehouse.
+**JWICS accreditation:** Databricks is pursuing JWICS accreditation for its government SaaS offering, with availability expected in early 2027. SIPR accreditation is expected to follow. This would extend Databricks' reach to TS/SCI and SECRET network workloads. Until that accreditation is finalized, JWICS-classified workloads should use Palantir Foundry/Gotham or an on-premises classified enclave. Track this timeline if your program has future classified compute requirements that could be served by a managed lakehouse.
 
 ### What the Compliance Security Profile Does
 
