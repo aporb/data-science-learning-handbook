@@ -8,16 +8,16 @@ A completed practitioner's guide to data science on federal government platforms
 
 ### Mode 1: REFERENCE
 User is coding on a federal platform and needs a quick answer.
-- Chapter READMEs: `chapters/NN-name/README.md`
-- Platform guides: `platform-guides/PLATFORM/README.md`
-- Code patterns: `chapters/NN-name/code-examples/python/`
-- Security patterns: `security-compliance/MODULE/`
+- Chapter READMEs: `chapters/01-introduction/README.md` through `chapters/13-advanced-topics/README.md`
+- Platform guides: `platform-guides/advana/README.md`, `platform-guides/databricks/README.md`, `platform-guides/navy-jupiter/README.md`, `platform-guides/palantir-aip-foundry/README.md`, `platform-guides/qlik/README.md`
+- Code patterns: `chapters/01-introduction/code-examples/python/` through `chapters/13-advanced-topics/code-examples/python/`
+- Security patterns: `security-compliance/auth/`, `security-compliance/rbac/`, `security-compliance/encryption/`
 
 ### Mode 2: CODE GENERATION
 User wants boilerplate for a federal context.
 - Use `/generate-federal-code` command
-- ALWAYS check platform constraints in `chapters/02-python-r-foundations/` first
-- Match the existing docstring header format (see Code Quality section below)
+- ALWAYS read `chapters/02-python-r-foundations/code-examples/python/02_platform_specific_imports.py` first for platform constraints
+- Match the docstring header format: `Platform:` and `Usage:` fields required
 - Never hardcode credentials — every platform uses env vars or secret management
 
 ### Mode 3: TEACHING
@@ -28,69 +28,65 @@ User wants to understand a concept.
 
 ## Content Map
 
-| Ch | Title | Key Topics | Platforms |
-|----|-------|-----------|-----------|
-| 01 | Introduction to Data Science in Government | Clearances, CAC auth, Impact Levels, ATO, platform overview | All 5 |
-| 02 | Python and R Foundations | Air-gapped pip, conda on IL4/IL5, platform-specific imports | All 5 |
-| 03 | Data Acquisition | USASpending, SAM.gov, data.gov, platform data catalogs | Advana, Jupiter, Foundry |
-| 04 | Data Wrangling | pandas at scale, PySpark, Delta Lake, 47M-row procurement data | Databricks, Jupiter, Advana |
-| 05 | Exploratory Analysis | Headless EDA, statistical profiling, no-notebook platforms | All 5 |
-| 06 | Supervised ML | XGBoost, classification on DoD data, MILSTRIP feature engineering | Databricks, Advana |
-| 07 | Unsupervised ML | Anomaly detection on GFEBS, clustering readiness data | Databricks, Advana |
-| 08 | Deep Learning | CNN on drone video, 400ms inference budget, PyTorch/ONNX | Databricks, local Docker |
-| 09 | MLOps | MLflow tracking, model registries, drift detection, ATO implications | Databricks, Foundry |
-| 10 | Visualization | Qlik, Advana dashboards, Databricks SQL, briefing-ready design | Qlik, Advana |
-| 11 | Deployment | Containers, artifact registries, API gateways, ATO as risk event | All 5 |
-| 12 | Ethics and Governance | DoD AI Ethics Principles, NIST AI RMF, bias auditing, model cards | All 5 |
-| 13 | Advanced Topics — GenAI | RAG at IL4/IL5, Palantir AIP Logic, fine-tuning classified data | Foundry, Databricks |
+| Ch | Directory | Key Topics | Key Code Files |
+|----|-----------|-----------|---------------|
+| 01 | `chapters/01-introduction/` | Clearances, CAC auth, Impact Levels, ATO | `code-examples/python/01_platform_connections.py`, `code-examples/python/02_authentication_patterns.py`, `code-examples/python/03_environment_verification.py` |
+| 02 | `chapters/02-python-r-foundations/` | Air-gapped pip, conda on IL4/IL5, platform imports | `code-examples/python/01_environment_setup.py`, `code-examples/python/02_platform_specific_imports.py`, `code-examples/python/03_data_structures.py` |
+| 03 | `chapters/03-data-acquisition/` | USASpending, SAM.gov, data.gov | `code-examples/python/01_api_connections.py`, `code-examples/python/02_government_data_sources.py`, `code-examples/python/03_platform_data_catalogs.py` |
+| 04 | `chapters/04-data-wrangling/` | pandas at scale, PySpark, Delta Lake | `code-examples/python/01_pandas_cleaning.py`, `code-examples/python/02_spark_transforms.py`, `code-examples/python/03_palantir_pipeline_builder.py` |
+| 05 | `chapters/05-exploratory-analysis/` | Headless EDA, statistical profiling | `code-examples/python/01_statistical_profiling.py`, `code-examples/python/02_visualization_eda.py`, `code-examples/python/03_platform_eda_workflows.py` |
+| 06 | `chapters/06-supervised-ml/` | XGBoost, classification on DoD data | `code-examples/python/01_classification_pipeline.py`, `code-examples/python/02_regression_and_xgboost.py`, `code-examples/python/03_mlflow_and_batch_scoring.py` |
+| 07 | `chapters/07-unsupervised-ml/` | Anomaly detection, clustering readiness | `code-examples/python/01_clustering.py`, `code-examples/python/02_anomaly_detection.py`, `code-examples/python/03_topic_modeling.py` |
+| 08 | `chapters/08-deep-learning/` | CNN on drone video, 400ms inference | `code-examples/python/01_tabular_neural_net.py`, `code-examples/python/02_cnn_satellite_imagery.py`, `code-examples/python/04_operational_inference_pipeline.py` |
+| 09 | `chapters/09-mlops/` | MLflow tracking, model registries, drift | `code-examples/python/01_experiment_tracking.py`, `code-examples/python/02_model_registry_deployment.py`, `code-examples/python/03_pipeline_orchestration.py` |
+| 10 | `chapters/10-visualization/` | Qlik, Advana dashboards, briefing-ready design | `code-examples/python/01_matplotlib_seaborn_charts.py`, `code-examples/python/02_plotly_interactive.py`, `code-examples/python/03_platform_dashboards.py` |
+| 11 | `chapters/11-deployment/` | Containers, artifact registries, ATO | `code-examples/python/01_deployment_patterns.py`, `code-examples/python/02_api_serving.py`, `code-examples/python/03_platform_deployment.py` |
+| 12 | `chapters/12-ethics-governance/` | DoD AI Ethics, NIST AI RMF, bias auditing | `code-examples/python/01_bias_audit.py`, `code-examples/python/02_model_card.py`, `code-examples/python/03_nist_rmf_workflow.py` |
+| 13 | `chapters/13-advanced-topics/` | RAG at IL4/IL5, Palantir AIP Logic, LLMs | `code-examples/python/01_llm_integration.py`, `code-examples/python/02_rag_pipeline.py`, `code-examples/python/03_aip_agents.py` |
 
 ### Platform Guides
 
-| Platform | IL Levels | Auth | Primary Use Case |
-|----------|-----------|------|-----------------|
-| Advana | IL4, IL5 | CAC/PIV | DoD enterprise analytics — JupyterHub, Qlik, 100+ data sources |
-| Databricks | IL2, IL4, IL5 | CAC + OAuth | ML pipelines, lakehouse, Unity Catalog on AWS GovCloud / Azure Gov |
-| Navy Jupiter | IL4, IL5 | CAC/PIV | Dept of Navy — bronze/silver/gold data tiers, DON subtenant of Advana |
-| Palantir AIP/Foundry | IL4, IL5, IL6 | CAC + OAuth | Ontology-based analytics, Pipeline Builder, AIP Logic for LLMs |
-| Qlik | IL2, IL4 | CAC/PIV | Associative analytics, federal BI — NIPRNet and Advana-hosted |
+| Platform | Directory | IL Levels | Primary Use Case |
+|----------|-----------|-----------|-----------------|
+| Advana | `platform-guides/advana/` | IL4, IL5 | DoD enterprise analytics — JupyterHub, Qlik, 100+ data sources |
+| Databricks | `platform-guides/databricks/` | IL2, IL4, IL5 | ML pipelines, lakehouse, Unity Catalog on GovCloud |
+| Navy Jupiter | `platform-guides/navy-jupiter/` | IL4, IL5 | Dept of Navy — bronze/silver/gold data tiers |
+| Palantir AIP/Foundry | `platform-guides/palantir-aip-foundry/` | IL4, IL5, IL6 | Ontology-based analytics, AIP Logic for LLMs |
+| Qlik | `platform-guides/qlik/` | IL2, IL4 | Associative analytics, federal BI |
 
 ## Code Quality Indicators
 
 Each of the 43 Python code examples has a docstring header with `Platform:` and `Usage:` fields. Follow those exactly.
 
 **Runnable locally** (with Docker stack or standard Python):
-- `chapters/01-*/code-examples/python/03_environment_verification.py`
-- `chapters/05-*/code-examples/python/01_statistical_profiling.py`
-- `chapters/12-*/code-examples/python/` (all three — bias audit, model card, NIST RMF)
-- Most files marked `Platform: Local` or `Platform: Any`
+- `chapters/01-introduction/code-examples/python/03_environment_verification.py`
+- `chapters/05-exploratory-analysis/code-examples/python/01_statistical_profiling.py`
+- `chapters/12-ethics-governance/code-examples/python/01_bias_audit.py`
+- `chapters/12-ethics-governance/code-examples/python/02_model_card.py`
+- `chapters/12-ethics-governance/code-examples/python/03_nist_rmf_workflow.py`
 
 **Platform-specific** (paste into platform notebook/workspace):
-- Files marked `Platform: Databricks` → Databricks notebook cell
-- Files marked `Platform: Foundry Code Workspace` → Foundry terminal
-- Files marked `Platform: Advana` → Advana JupyterHub
+- Files with `Platform: Databricks` header → Databricks notebook cell
+- Files with `Platform: Foundry Code Workspace` header → Foundry terminal
+- Files with `Platform: Advana` header → Advana JupyterHub
 
-**Security-compliance/** — mixed runability. See `security-compliance/CLAUDE.md` for module-by-module classification.
+**Security modules** — mixed runability. See `security-compliance/CLAUDE.md` for module-by-module classification.
 
 ## Docker Development Environment
 
 `docker-compose.yml` runs 13 services mirroring federal platform constraints:
 
-| Service | Port | Purpose |
-|---------|------|---------|
-| Jupyter | 8888 | Development notebooks (+ Streamlit:8501, Dash:8050) |
-| MLflow | 5000 | Experiment tracking and model registry |
-| PostgreSQL | 5432 | Relational database |
-| Redis | 6379 | Caching and session store |
-| Nginx | 80/443 | Reverse proxy with TLS |
-| Prometheus | 9090 | Metrics collection |
-| Grafana | 3000 | Monitoring dashboards |
-| Vault | 8200 | Secret management |
-| Consul | 8500 | Service discovery |
-| CAC-auth | 8001 | CAC/PIV authentication simulator |
+```bash
+cp .env.example .env && docker compose up -d
+```
 
-Quick start: `cp .env.example .env && docker compose up -d`
+Quick verification after startup:
 
-Full setup: `docs/LOCAL_ENVIRONMENT.md`
+```bash
+docker compose ps --format "table {{.Name}}\t{{.Status}}\t{{.Ports}}"
+```
+
+Full setup instructions: `docs/LOCAL_ENVIRONMENT.md`
 
 ## Agent Commands
 
@@ -104,7 +100,7 @@ Full setup: `docs/LOCAL_ENVIRONMENT.md`
 
 **Companion site**: `site/` submodule → https://aporb.github.io/federal-ds-handbook-site/
 - Site has rendered HTML versions of all chapters and platform guides
-- When working on site content, switch to `../site/` and read `site/CLAUDE.md`
+- When working on site content, switch to `../site/` and read site `CLAUDE.md`
 
 **Section-level context** (auto-loaded when working in these directories):
 - `chapters/CLAUDE.md` — chapter index, code file mapping, learning objectives
@@ -118,11 +114,13 @@ Full setup: `docs/LOCAL_ENVIRONMENT.md`
 - **Writing spec**: `docs/CHAPTER_WRITING_SPEC.md`
 - **Code header format** — every generated code file must include:
   ```
-  """
   Title
   Description
   Platform: [Databricks | Foundry | Advana | Local | Any]
   Usage: [how to run]
-  """
   ```
 - **Security**: never hardcode credentials, never send government data to external APIs, self-hosted models only at IL4+
+
+## Model Configuration
+
+When generating code for this handbook, use `claude-sonnet-4-20250514` with standard effort. The 96K+ words of domain content require careful grounding — avoid rushing through platform-specific constraints.

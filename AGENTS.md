@@ -122,42 +122,13 @@ Any agent that reads Markdown can use this repo. Start with `CLAUDE.md` for the 
 
 ## Directory Structure
 
-```
-handbook/
-├── CLAUDE.md                    # Root agent context (auto-loaded by Claude Code)
-├── AGENTS.md                    # This file — agent-agnostic guide
-├── .cursorrules                 # Cursor IDE rules (auto-loaded by Cursor)
-├── .claude/commands/            # Claude Code slash commands
-│   ├── compliance-check.md
-│   ├── generate-federal-code.md
-│   └── teach.md
-├── .opencode/                   # OpenCode agent config
-│   ├── config.yaml
-│   └── commands/                # OpenCode slash commands
-│       ├── compliance-check.md
-│       ├── generate-federal-code.md
-│       └── teach.md
-├── .clinerules/                 # Cline project rules + workflows
-│   ├── rules.md
-│   └── workflows/
-│       ├── compliance-check.md
-│       ├── generate-federal-code.md
-│       └── teach.md
-├── chapters/                    # 13 chapter READMEs + code examples
-│   ├── CLAUDE.md                # Chapter index and code mapping
-│   └── NN-name/
-│       ├── README.md            # Chapter content
-│       ├── code-examples/python/
-│       └── exercises/
-├── platform-guides/             # 5 platform-specific guides
-│   ├── CLAUDE.md                # Platform selection matrix
-│   └── PLATFORM/README.md
-├── security-compliance/         # Reference security implementation
-│   ├── CLAUDE.md                # Module classification
-│   └── MODULE/                  # 14 security modules
-├── docker-compose.yml           # 13-service local dev environment
-└── docs/                        # Style guide, writing spec, setup docs
-```
+Agents discover project structure by reading code. Key paths:
+
+- `chapters/01-introduction/` through `chapters/13-advanced-topics/` — each has `README.md`, `code-examples/python/`, `exercises/`
+- `platform-guides/advana/`, `platform-guides/databricks/`, `platform-guides/navy-jupiter/`, `platform-guides/palantir-aip-foundry/`, `platform-guides/qlik/` — each has `README.md`, `cac-piv-integration.md`, `config/`, `scripts/`
+- `security-compliance/` — 14 modules: `auth/`, `rbac/`, `encryption/`, `compliance/`, `audits/`, `api-gateway/`, `sessions/`, `credential-management/`, `monitoring/`, `multi-classification/`, `penetration-testing/`, `security-testing/`, `backup/`, `tls/`
+- `docs/` — `STYLE_GUIDE.md`, `CHAPTER_WRITING_SPEC.md`, `LOCAL_ENVIRONMENT.md`
+- `docker/` — 8 Dockerfiles for Jupyter, MLflow, PostgreSQL, Redis, Nginx, Vault, CAC-auth, security
 
 ## Cross-Repo Reference
 
