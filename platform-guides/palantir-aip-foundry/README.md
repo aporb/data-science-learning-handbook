@@ -365,8 +365,6 @@ The U.S. Army signed a $10 billion, 10-year Enterprise Service Agreement with Pa
 
 The consolidation model is significant for data scientists working on Army programs. Instead of navigating a patchwork of individual task orders with different statement-of-work constraints, there is a single enterprise framework. That accelerates deployment timelines and reduces the contracting overhead that historically slowed software delivery to warfighters.
 
-**Tool consolidation driver.** Palantir's expanded ATO at IL5 and on SIPR, combined with the Army Enterprise Agreement, is driving a DoD-wide tool rationalization. Platforms like DataRobot and C3 AI are being phased out or placed under review as Palantir absorbs their ML and operational AI use cases. If your program is evaluating ML tooling, factor Palantir's expanded footprint into the decision: new projects should plan for Databricks or Palantir AIP as the primary ML platforms rather than investing in tools that are actively being consolidated out of the stack.
-
 ### Maven Smart System
 
 Maven Smart System became a Pentagon Program of Record in March 2026, per a memo from Deputy Defense Secretary Steve Feinberg. That designation means stable, long-term funding — Maven is no longer a program that could be cancelled at the next budget cycle. Oversight transferred from the National Geospatial-Intelligence Agency to the DoD Chief Digital and Artificial Intelligence Office (CDAO).

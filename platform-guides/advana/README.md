@@ -84,8 +84,6 @@ The tool catalog inside Advana is extensive. What follows is what public DoD doc
 
 **DataRobot** and **C3 AI** provide automated ML capabilities. DataRobot is particularly useful for rapid prototyping — you can run a dataset through it, get a baseline model, understand feature importance, and know what kind of performance ceiling you're working against before you invest time in custom model development.
 
-> ⚠️ **Tool Rationalization Watch (2026):** DataRobot is being phased out as part of a DoD-wide tool consolidation driven by Palantir's expanded deployment. New projects should plan for Databricks or Palantir AIP as the primary ML platforms. C3 AI is under review for similar divestment. Expected completion: post-September 2026.
-
 **Amazon SageMaker** is available for model training and deployment. This is the path for teams that need more GPU-backed compute than the default notebook environments provide, or that need to operationalize models at scale.
 
 ### Data Governance
@@ -154,7 +152,7 @@ Advana supports four meaningfully different user types, and the platform is set 
 
 **Analysts** build custom dashboards in Qlik, combine data across sources using the Qlik mashup API, and use natural language discovery tools for ad-hoc data exploration. This is the right tier for someone who knows data but doesn't want to manage compute infrastructure.
 
-**Data scientists** work in Databricks notebooks. Python, PySpark, SQL. Full access to MLflow for experiment tracking, and SageMaker for scaled deployment. (DataRobot and C3 AI were previously available for automated ML; both are being phased out — see the Tool Rationalization Watch note above.) This is where model development happens.
+**Data scientists** work in Databricks notebooks. Python, PySpark, SQL. Full access to MLflow for experiment tracking, DataRobot and C3 AI for automated ML, and SageMaker for scaled deployment. This is where model development happens.
 
 **Data engineers** build and maintain pipelines, set up real-time replication feeds, manage data quality monitoring through ARES/ADVANA, and work with the MySQL/S3/SAP HANA integration layers.
 
@@ -411,7 +409,7 @@ Advana does not exist in isolation. Federal data scientists typically encounter 
 | Scope | DoD-wide enterprise | Data lakehouse compute | BI/visualization | Department of Navy | Mission-specific ontology |
 | Primary users | All DoD components | Data engineers, ML engineers | Analysts, program managers | Navy/USMC only | Analysts, operators |
 | Data ingestion | 3,000+ pre-connected sources | You build the pipelines | Connects to external sources | Navy ERP/logistics systems | Structured integration layer |
-| ML capabilities | Databricks + SageMaker (DataRobot phasing out; C3 AI under review) | Native Databricks MLflow | Limited (via SSE) | Limited | AIP AI layer, Gotham |
+| ML capabilities | Databricks + DataRobot + SageMaker | Native Databricks MLflow | Limited (via SSE) | Limited | AIP AI layer, Gotham |
 | Access mechanism | CAC + DD 2875 + sponsor | CAC + FedRAMP auth | CAC + FedRAMP auth | Navy credentials | Contract-dependent |
 | Classification | IL2/IL4 (NIPRNET), IL5, IL6, JWICS | IL2/IL4, IL5 (SaaS), JWICS expected 2027 | IL2/IL4 FedRAMP | NIPRNET + SIPRNET + JWICS (shared with WDP) | IL4/IL5/IL6, JWICS |
 | Institutional stability | In restructuring (2025-26) | Stable | Stable | Stable | Stable (Maven POR candidacy) |

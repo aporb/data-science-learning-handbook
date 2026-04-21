@@ -243,8 +243,8 @@ For local development (when permitted by your program), install:
 | User scale | 100,000+ | 4,000+ | 80% of federal executive depts | Federal civilian + DoD | DoD + civilian agencies |
 | Networks | NIPR, SIPR, IL5, IL6, JWICS | NIPR, SIPR, JWICS (shared stack with WDP) | IL2-IL5 (SaaS), JWICS expected 2027 | IL2-IL4 | IL2-IL6, JWICS (Azure Gov Top Secret) |
 | PII/PHI | Yes | Yes (explicit approval) | With IL5 controls | With data governance | With ATO |
-| Key tools | Qlik, Databricks, MLflow, Collibra | iQuery, Qlik, Databricks, Collibra, Tableau (under review for divestment) | Spark, MLflow, Unity Catalog, Mosaic AI | QIX Engine, Predict, SSE, Answers | Ontology, AIP Logic, Agent Studio, Workshop |
-| ML capability | Via Databricks (DataRobot phasing out; C3 AI under review) | Via Databricks | Native (full MLOps) | No-code via Qlik Predict | Full (models + LLM agents) |
+| Key tools | Qlik, Databricks, MLflow, Collibra | iQuery, Qlik, Databricks, Collibra, Tableau | Spark, MLflow, Unity Catalog, Mosaic AI | QIX Engine, Predict, SSE, Answers | Ontology, AIP Logic, Agent Studio, Workshop |
+| ML capability | Via Databricks/DataRobot | Via Databricks | Native (full MLOps) | No-code via Qlik Predict | Full (models + LLM agents) |
 | Access mechanism | CAC + DD Form 2875 | CAC/PIV baseline | Via GovCloud tenant | Via JWCC / FedRAMP marketplace | Via FedRAMP / Army EA |
 | Audit/compliance | DoD ATO; NIPR/SIPR accreditation | DoD ATO; tri-network | FedRAMP High, IL5 | FedRAMP Moderate, IL4 | FedRAMP High, IL5/IL6 |
 | Cost model | Program-funded (BAH prime); transitioning to WDP budget lines | Program-funded (inherits Advana infrastructure) | Consumption (DBU-based); Carahsoft GSA / JWCC Marketplace | License-based; FedRAMP Moderate tier | Enterprise contract (Army EA up to $10B); consumption for other agencies |
