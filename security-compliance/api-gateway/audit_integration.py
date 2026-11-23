@@ -312,96 +312,102 @@ class APISecurityCorrelator:
         """Check if correlation rule is triggered."""
         try:
             current_time = datetime.utcnow()
-            time_window = timedelta(seconds=rule['time_window'])\n            window_start = current_time - time_window
-            \n            # Count relevant events in time window
+            time_window = timedelta(seconds=rule['time_window'])
+            window_start = current_time - time_window
+
+            # Count relevant events in time window
             relevant_events = [
                 event for event in self.security_events
-                if (event['timestamp'] >= window_start and 
+                if (event['timestamp'] >= window_start and
                    event['event_type'] in rule['events'] and
                    event['context'].client_ip == context.client_ip)
             ]
-            \n            if len(relevant_events) >= rule['threshold']:
+
+            if len(relevant_events) >= rule['threshold']:
                 # Generate security alert
                 alert = SecurityAlert(
                     alert_id=str(uuid.uuid4()),
                     severity=rule['severity'],
                     category=AlertCategory.SECURITY_INCIDENT,
-                    title=f\"{rule_name.replace('_', ' ').title()} Detected\",
-                    description=f\"Detected {len(relevant_events)} {rule_name} events from {context.client_ip}\",
+                    title=f"{rule_name.replace('_', ' ').title()} Detected",
+                    description=f"Detected {len(relevant_events)} {rule_name} events from {context.client_ip}",
                     source_ip=context.client_ip,
-                    affected_systems=[\"API Gateway\"],
+                    affected_systems=["API Gateway"],
                     indicators=[{
                         'type': 'ip_address',
                         'value': context.client_ip,
                         'confidence': 0.8
                     }],
                     recommended_actions=[
-                        f\"Block IP address {context.client_ip}\",
-                        \"Investigate user activity patterns\",
-                        \"Review authentication logs\",
-                        \"Consider implementing additional security controls\"
+                        f"Block IP address {context.client_ip}",
+                        "Investigate user activity patterns",
+                        "Review authentication logs",
+                        "Consider implementing additional security controls"
                     ],
                     compliance_impact=[
-                        \"DoD 8500.01E - SI-4 (Information System Monitoring)\",
-                        \"NIST 800-53 - IR-4 (Incident Handling)\"
+                        "DoD 8500.01E - SI-4 (Information System Monitoring)",
+                        "NIST 800-53 - IR-4 (Incident Handling)"
                     ]
                 )
-                \n                return alert
-            \n        except Exception as e:
-            self.logger.error(f\"Correlation rule check failed for {rule_name}: {e}\")
-        \n        return None
+
+                return alert
+
+        except Exception as e:
+            self.logger.error(f"Correlation rule check failed for {rule_name}: {e}")
+
+        return None
 
 
 class APIAuditIntegration:
     """
     Main integration class for API Gateway audit functionality.
-    
+
     Provides comprehensive audit integration between API Gateway operations
     and the DoD audit infrastructure.
     """
-    
+
     def __init__(self, redis_url: str = "redis://localhost:6379"):
         """Initialize API audit integration."""
         self.logger = logging.getLogger(__name__)
         self.redis_client = None
         self.redis_url = redis_url
-        
+
         # Audit components
         self.audit_logger = None
         self.compliance_reporter = None
         self.event_generator = None
         self.security_correlator = APISecurityCorrelator()
-        
+
         # Metrics tracking
         self.audit_metrics = defaultdict(int)
         self.compliance_metrics = defaultdict(lambda: defaultdict(int))
-        
+
     async def initialize(self) -> None:
         """Initialize audit integration."""
         try:
             # Initialize Redis client
             self.redis_client = await aioredis.from_url(self.redis_url)
             await self.redis_client.ping()
-            
+
             # Initialize audit components
             self.audit_logger = AuditLogger()
             await self.audit_logger.initialize()
-            
+
             self.compliance_reporter = ComplianceReporter()
-            
+
             # Initialize event generator
             self.event_generator = APIAuditEventGenerator(self.audit_logger)
-            
+
             # Start background tasks
             asyncio.create_task(self._metrics_collection_loop())
             asyncio.create_task(self._compliance_monitoring_loop())
-            
+
             self.logger.info("API audit integration initialized")
-            
+
         except Exception as e:
             self.logger.error(f"Failed to initialize API audit integration: {e}")
             raise
-    
+
     async def audit_api_request(self, method: str, endpoint: str, status_code: int,
                               response_time: float, user_id: str = None,
                               client_ip: str = "unknown", user_agent: str = None,
@@ -421,33 +427,33 @@ class APIAuditIntegration:
                 response_status=status_code,
                 response_time=response_time
             )
-            
+
             # Determine event type based on request characteristics
             event_type = self._determine_api_event_type(method, endpoint, status_code, additional_context)
-            
+
             # Generate audit event
             event_id = await self.event_generator.audit_api_request(
                 context, event_type, additional_context
             )
-            
+
             # Update metrics
             self.audit_metrics['total_api_requests'] += 1
             self.audit_metrics[f'status_{status_code//100}xx'] += 1
-            
+
             # Check for security correlations
             if self._is_security_relevant(event_type, status_code):
                 alerts = await self.security_correlator.process_security_event(event_type, context)
-                
+
                 # Process any generated alerts
                 for alert in alerts:
                     await self._handle_security_alert(alert)
-            
+
             return event_id
-            
+
         except Exception as e:
             self.logger.error(f"API request audit failed: {e}")
             raise
-    
+
     def _determine_api_event_type(self, method: str, endpoint: str, status_code: int,
                                  additional_context: Dict[str, Any] = None) -> APIAuditEventType:
         """Determine appropriate audit event type for API request."""
@@ -457,31 +463,31 @@ class APIAuditIntegration:
                 return APIAuditEventType.API_OAUTH_TOKEN_VALIDATED
             else:
                 return APIAuditEventType.API_OAUTH_TOKEN_REJECTED
-        
+
         # Check for access control events
         if status_code == 403:
             return APIAuditEventType.API_ACCESS_DENIED
         elif status_code == 401:
             return APIAuditEventType.API_OAUTH_TOKEN_REJECTED
-        
+
         # Check for data access events
         if additional_context and additional_context.get('classified_data'):
             return APIAuditEventType.API_CLASSIFIED_DATA_ACCESS
-        
+
         # Check for export events
         if method == 'GET' and '/export' in endpoint:
             return APIAuditEventType.API_DATA_EXPORT
-        
+
         # Check for security events
         if additional_context and additional_context.get('security_threat'):
             return APIAuditEventType.API_SECURITY_THREAT_DETECTED
-        
+
         # Default to standard request
         if status_code < 400:
             return APIAuditEventType.API_ACCESS_GRANTED
         else:
             return APIAuditEventType.API_REQUEST_BLOCKED
-    
+
     def _is_security_relevant(self, event_type: APIAuditEventType, status_code: int) -> bool:
         """Check if event is security-relevant for correlation."""
         security_events = [
@@ -491,9 +497,9 @@ class APIAuditIntegration:
             APIAuditEventType.API_ATTACK_BLOCKED,
             APIAuditEventType.API_INSUFFICIENT_CLEARANCE
         ]
-        
+
         return event_type in security_events or status_code >= 400
-    
+
     async def _handle_security_alert(self, alert: SecurityAlert) -> None:
         """Handle security alert generated from correlation."""
         try:
@@ -510,17 +516,17 @@ class APIAuditIntegration:
                 },
                 source_ip=alert.source_ip
             )
-            
+
             # Store alert for monitoring systems
             alert_data = asdict(alert)
             await self.redis_client.lpush("security_alerts", json.dumps(alert_data, default=str))
             await self.redis_client.ltrim("security_alerts", 0, 1000)  # Keep recent 1000
-            
+
             self.logger.warning(f"Security alert generated: {alert.title}")
-            
+
         except Exception as e:
             self.logger.error(f"Security alert handling failed: {e}")
-    
+
     async def audit_sla_violation(self, target_name: str, measured_value: float,
                                 target_value: float, severity: str) -> str:
         """Audit SLA violation event."""
@@ -533,26 +539,26 @@ class APIAuditIntegration:
                 client_ip="127.0.0.1",
                 classification_level=ClassificationLevel.UNCLASSIFIED
             )
-            
+
             additional_data = {
                 'sla_target': target_name,
                 'measured_value': measured_value,
                 'target_value': target_value,
                 'violation_severity': severity
             }
-            
+
             event_id = await self.event_generator.audit_api_request(
                 context, APIAuditEventType.API_SLA_VIOLATION, additional_data
             )
-            
+
             self.audit_metrics['sla_violations'] += 1
-            
+
             return event_id
-            
+
         except Exception as e:
             self.logger.error(f"SLA violation audit failed: {e}")
             raise
-    
+
     async def audit_analytics_event(self, event_type: str, analysis_results: Dict[str, Any]) -> str:
         """Audit analytics and monitoring events."""
         try:
@@ -564,12 +570,12 @@ class APIAuditIntegration:
                 client_ip="127.0.0.1",
                 classification_level=ClassificationLevel.UNCLASSIFIED
             )
-            
+
             additional_data = {
                 'analytics_type': event_type,
                 'results': analysis_results
             }
-            
+
             # Determine API audit event type
             if 'anomaly' in event_type.lower():
                 api_event_type = APIAuditEventType.API_ANOMALY_DETECTED
@@ -577,19 +583,19 @@ class APIAuditIntegration:
                 api_event_type = APIAuditEventType.API_PATTERN_ANALYSIS
             else:
                 api_event_type = APIAuditEventType.API_REQUEST_PROCESSED
-            
+
             event_id = await self.event_generator.audit_api_request(
                 context, api_event_type, additional_data
             )
-            
+
             self.audit_metrics['analytics_events'] += 1
-            
+
             return event_id
-            
+
         except Exception as e:
             self.logger.error(f"Analytics event audit failed: {e}")
             raise
-    
+
     async def _metrics_collection_loop(self) -> None:
         """Background loop for collecting audit metrics."""
         while True:
@@ -599,36 +605,36 @@ class APIAuditIntegration:
                     'timestamp': datetime.utcnow().isoformat(),
                     'audit_metrics': dict(self.audit_metrics),
                     'compliance_metrics': {
-                        framework: dict(metrics) 
+                        framework: dict(metrics)
                         for framework, metrics in self.compliance_metrics.items()
                     }
                 }
-                
+
                 await self.redis_client.set(
                     "api_audit_metrics",
                     json.dumps(metrics_data),
                     ex=3600  # Expire after 1 hour
                 )
-                
+
                 await asyncio.sleep(300)  # Update every 5 minutes
-                
+
             except Exception as e:
                 self.logger.error(f"Metrics collection error: {e}")
                 await asyncio.sleep(300)
-    
+
     async def _compliance_monitoring_loop(self) -> None:
         """Background loop for compliance monitoring."""
         while True:
             try:
                 # Check compliance status
                 await self._check_compliance_status()
-                
+
                 await asyncio.sleep(3600)  # Check every hour
-                
+
             except Exception as e:
                 self.logger.error(f"Compliance monitoring error: {e}")
                 await asyncio.sleep(3600)
-    
+
     async def _check_compliance_status(self) -> None:
         """Check overall compliance status."""
         try:
@@ -636,22 +642,22 @@ class APIAuditIntegration:
             for framework in [ComplianceFramework.DOD_8500_01E, ComplianceFramework.NIST_SP_800_53]:
                 # This is a simplified compliance check
                 # In a real implementation, this would check specific compliance requirements
-                
+
                 total_events = sum(self.audit_metrics.values())
                 security_events = (
                     self.audit_metrics.get('security_incidents', 0) +
                     self.audit_metrics.get('sla_violations', 0)
                 )
-                
+
                 compliance_score = max(0, 100 - (security_events / max(total_events, 1)) * 100)
-                
+
                 self.compliance_metrics[framework.value]['compliance_score'] = compliance_score
                 self.compliance_metrics[framework.value]['total_events'] = total_events
                 self.compliance_metrics[framework.value]['security_events'] = security_events
-            
+
         except Exception as e:
             self.logger.error(f"Compliance status check failed: {e}")
-    
+
     async def generate_api_compliance_report(self, framework: ComplianceFramework,
                                            start_time: datetime,
                                            end_time: datetime) -> Dict[str, Any]:
@@ -659,7 +665,7 @@ class APIAuditIntegration:
         try:
             # This would integrate with the existing compliance reporter
             # to generate API-specific compliance reports
-            
+
             report_data = {
                 'framework': framework.value,
                 'period': {
@@ -670,43 +676,43 @@ class APIAuditIntegration:
                 'compliance_score': self.compliance_metrics[framework.value].get('compliance_score', 0),
                 'recommendations': await self._generate_compliance_recommendations(framework)
             }
-            
+
             return report_data
-            
+
         except Exception as e:
             self.logger.error(f"API compliance report generation failed: {e}")
             return {'error': str(e)}
-    
+
     async def _generate_compliance_recommendations(self, framework: ComplianceFramework) -> List[str]:
         """Generate compliance recommendations."""
         recommendations = []
-        
+
         try:
             metrics = self.compliance_metrics[framework.value]
-            
+
             if metrics.get('security_events', 0) > 10:
                 recommendations.append(
                     "High number of security events detected. Review API security controls."
                 )
-            
+
             if metrics.get('compliance_score', 100) < 90:
                 recommendations.append(
                     "Compliance score below 90%. Investigate audit findings and implement corrective actions."
                 )
-            
+
             if self.audit_metrics.get('sla_violations', 0) > 5:
                 recommendations.append(
                     "Multiple SLA violations detected. Review system performance and capacity."
                 )
-            
+
             if not recommendations:
                 recommendations.append("API audit compliance is within acceptable parameters.")
-            
+
         except Exception as e:
             self.logger.error(f"Compliance recommendations generation failed: {e}")
-        
+
         return recommendations
-    
+
     async def get_audit_metrics(self) -> Dict[str, Any]:
         """Get current audit metrics."""
         try:
@@ -719,16 +725,16 @@ class APIAuditIntegration:
                 },
                 'security_alerts_count': await self.redis_client.llen("security_alerts")
             }
-            
+
         except Exception as e:
             self.logger.error(f"Failed to get audit metrics: {e}")
             return {'error': str(e)}
-    
+
     async def close(self) -> None:
         """Clean up audit integration resources."""
         if self.redis_client:
             await self.redis_client.close()
-        
+
         self.logger.info("API audit integration closed")
 
 
@@ -737,11 +743,11 @@ if __name__ == "__main__":
     async def main():
         integration = APIAuditIntegration()
         await integration.initialize()
-        
+
         # Simulate API request auditing
         for i in range(20):
             status_code = 200 if i % 8 != 0 else (403 if i % 4 == 0 else 500)
-            
+
             event_id = await integration.audit_api_request(
                 method="GET",
                 endpoint=f"/api/v1/data/{i % 5}",
@@ -751,9 +757,9 @@ if __name__ == "__main__":
                 client_ip=f"192.168.1.{i % 254 + 1}",
                 classification=ClassificationLevel.UNCLASSIFIED
             )
-            
+
             print(f"Generated audit event: {event_id}")
-        
+
         # Simulate SLA violation
         await integration.audit_sla_violation(
             target_name="API Availability",
@@ -761,11 +767,11 @@ if __name__ == "__main__":
             target_value=99.9,
             severity="high"
         )
-        
+
         # Get audit metrics
         metrics = await integration.get_audit_metrics()
         print(f"Audit Metrics: {json.dumps(metrics, indent=2)}")
-        
+
         # Generate compliance report
         report = await integration.generate_api_compliance_report(
             ComplianceFramework.DOD_8500_01E,
@@ -773,7 +779,7 @@ if __name__ == "__main__":
             datetime.utcnow()
         )
         print(f"Compliance Report: {json.dumps(report, indent=2)}")
-        
+
         await integration.close()
-    
+
     asyncio.run(main())

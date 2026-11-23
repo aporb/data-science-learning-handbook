@@ -546,7 +546,7 @@ class APIGatewayMonitor:
         while True:
             try:
                 if self.enable_advanced_analytics and len(self.request_patterns) > 10:
-                await self._process_analytics()
+                    await self._process_analytics()
                 
                 await asyncio.sleep(300)  # Process every 5 minutes
                 

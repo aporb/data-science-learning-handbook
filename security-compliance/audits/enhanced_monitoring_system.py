@@ -33,6 +33,7 @@ Date: 2025-07-27
 import asyncio
 import json
 import logging
+from importlib import import_module
 import time
 import statistics
 from datetime import datetime, timezone, timedelta
@@ -61,7 +62,7 @@ from .enhanced_log_aggregator import EnhancedLogAggregator, LogEvent, LogSourceT
 from ..auth.unified_access_control.audit import AuditIntegrationManager
 
 # Import multi-classification audit integration
-from ..multi-classification.classification_audit_logger import ClassificationAuditLogger
+ClassificationAuditLogger = import_module("..multi-classification.classification_audit_logger", __package__).ClassificationAuditLogger
 
 logger = logging.getLogger(__name__)
 
