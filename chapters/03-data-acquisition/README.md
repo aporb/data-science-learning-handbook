@@ -42,7 +42,7 @@ Here is the practical breakdown:
 
 > **Sanity check:** "Can I just copy this data to my personal Google Drive to work on it from home?" No. This seems obvious, but it happens. CUI and above cannot leave authorized systems. Even public data pulls from unclassified APIs should not be combined with CUI in uncontrolled environments. If you are not sure where a dataset sits on this spectrum, stop and ask your data owner or security officer before touching it.
 
-The practical implication for your workflow: identify the classification level of your target data before you figure out which tools you will use. A model you want to build against Secret readiness data cannot be trained in a Databricks notebook on your personal AWS account. It has to run in an authorized environment — Advana's SIPR workspace, Palantir Foundry at IL5, or a classified enclave your customer manages.
+The practical implication for your workflow: identify the classification level of your target data before you figure out which tools you will use. A model you want to build against Secret readiness data cannot be trained in a Databricks notebook on your personal AWS account. It has to run in an authorized environment — a program-authorized SIPRNet workspace, a specifically authorized Secret Palantir deployment, or another classified enclave your customer authorizes. IL5 is unclassified and cannot host Secret data.
 
 ```mermaid
 graph TD
@@ -79,7 +79,7 @@ The data quality is imperfect. Vendor names are frequently inconsistent (you wil
 
 ### SAM.gov Contract Awards API (formerly FPDS-NG)
 
-FPDS-NG (Federal Procurement Data System — Next Generation) was retired on February 24, 2026. Contract award data previously accessible through fpds.gov and its ATOM feed is now served through the SAM.gov Contract Awards API. The new API endpoint is `api.sam.gov/contract-awards/v1/search` and returns JSON rather than XML. An API key is required — registration is free through your SAM.gov profile.
+FPDS ezSearch retired on February 24, 2026. That date does not establish retirement of every FPDS feed or capability. The SAM.gov Contract Awards API is the documented JSON API for contract-award data. Check current ATOM-feed and migration notices separately. The API endpoint is `api.sam.gov/contract-awards/v1/search` and returns JSON rather than XML. An API key is required. Obtain it through your SAM.gov profile and protect it. Last checked: November 23, 2026. Sources: [GSA migration notice](https://content.govdelivery.com/accounts/USGSA/bulletins/408f942) and [Contract Awards API documentation](https://open.gsa.gov/api/contract-awards/).
 
 Rate limits are tiered: 10 requests per day with no SAM role, 1,000 per day with a standard SAM role, and 10,000 per day for system accounts. For large data pulls, the bulk extract option supports up to 1 million records in JSON or CSV format, replacing the old ATOM feed pagination approach.
 

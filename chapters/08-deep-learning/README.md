@@ -4,9 +4,11 @@ The video feed was coming in at 30 frames per second from four separate drone pl
 
 Kevin Adeyemi had trained object detection models before. He'd done it at a computer vision startup, on AWS SageMaker, using open-source weights and public benchmark datasets. That was fine work. But it had never mattered the way this mattered.
 
-The program office had approved the use of a YOLOv8 architecture fine-tuned on DoD-classified imagery. The production environment was Palantir Foundry running on Azure Government at IL5. The training had happened on Databricks with A10g GPU clusters. Kevin had four weeks to validate that the model's latency profile was within spec, that its false positive rate on civilian vehicles was below 0.3%, and that the entire inference pipeline could be audited — every prediction logged, every confidence score recorded, every human override captured.
+The program office had approved the use of a YOLOv8 architecture fine-tuned on controlled unclassified imagery. The production environment was Palantir Foundry running on Azure Government at IL5. Training used GPU compute approved for the dataset. The team verified instance availability and the exact Databricks offering rather than assuming commercial GPU support. Kevin had four weeks to validate that the model's latency profile was within spec, that its false positive rate on civilian vehicles was below 0.3%, and that the entire inference pipeline could be audited — every prediction logged, every confidence score recorded, every human override captured.
 
-He had built a YOLO model before. He had never built one that needed to be auditable at IL5 classification levels with a documented kill chain review process.
+He had built a YOLO model before. He had never built one that needed to be auditable in an authorized IL5 environment with a documented kill chain review process.
+
+This is an illustrative scenario, not an account of a specific authorized deployment. Classified imagery requires a separately authorized classified environment. IL5 is unclassified.
 
 This chapter is about what that kind of engineering actually requires.
 
@@ -319,7 +321,7 @@ The government-specific wrinkle is domain gap. ImageNet contains photographs of 
 
 This is the part that nobody on your program warned you about, and it will add weeks to your schedule if you don't plan for it.
 
-At IL5 and above, your model training environment has no internet access. The `pip install transformers` and `model = ResNet50(weights="IMAGENET1K_V2")` that work on your laptop will fail silently or throw a connection timeout on the classified network. Pre-trained model weights are hosted on HuggingFace Hub and PyTorch Hub — both on the public internet, both inaccessible.
+Some restricted training environments have no public internet access. IL5 alone does not mean air-gapped or classified. Verify the actual network and approved package-transfer process. The `pip install transformers` and `model = ResNet50(weights="IMAGENET1K_V2")` that work on your laptop will fail silently or throw a connection timeout on the classified network. Pre-trained model weights are hosted on HuggingFace Hub and PyTorch Hub — both on the public internet, both inaccessible.
 
 The process for getting pre-trained weights into an air-gapped environment:
 
@@ -495,9 +497,9 @@ Databricks is the right platform for training and experimentation. Palantir Foun
 
 Kevin's final pipeline used four distinct phases:
 
-**Training:** Databricks on AWS GovCloud (FedRAMP High, IL5), PyTorch 2.0, A10g instances. YOLOv8 pre-trained on COCO, fine-tuned on the classified imagery dataset. 18 training runs over 12 days. MLflow logged every run: architecture config, learning rate schedule, per-class average precision, and the false positive rate on civilian vehicle frames. The 0.3% FPR threshold was not hit until run 14.
+**Training:** Databricks on AWS GovCloud (FedRAMP High, IL5), PyTorch 2.0, A10g instances. YOLOv8 pre-trained on COCO, fine-tuned on the controlled unclassified imagery dataset. 18 training runs over 12 days. MLflow logged every run: architecture config, learning rate schedule, per-class average precision, and the false positive rate on civilian vehicle frames. The 0.3% FPR threshold was not hit until run 14.
 
-The pre-trained YOLOv8 weights were downloaded unclassified, submitted for transfer via DD-1149, scanned at the secure facility boundary, and available on the IL5 Databricks DBFS within 11 days of Kevin's initial request. He had started on the unclassified environment with a public-domain satellite dataset while the weights transfer was in process — three weeks of architecture testing that would have been wasted time if he had waited for the approved weights before starting.
+In this fictional scenario, the team imported reviewed model weights through the program-approved software process. A DD-1149 is not, by itself, cross-domain transfer authorization. The actual procedure and timing depend on the system. He had started on the unclassified environment with a public-domain satellite dataset while the weights transfer was in process — three weeks of architecture testing that would have been wasted time if he had waited for the approved weights before starting.
 
 **Evaluation:** The full evaluation suite ran against a held-out test set drawn from operational imagery from the deployment theater — not the training theater. This is the detail that almost everyone skips and that catches most distribution shift problems.
 

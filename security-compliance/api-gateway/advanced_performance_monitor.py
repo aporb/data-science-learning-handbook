@@ -230,11 +230,11 @@ class PerformancePredictor:
             self.models[metric_type] = isolation_forest
             self.scalers[metric_type] = scaler
             
-            self.logger.info(f\"Prediction model trained for {metric_type.value}")
+            self.logger.info(f"Prediction model trained for {metric_type.value}")
             return True
             
         except Exception as e:
-            self.logger.error(f\"Failed to train prediction model for {metric_type.value}: {e}")
+            self.logger.error(f"Failed to train prediction model for {metric_type.value}: {e}")
             return False
     
     async def predict_anomaly(self, metric_type: PerformanceMetricType,
@@ -288,7 +288,7 @@ class PerformancePredictor:
             return is_anomaly, confidence
             
         except Exception as e:
-            self.logger.error(f\"Anomaly prediction failed for {metric_type.value}: {e}")
+            self.logger.error(f"Anomaly prediction failed for {metric_type.value}: {e}")
             return False, 0.0
     
     async def predict_future_values(self, metric_type: PerformanceMetricType,
@@ -332,7 +332,7 @@ class PerformancePredictor:
             return predictions
             
         except Exception as e:
-            self.logger.error(f\"Future value prediction failed for {metric_type.value}: {e}")
+            self.logger.error(f"Future value prediction failed for {metric_type.value}: {e}")
             return []
 
 
@@ -374,7 +374,7 @@ class PerformanceBaseliner:
             )
             
             # Create baseline
-            baseline_id = f\"{metric_type.value}_{component}_{int(time.time())}"
+            baseline_id = f"{metric_type.value}_{component}_{int(time.time())}"
             baseline = PerformanceBaseline(
                 baseline_id=baseline_id,
                 metric_type=metric_type,
@@ -388,21 +388,21 @@ class PerformanceBaseliner:
             )
             
             # Store baseline
-            baseline_key = f\"{metric_type.value}_{component}"
+            baseline_key = f"{metric_type.value}_{component}"
             self.baselines[baseline_key] = baseline
             
-            self.logger.info(f\"Baseline established for {metric_type.value} on {component}: {baseline_value:.2f} ± {standard_deviation:.2f}")
+            self.logger.info(f"Baseline established for {metric_type.value} on {component}: {baseline_value:.2f} ± {standard_deviation:.2f}")
             
             return baseline
             
         except Exception as e:
-            self.logger.error(f\"Failed to establish baseline for {metric_type.value} on {component}: {e}")
+            self.logger.error(f"Failed to establish baseline for {metric_type.value} on {component}: {e}")
             return None
     
     async def check_baseline_deviation(self, metric: PerformanceMetric) -> Tuple[bool, float]:
         """Check if metric deviates significantly from baseline."""
         try:
-            baseline_key = f\"{metric.metric_type.value}_{metric.component}"
+            baseline_key = f"{metric.metric_type.value}_{metric.component}"
             baseline = self.baselines.get(baseline_key)
             
             if not baseline or datetime.utcnow() > baseline.valid_until:
@@ -417,12 +417,12 @@ class PerformanceBaseliner:
             return is_significant, deviation
             
         except Exception as e:
-            self.logger.error(f\"Baseline deviation check failed: {e}")
+            self.logger.error(f"Baseline deviation check failed: {e}")
             return False, 0.0
     
     def get_baseline(self, metric_type: PerformanceMetricType, component: str) -> Optional[PerformanceBaseline]:
         """Get current baseline for metric and component."""
-        baseline_key = f\"{metric_type.value}_{component}"
+        baseline_key = f"{metric_type.value}_{component}"
         baseline = self.baselines.get(baseline_key)
         
         if baseline and datetime.utcnow() <= baseline.valid_until:
@@ -477,18 +477,18 @@ class AdvancedPerformanceMonitor:
                 self.audit_logger = AuditLogger()
                 await self.audit_logger.initialize()
             except Exception as e:
-                self.logger.warning(f\"Audit logger initialization failed: {e}")
+                self.logger.warning(f"Audit logger initialization failed: {e}")
             
             try:
                 self.prometheus_metrics = PrometheusMetrics()
             except Exception as e:
-                self.logger.warning(f\"Prometheus metrics initialization failed: {e}")
+                self.logger.warning(f"Prometheus metrics initialization failed: {e}")
             
             try:
                 self.alert_manager = SecurityAlertManager()
                 await self.alert_manager.initialize()
             except Exception as e:
-                self.logger.warning(f\"Alert manager initialization failed: {e}")
+                self.logger.warning(f"Alert manager initialization failed: {e}")
             
             # Load existing thresholds and baselines
             await self._load_thresholds()
@@ -508,7 +508,7 @@ class AdvancedPerformanceMonitor:
             self.logger.info("Advanced performance monitor initialized")
             
         except Exception as e:
-            self.logger.error(f\"Failed to initialize performance monitor: {e}")
+            self.logger.error(f"Failed to initialize performance monitor: {e}")
             raise
     
     async def _load_thresholds(self) -> None:
@@ -524,7 +524,7 @@ class AdvancedPerformanceMonitor:
                     self.thresholds[threshold_id] = threshold
                     
         except Exception as e:
-            self.logger.error(f\"Failed to load thresholds: {e}")
+            self.logger.error(f"Failed to load thresholds: {e}")
     
     async def _load_baselines(self) -> None:
         """Load performance baselines from storage."""
@@ -540,7 +540,7 @@ class AdvancedPerformanceMonitor:
                     self.baseliner.baselines[baseline_key] = baseline
                     
         except Exception as e:
-            self.logger.error(f\"Failed to load baselines: {e}")
+            self.logger.error(f"Failed to load baselines: {e}")
     
     async def _setup_default_thresholds(self) -> None:
         """Setup default performance thresholds."""
@@ -606,11 +606,11 @@ class AdvancedPerformanceMonitor:
             self.thresholds[threshold.threshold_id] = threshold
             await self._save_thresholds()
             
-            self.logger.info(f\"Performance threshold added: {threshold.threshold_id}")
+            self.logger.info(f"Performance threshold added: {threshold.threshold_id}")
             return True
             
         except Exception as e:
-            self.logger.error(f\"Failed to add threshold: {e}")
+            self.logger.error(f"Failed to add threshold: {e}")
             return False
     
     async def _save_thresholds(self) -> None:
@@ -626,7 +626,7 @@ class AdvancedPerformanceMonitor:
             await self.redis_client.set("performance_thresholds", json.dumps(thresholds_dict))
             
         except Exception as e:
-            self.logger.error(f\"Failed to save thresholds: {e}")
+            self.logger.error(f"Failed to save thresholds: {e}")
     
     async def record_metric(self, metric_type: PerformanceMetricType,
                           component: str, value: float,
@@ -653,11 +653,11 @@ class AdvancedPerformanceMonitor:
             metric_data['timestamp'] = metric.timestamp.isoformat()
             
             await self.redis_client.lpush(
-                f\"performance_metrics:{metric_type.value}:{component}",
+                f"performance_metrics:{metric_type.value}:{component}",
                 json.dumps(metric_data)
             )
             await self.redis_client.ltrim(
-                f\"performance_metrics:{metric_type.value}:{component}",
+                f"performance_metrics:{metric_type.value}:{component}",
                 0, 10000
             )
             
@@ -671,10 +671,10 @@ class AdvancedPerformanceMonitor:
             # Check baseline deviation
             await self._check_baseline_deviation(metric)
             
-            self.logger.debug(f\"Recorded {metric_type.value} metric for {component}: {value}")
+            self.logger.debug(f"Recorded {metric_type.value} metric for {component}: {value}")
             
         except Exception as e:
-            self.logger.error(f\"Failed to record metric: {e}")
+            self.logger.error(f"Failed to record metric: {e}")
     
     async def _update_prometheus_metrics(self, metric: PerformanceMetric) -> None:
         """Update Prometheus metrics."""
@@ -683,7 +683,7 @@ class AdvancedPerformanceMonitor:
             # Implementation depends on the specific Prometheus metrics structure
             pass
         except Exception as e:
-            self.logger.error(f\"Failed to update Prometheus metrics: {e}")
+            self.logger.error(f"Failed to update Prometheus metrics: {e}")
     
     async def _check_thresholds(self, metric: PerformanceMetric) -> None:
         """Check metric against configured thresholds."""
@@ -714,7 +714,7 @@ class AdvancedPerformanceMonitor:
                     await self._trigger_alert(alert)
                     
         except Exception as e:
-            self.logger.error(f\"Threshold check failed: {e}")
+            self.logger.error(f"Threshold check failed: {e}")
     
     async def _evaluate_threshold(self, threshold: PerformanceThreshold,
                                 recent_metrics: List[PerformanceMetric],
@@ -765,10 +765,10 @@ class AdvancedPerformanceMonitor:
                 return None
             
             # Create alert
-            alert_id = f\"{threshold.threshold_id}_{int(time.time())}"
+            alert_id = f"{threshold.threshold_id}_{int(time.time())}"
             
             # Check if similar alert is already active
-            existing_alert_key = f\"{threshold.metric_type.value}_{threshold.component}_{severity.value}"
+            existing_alert_key = f"{threshold.metric_type.value}_{threshold.component}_{severity.value}"
             if existing_alert_key in self.active_alerts:
                 return None  # Don't duplicate alerts
             
@@ -787,7 +787,7 @@ class AdvancedPerformanceMonitor:
             return alert
             
         except Exception as e:
-            self.logger.error(f\"Threshold evaluation failed: {e}")
+            self.logger.error(f"Threshold evaluation failed: {e}")
             return None
     
     def _generate_alert_message(self, threshold: PerformanceThreshold,
@@ -803,15 +803,15 @@ class AdvancedPerformanceMonitor:
             AlertCondition.BASELINE_DEVIATION: "deviated from baseline"
         }.get(threshold.condition, "violated")
         
-        return (f\"{severity.value.upper()}: {threshold.metric_type.value} on {threshold.component} "
-               f\"{condition_text} threshold. Current: {metric.value:.2f}, "
-               f\"Threshold: {threshold.warning_threshold:.2f}")
+        return (f"{severity.value.upper()}: {threshold.metric_type.value} on {threshold.component} "
+               f"{condition_text} threshold. Current: {metric.value:.2f}, "
+               f"Threshold: {threshold.warning_threshold:.2f}")
     
     async def _trigger_alert(self, alert: PerformanceAlert) -> None:
         """Trigger performance alert."""
         try:
             # Store alert
-            alert_key = f\"{alert.metric_type.value}_{alert.component}_{alert.severity.value}"
+            alert_key = f"{alert.metric_type.value}_{alert.component}_{alert.severity.value}"
             self.active_alerts[alert_key] = alert
             self.alerts_buffer.append(alert)
             
@@ -845,16 +845,16 @@ class AdvancedPerformanceMonitor:
                 await self.alert_manager.send_alert({
                     'type': 'performance',
                     'severity': alert.severity.value,
-                    'title': f\"Performance Alert: {alert.metric_type.value}",
+                    'title': f"Performance Alert: {alert.metric_type.value}",
                     'message': alert.message,
                     'component': alert.component,
                     'timestamp': alert.triggered_at.isoformat()
                 })
             
-            self.logger.warning(f\"Performance alert triggered: {alert.message}")
+            self.logger.warning(f"Performance alert triggered: {alert.message}")
             
         except Exception as e:
-            self.logger.error(f\"Failed to trigger alert: {e}")
+            self.logger.error(f"Failed to trigger alert: {e}")
     
     async def _check_baseline_deviation(self, metric: PerformanceMetric) -> None:
         """Check metric for baseline deviation."""
@@ -870,14 +870,14 @@ class AdvancedPerformanceMonitor:
                     condition=AlertCondition.BASELINE_DEVIATION,
                     current_value=metric.value,
                     threshold_value=deviation,
-                    message=f\"Baseline deviation detected: {metric.metric_type.value} on {metric.component} deviates {deviation:.1f} standard deviations from baseline\",
+                    message=f"Baseline deviation detected: {metric.metric_type.value} on {metric.component} deviates {deviation:.1f} standard deviations from baseline",
                     triggered_at=metric.timestamp
                 )
                 
                 await self._trigger_alert(alert)
                 
         except Exception as e:
-            self.logger.error(f\"Baseline deviation check failed: {e}")
+            self.logger.error(f"Baseline deviation check failed: {e}")
     
     async def _monitoring_loop(self) -> None:
         """Background monitoring loop."""
@@ -889,7 +889,7 @@ class AdvancedPerformanceMonitor:
                 await asyncio.sleep(30)  # Collect every 30 seconds
                 
             except Exception as e:
-                self.logger.error(f\"Monitoring loop error: {e}")
+                self.logger.error(f"Monitoring loop error: {e}")
                 await asyncio.sleep(30)
     
     async def _collect_system_metrics(self) -> None:
@@ -914,7 +914,7 @@ class AdvancedPerformanceMonitor:
             await self.record_metric(PerformanceMetricType.NETWORK_UTILIZATION, "system", network_mb_per_sec)
             
         except Exception as e:
-            self.logger.error(f\"System metrics collection failed: {e}")
+            self.logger.error(f"System metrics collection failed: {e}")
     
     async def _prediction_loop(self) -> None:
         """Background prediction loop."""
@@ -926,7 +926,7 @@ class AdvancedPerformanceMonitor:
                 await asyncio.sleep(1800)  # Run every 30 minutes
                 
             except Exception as e:
-                self.logger.error(f\"Prediction loop error: {e}")
+                self.logger.error(f"Prediction loop error: {e}")
                 await asyncio.sleep(1800)
     
     async def _run_predictions(self) -> None:
@@ -945,7 +945,7 @@ class AdvancedPerformanceMonitor:
             ]
             
             for metric in recent_metrics:
-                key = f\"{metric.metric_type.value}_{metric.component}"
+                key = f"{metric.metric_type.value}_{metric.component}"
                 metric_groups[key].append(metric)
             
             # Run predictions for each group
@@ -971,7 +971,7 @@ class AdvancedPerformanceMonitor:
                         condition=AlertCondition.ANOMALY_DETECTED,
                         current_value=metrics[-1].value,
                         threshold_value=confidence,
-                        message=f\"Anomaly detected in {metric_type.value} on {component} (confidence: {confidence:.2f})\",
+                        message=f"Anomaly detected in {metric_type.value} on {component} (confidence: {confidence:.2f})",
                         triggered_at=current_time
                     )
                     
@@ -984,7 +984,7 @@ class AdvancedPerformanceMonitor:
             self.last_prediction_update = current_time
             
         except Exception as e:
-            self.logger.error(f\"Prediction analysis failed: {e}")
+            self.logger.error(f"Prediction analysis failed: {e}")
     
     async def _check_prediction_alerts(self, metric_type: PerformanceMetricType,
                                      component: str,
@@ -1032,7 +1032,7 @@ class AdvancedPerformanceMonitor:
                                 condition=AlertCondition.PREDICTION_BREACH,
                                 current_value=predicted_value,
                                 threshold_value=threshold.warning_threshold,
-                                message=f\"Predicted threshold breach: {metric_type.value} on {component} predicted to reach {predicted_value:.2f} at {timestamp.strftime('%H:%M')}\",
+                                message=f"Predicted threshold breach: {metric_type.value} on {component} predicted to reach {predicted_value:.2f} at {timestamp.strftime('%H:%M')}",
                                 triggered_at=datetime.utcnow()
                             )
                             
@@ -1040,7 +1040,7 @@ class AdvancedPerformanceMonitor:
                         break  # Only alert for first breach
                         
         except Exception as e:
-            self.logger.error(f\"Prediction alert check failed: {e}")
+            self.logger.error(f"Prediction alert check failed: {e}")
     
     async def _baseline_maintenance_loop(self) -> None:
         """Background baseline maintenance loop."""
@@ -1052,7 +1052,7 @@ class AdvancedPerformanceMonitor:
                 await asyncio.sleep(86400)  # Run daily
                 
             except Exception as e:
-                self.logger.error(f\"Baseline maintenance loop error: {e}")
+                self.logger.error(f"Baseline maintenance loop error: {e}")
                 await asyncio.sleep(86400)
     
     async def _maintain_baselines(self) -> None:
@@ -1070,7 +1070,7 @@ class AdvancedPerformanceMonitor:
             # Group by metric type and component
             metric_groups = defaultdict(list)
             for metric in baseline_metrics:
-                key = f\"{metric.metric_type.value}_{metric.component}"
+                key = f"{metric.metric_type.value}_{metric.component}"
                 metric_groups[key].append(metric)
             
             # Update baselines
@@ -1091,7 +1091,7 @@ class AdvancedPerformanceMonitor:
                         await self._save_baselines()
             
         except Exception as e:
-            self.logger.error(f\"Baseline maintenance failed: {e}")
+            self.logger.error(f"Baseline maintenance failed: {e}")
     
     async def _save_baselines(self) -> None:
         """Save baselines to storage."""
@@ -1107,7 +1107,7 @@ class AdvancedPerformanceMonitor:
             await self.redis_client.set("performance_baselines", json.dumps(baselines_dict))
             
         except Exception as e:
-            self.logger.error(f\"Failed to save baselines: {e}")
+            self.logger.error(f"Failed to save baselines: {e}")
     
     async def _alert_escalation_loop(self) -> None:
         """Background alert escalation loop."""
@@ -1119,7 +1119,7 @@ class AdvancedPerformanceMonitor:
                 await asyncio.sleep(600)  # Check every 10 minutes
                 
             except Exception as e:
-                self.logger.error(f\"Alert escalation loop error: {e}")
+                self.logger.error(f"Alert escalation loop error: {e}")
                 await asyncio.sleep(600)
     
     async def _process_alert_escalation(self) -> None:
@@ -1153,7 +1153,7 @@ class AdvancedPerformanceMonitor:
                             }
                         )
                     
-                    self.logger.warning(f\"Alert escalated: {alert.alert_id}")
+                    self.logger.warning(f"Alert escalated: {alert.alert_id}")
                 
                 # Auto-resolve old warnings (after 2 hours)
                 if (alert.severity == AlertSeverity.WARNING and
@@ -1162,7 +1162,7 @@ class AdvancedPerformanceMonitor:
                     await self._resolve_alert(alert_key, "auto_resolved_timeout")
             
         except Exception as e:
-            self.logger.error(f\"Alert escalation processing failed: {e}")
+            self.logger.error(f"Alert escalation processing failed: {e}")
     
     async def resolve_alert(self, alert_id: str, resolution_reason: str = "manual") -> bool:
         """Manually resolve an alert."""
@@ -1177,11 +1177,11 @@ class AdvancedPerformanceMonitor:
             if alert_key:
                 return await self._resolve_alert(alert_key, resolution_reason)
             else:
-                self.logger.warning(f\"Alert not found: {alert_id}")
+                self.logger.warning(f"Alert not found: {alert_id}")
                 return False
                 
         except Exception as e:
-            self.logger.error(f\"Failed to resolve alert: {e}")
+            self.logger.error(f"Failed to resolve alert: {e}")
             return False
     
     async def _resolve_alert(self, alert_key: str, resolution_reason: str) -> bool:
@@ -1208,11 +1208,11 @@ class AdvancedPerformanceMonitor:
             # Remove from active alerts
             del self.active_alerts[alert_key]
             
-            self.logger.info(f\"Alert resolved: {alert.alert_id} - {resolution_reason}")
+            self.logger.info(f"Alert resolved: {alert.alert_id} - {resolution_reason}")
             return True
             
         except Exception as e:
-            self.logger.error(f\"Failed to resolve alert {alert_key}: {e}")
+            self.logger.error(f"Failed to resolve alert {alert_key}: {e}")
             return False
     
     async def get_performance_status(self) -> Dict[str, Any]:
@@ -1269,7 +1269,7 @@ class AdvancedPerformanceMonitor:
             }
             
         except Exception as e:
-            self.logger.error(f\"Failed to get performance status: {e}")
+            self.logger.error(f"Failed to get performance status: {e}")
             return {'error': str(e)}
     
     async def get_performance_report(self, hours: int = 24) -> Dict[str, Any]:
@@ -1344,7 +1344,7 @@ class AdvancedPerformanceMonitor:
             return report
             
         except Exception as e:
-            self.logger.error(f\"Performance report generation failed: {e}")
+            self.logger.error(f"Performance report generation failed: {e}")
             return {'error': str(e)}
     
     async def close(self) -> None:

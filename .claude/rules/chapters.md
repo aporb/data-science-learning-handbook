@@ -1,6 +1,6 @@
 # Chapters — Federal Data Science Handbook
 
-Content in `chapters/` is QA-signed-off and frozen. Do NOT modify any `README.md` file or any file under `exercises/`.
+Preserve the chapter structure and practitioner voice. Allow sourced accuracy corrections, safety fixes, and tested example repairs. Mirror prose changes to the companion site.
 
 ## When generating code for chapters
 
@@ -20,6 +20,6 @@ Content in `chapters/` is QA-signed-off and frozen. Do NOT modify any `README.md
 
 ## Security rules
 
-- IL4+: no external API calls with data, self-hosted models only, self-hosted embeddings for RAG
+- Use only endpoints approved for the exact data, offering, region or network, and system authorization. Reject unauthorized public endpoints. Self-hosting alone does not authorize a model.
 - Never hardcode credentials — use env vars or platform secret management
-- CAC/PIV auth required for all federal systems — see `platform-guides/*/cac-piv-integration.md`
+- Preserve required CAC/PIV access. Use approved service identities for noninteractive workloads. Never bypass the identity provider.

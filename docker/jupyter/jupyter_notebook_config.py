@@ -6,13 +6,12 @@ c = get_config()
 c.ServerApp.ip = '0.0.0.0'
 c.ServerApp.port = 8888
 c.ServerApp.open_browser = False
-c.ServerApp.allow_root = True
+c.ServerApp.allow_root = False
 
-# Security settings
-c.ServerApp.token = ''
-c.ServerApp.password = ''
-c.ServerApp.allow_origin = '*'
-c.ServerApp.disable_check_xsrf = True
+# Keep Jupyter's generated-token authentication and same-origin protections.
+# Do not set an empty token/password. The local lab is for public/synthetic data.
+c.ServerApp.allow_origin = ''
+c.ServerApp.disable_check_xsrf = False
 
 # File and directory settings
 c.ServerApp.root_dir = '/workspace'

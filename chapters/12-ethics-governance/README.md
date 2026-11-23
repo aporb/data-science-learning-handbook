@@ -33,7 +33,9 @@ Before you write a line of code on a federal AI project, you are operating insid
 
 Executive Order 13960 (December 2020) established the first federal policy framework for AI use in government. It required agencies to inventory AI systems, adhere to nine principles for trustworthy AI, and issue governance plans. The Biden administration's EO 14110 (October 2023) expanded on this substantially — adding requirements for safety testing, red-teaming for dual-use AI systems, and transparency reports. The Trump administration's EO 14179 (January 2025) modified the federal approach again, removing some of the prescriptive testing requirements while maintaining the core framework for defense AI applications.
 
-The practical effect: the specific paperwork has changed across administrations, but the underlying obligations — document your systems, assess their risks, test for adverse impacts — have not. Regardless of which administration is in office when you're reading this, the DoD AI Ethical Principles (published 2020, reaffirmed through subsequent policy changes) remain the operative framework for defense AI work.
+Policy changes can change actual obligations, not only paperwork. Verify the current authority and its scope before treating guidance as a requirement. OMB M-25-21 governs covered agency AI use but excludes AI used as a component of a National Security System. Defense and intelligence requirements still apply to excluded systems.
+
+Last verified: November 23, 2026. Sources: [OMB M-25-21](https://www.whitehouse.gov/wp-content/uploads/2025/02/M-25-21-Accelerating-Federal-Use-of-AI-through-Innovation-Governance-and-Public-Trust.pdf), [White House policy summary](https://www.whitehouse.gov/fact-sheets/2025/04/fact-sheet-eliminating-barriers-for-federal-artificial-intelligence-use-and-procurement/), and the [DoD acquisition cybersecurity guidebook](https://www.acq.osd.mil/asda/pwpm/docs/dau/Cybersecurity_Best_Practice_Guidebook_Version_1-24Nov2021.pdf). The guidebook identifies the title and cybersecurity scope of DoDI 5000.90. Consult the current controlling instruction for an actual acquisition decision.
 
 ### DoD AI Ethical Principles
 
@@ -53,7 +55,7 @@ These five principles map directly to technical requirements. "Equitable" means 
 
 ### NIST AI RMF
 
-The National Institute of Standards and Technology published the AI Risk Management Framework (AI RMF 1.0) in January 2023. DoD Instruction 5000.90 (AI Acquisition) references it as the standard framework for AI risk management in acquisition programs. If you're on a program that will go through a Major Capability Acquisition milestone or an AI-specific ATO process, you will encounter AI RMF language.
+The National Institute of Standards and Technology published the AI Risk Management Framework (AI RMF 1.0) in January 2023. AI RMF is a voluntary framework unless an applicable authority adopts it. DoDI 5000.90 is titled “Cybersecurity for Acquisition Decision Authorities and Program Managers,” not “AI Acquisition.” It is not evidence of a universal AI RMF mandate. If you're on a program that will go through a Major Capability Acquisition milestone or an AI-specific ATO process, you will encounter AI RMF language.
 
 The AI RMF organizes risk management into four functions:
 
@@ -83,7 +85,7 @@ The practical entry point for most data scientists is the MEASURE function — y
 
 ### The DoD Responsible AI (RAI) Assessment
 
-DoD Instruction 5000.90 requires AI systems used in acquisition programs to undergo a Responsible AI assessment before deployment. The RAI assessment is not a checkbox exercise — it requires documented evidence of:
+Responsible AI review requirements depend on applicable policy, the acquisition pathway, and program direction. Do not cite DoDI 5000.90 as a universal predeployment RAI assessment mandate. A useful evidence package can include:
 
 - Intended use scope and known limitations
 - Bias testing results with methodology
@@ -91,7 +93,7 @@ DoD Instruction 5000.90 requires AI systems used in acquisition programs to unde
 - Data provenance and quality documentation
 - Monitoring and intervention plan
 
-The assessment is reviewed by the program's Responsible AI Champion (a role created by the DoD Chief Digital and Artificial Intelligence Office). On programs using Advana or Jupiter, the CDAO's own data scientists may be part of the review.
+Confirm the designated reviewers, required evidence, and approval authority with the program. Do not assume the same intake or Responsible AI Champion process across all systems.
 
 > **Note:** The RAI process has been evolving since 2022. The CDAO's AI Assurance team publishes updated guidance at ai.mil. Check the current version before citing specific procedural requirements in program documentation, as the intake forms and review timelines have changed multiple times.
 
@@ -111,7 +113,7 @@ Two bias metrics are most commonly cited in federal AI guidance:
 
 **Equalized odds** — The model's true positive rate AND false positive rate are approximately equal across groups. Demographic parity alone can be achieved by a model that is equally wrong about everyone. Equalized odds is the stricter standard — it requires the model to be equally accurate at identifying genuine risk across groups, not just equally likely to flag people.
 
-For government personnel decisions, equalized odds is the appropriate standard. Demographic parity by itself is insufficient because it doesn't distinguish between a model that is correctly identifying real risk differentials and one that is fabricating risk from demographic proxies.
+No single fairness metric is universally appropriate for government personnel decisions. Choose metrics with domain, civil-rights, and legal reviewers. Demographic parity by itself is insufficient because it doesn't distinguish between a model that is correctly identifying real risk differentials and one that is fabricating risk from demographic proxies.
 
 ```python
 # Platform: Databricks (Advana / Jupiter) or local
@@ -120,10 +122,7 @@ For government personnel decisions, equalized odds is the appropriate standard. 
 
 import numpy as np
 import pandas as pd
-from sklearn.metrics import (
-    confusion_matrix, roc_auc_score,
-    true_positive_rate, false_positive_rate
-)
+from sklearn.metrics import confusion_matrix, roc_auc_score
 
 
 def bias_audit_report(
@@ -133,96 +132,56 @@ def bias_audit_report(
     threshold: float = 0.50,
     reference_group: str = None,
 ) -> pd.DataFrame:
+    """Compare group metrics for a synthetic adverse-outcome demonstration.
+
+    A positive prediction means an adverse flag in this example. favorable_rate
+    is 1 - positive_rate. dp_ratio compares favorable rates, not adverse rates.
+    The 0.80 screen is illustrative, not a legal conclusion or universal rule.
+    Confirm the actual decision and outcome direction with domain/legal experts.
+    Undefined denominators remain NaN. Small slices are reported as excluded.
     """
-    Compute bias metrics across groups defined by a sensitive attribute.
-
-    Metrics computed for each group:
-        - n: sample size
-        - positive_rate: fraction of positive predictions at threshold
-        - tpr: true positive rate (recall) — P(predicted positive | actually positive)
-        - fpr: false positive rate — P(predicted positive | actually negative)
-        - auc: ROC-AUC (if ≥10 positive samples in group)
-        - dp_ratio: demographic parity ratio vs. reference group
-        - odds_ratio: equalized odds ratio (FPR ratio vs. reference group)
-
-    Args:
-        y_true: True labels (0/1)
-        y_pred_proba: Predicted probabilities (positive class)
-        sensitive_attr: Series with group label for each sample
-        threshold: Classification threshold for binary predictions
-        reference_group: Group to use as ratio denominator.
-                         Defaults to the group with the highest positive rate.
-
-    Returns:
-        DataFrame with one row per group, sorted by positive_rate descending.
-    """
-    y_pred = (y_pred_proba >= threshold).astype(int)
-    groups = sensitive_attr.unique()
-    rows   = []
-
-    for group in groups:
-        mask  = (sensitive_attr == group).values
-        n     = int(mask.sum())
-        n_pos = int(y_true[mask].sum())
-
-        if n < 20:
-            continue  # skip tiny slices — metrics are unreliable
-
-        tn, fp, fn, tp = confusion_matrix(
-            y_true[mask], y_pred[mask], labels=[0, 1]
-        ).ravel()
-
+    y_true = np.asarray(y_true)
+    scores = np.asarray(y_pred_proba, dtype=float)
+    groups = pd.Series(sensitive_attr).reset_index(drop=True)
+    if y_true.ndim != 1 or scores.ndim != 1 or len(y_true) != len(scores) or len(groups) != len(scores):
+        raise ValueError("Inputs must be one-dimensional and equally sized")
+    if not 0 <= threshold <= 1 or not np.isin(y_true, [0, 1]).all():
+        raise ValueError("Use binary labels and a threshold between zero and one")
+    if not np.isfinite(scores).all() or ((scores < 0) | (scores > 1)).any() or groups.isna().any():
+        raise ValueError("Use finite probabilities and nonmissing group labels")
+    predicted = (scores >= threshold).astype(int)
+    columns = ["group", "n", "positive_rate", "favorable_rate", "tpr", "fpr", "auc"]
+    rows = []
+    excluded = []
+    for group in groups.unique():
+        mask = (groups == group).to_numpy()
+        n = int(mask.sum())
+        if n < 30:
+            excluded.append(str(group))
+            continue
+        tn, fp, fn, tp = confusion_matrix(y_true[mask], predicted[mask], labels=[0, 1]).ravel()
         positive_rate = float((tp + fp) / n)
-        tpr  = float(tp / (tp + fn)) if (tp + fn) > 0 else np.nan
-        fpr  = float(fp / (fp + tn)) if (fp + tn) > 0 else np.nan
-
-        auc = np.nan
-        if n_pos >= 10 and n_pos < n:
-            try:
-                auc = roc_auc_score(y_true[mask], y_pred_proba[mask])
-            except Exception:
-                pass
-
         rows.append({
-            "group":         str(group),
-            "n":             n,
-            "n_positive":    n_pos,
-            "positive_rate": round(positive_rate, 4),
-            "tpr":           round(tpr, 4) if not np.isnan(tpr) else np.nan,
-            "fpr":           round(fpr, 4) if not np.isnan(fpr) else np.nan,
-            "auc":           round(auc, 4) if not np.isnan(auc) else np.nan,
+            "group": group, "n": n, "positive_rate": positive_rate,
+            "favorable_rate": 1 - positive_rate,
+            "tpr": float(tp / (tp + fn)) if tp + fn else np.nan,
+            "fpr": float(fp / (fp + tn)) if fp + tn else np.nan,
+            "auc": float(roc_auc_score(y_true[mask], scores[mask]))
+                   if len(np.unique(y_true[mask])) == 2 else np.nan,
         })
-
-    result = pd.DataFrame(rows).sort_values("positive_rate", ascending=False)
-
-    # Compute ratios relative to reference group
+    result = pd.DataFrame(rows, columns=columns)
+    result.attrs["excluded_groups"] = excluded
+    if result.empty:
+        return result.assign(dp_ratio=pd.Series(dtype=float), fpr_ratio=pd.Series(dtype=float))
     if reference_group is None:
-        # Default: group with the lowest positive rate (most favorable treatment)
-        reference_group = result.iloc[-1]["group"]
-
-    ref_row = result[result["group"] == reference_group].iloc[0]
-    result["dp_ratio"]    = (result["positive_rate"] / ref_row["positive_rate"]).round(3)
-    result["fpr_ratio"]   = (result["fpr"] / ref_row["fpr"]).round(3)
-
-    print(f"\nBias Audit Report  |  Threshold: {threshold}  |  Reference: {reference_group}")
-    print("=" * 70)
-    print(result.to_string(index=False))
-    print()
-
-    # Flag groups exceeding 4/5ths rule (80% rule from EEOC guidelines)
-    # dp_ratio < 0.8 indicates potential disparate impact
-    flagged = result[result["dp_ratio"] < 0.80]
-    if len(flagged) > 0:
-        print(f"POTENTIAL DISPARATE IMPACT (dp_ratio < 0.80):")
-        for _, row in flagged.iterrows():
-            print(f"  Group '{row['group']}': positive_rate={row['positive_rate']:.3f}, "
-                  f"dp_ratio={row['dp_ratio']:.3f}")
-        print(f"\nAction required: Review feature set for proxies, adjust threshold,")
-        print(f"or apply post-processing fairness constraint before deployment.")
-    else:
-        print("No groups below 4/5ths threshold. Continue to equalized odds review.")
-
-    return result
+        reference_group = result.loc[result["favorable_rate"].idxmax(), "group"]
+    reference = result.loc[result["group"] == reference_group]
+    if reference.empty:
+        raise ValueError("Reference group is missing or below the sample-size threshold")
+    ref = reference.iloc[0]
+    result["dp_ratio"] = result["favorable_rate"] / ref["favorable_rate"] if ref["favorable_rate"] else np.nan
+    result["fpr_ratio"] = result["fpr"] / ref["fpr"] if ref["fpr"] > 0 else np.nan
+    return result.sort_values("positive_rate", ascending=False).reset_index(drop=True)
 
 
 def equalized_odds_check(bias_df: pd.DataFrame, tpr_tolerance: float = 0.05,
@@ -241,6 +200,8 @@ def equalized_odds_check(bias_df: pd.DataFrame, tpr_tolerance: float = 0.05,
     Returns:
         True if equalized odds is approximately satisfied, False otherwise
     """
+    if len(bias_df) < 2 or bias_df[["tpr", "fpr"]].isna().any().any():
+        return False
     tpr_range = bias_df["tpr"].max() - bias_df["tpr"].min()
     fpr_range = bias_df["fpr"].max() - bias_df["fpr"].min()
 

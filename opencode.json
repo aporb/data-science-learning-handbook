@@ -1,0 +1,18 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": ["CLAUDE.md", "security-compliance/security-policy.md"],
+  "commands": {
+    "compliance-check": {
+      "description": "Advisory review of security and authorization boundaries",
+      "template": "Read .claude/commands/compliance-check.md and follow its advisory review instructions for: $ARGUMENTS"
+    },
+    "generate-federal-code": {
+      "description": "Generate platform-specific educational code",
+      "template": "Read .claude/commands/generate-federal-code.md and follow its instructions for: $ARGUMENTS"
+    },
+    "teach": {
+      "description": "Walk through a handbook topic",
+      "template": "Read .claude/commands/teach.md and follow its instructions for: $ARGUMENTS"
+    }
+  }
+}

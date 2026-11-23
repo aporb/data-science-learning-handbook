@@ -352,12 +352,12 @@ The full compliance picture for Databricks government deployments as of early 20
 | DoD IL5 | Azure Government | Authorized (2021) |
 | ITAR Ready | AWS GovCloud | Confirmed |
 
-**Accreditation specifics:** Databricks is installed at all classification levels. The SaaS offering (managed Databricks on GovCloud) is accredited at IL5. For IL6/classified workloads, Databricks is not currently available as a managed service; Palantir or on-premises enclaves fill that gap. JWICS SaaS availability is expected in early 2027, with additional network accreditations expected to follow.
+**Accreditation specifics:** Databricks is installed at all classification levels. The SaaS offering (managed Databricks on GovCloud) is accredited at IL5. For IL6/classified workloads, no managed Databricks classified service is established in public documentation reviewed on November 23, 2026. Palantir deployments or an on-premises classified enclave are the documented paths. This review found no verified public commitment to a JWICS availability date. Treat any date you hear as unconfirmed until the provider and your program document it.
 | HIPAA | AWS GovCloud Community | Eligible |
 
 IL6 (classified, SECRET and above) is not currently supported as a managed SaaS service on Databricks. Databricks can be installed on-premises at IL6, but for managed classified processing, Palantir or on-premises enclaves remain the primary options until JWICS SaaS accreditation is finalized.
 
-**JWICS accreditation:** Databricks is pursuing JWICS accreditation for its government SaaS offering, with availability expected in early 2027. Additional network accreditations are expected to follow. This would extend Databricks' reach to TS/SCI and higher-side workloads. Until that accreditation is finalized, JWICS-classified workloads should use Palantir Foundry/Gotham or an on-premises classified enclave. Track this timeline if your program has future classified compute requirements that could be served by a managed lakehouse.
+**JWICS accreditation:** Public provider documentation reviewed on November 23, 2026 does not establish a JWICS authorization or a committed delivery date. A roadmap conversation is not an accreditation. Until an authorization is documented for your network and offering, use an environment that already holds the required approval. Confirm current status with the provider account team and your program rather than planning against a forecast.
 
 ### What the Compliance Security Profile Does
 

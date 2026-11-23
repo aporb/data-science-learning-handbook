@@ -34,6 +34,7 @@ Date: 2025-07-27
 import asyncio
 import json
 import logging
+from importlib import import_module
 import time
 from datetime import datetime, timezone, timedelta
 from typing import Dict, List, Optional, Any, Tuple, Set, Union, AsyncGenerator, Callable
@@ -62,10 +63,10 @@ from ..auth.unified_access_control.unified_access_controller import UnifiedAcces
 from ..auth.unified_access_control.audit import AuditIntegrationManager
 
 # Import multi-classification integration
-from ..multi-classification.enhanced_classification_engine import EnhancedMultiClassificationEngine
-from ..multi-classification.clearance_verification_engine import EnhancedClearanceVerificationEngine
-from ..multi-classification.classification_audit_logger import ClassificationAuditLogger
-from ..multi-classification.integration_layer import create_classification_integrated_controller
+EnhancedMultiClassificationEngine = import_module("..multi-classification.enhanced_classification_engine", __package__).EnhancedMultiClassificationEngine
+EnhancedClearanceVerificationEngine = import_module("..multi-classification.clearance_verification_engine", __package__).EnhancedClearanceVerificationEngine
+ClassificationAuditLogger = import_module("..multi-classification.classification_audit_logger", __package__).ClassificationAuditLogger
+create_classification_integrated_controller = import_module("..multi-classification.integration_layer", __package__).create_classification_integrated_controller
 
 logger = logging.getLogger(__name__)
 

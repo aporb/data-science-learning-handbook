@@ -326,7 +326,7 @@ graph LR
 
 *Figure: The January 2026 three-way restructuring of Advana. Financial management returns to the Comptroller. The War Data Platform becomes the AI development foundation.*
 
-The implementation timeline runs through 45-day status update intervals, with full operational capability dates not yet publicly confirmed. The 120-day milestone for formalizing WDP requirements falls in May 2026.
+The implementation timeline runs through 45-day status update intervals, with full operational capability dates not publicly confirmed in this review. A 120-day requirement-formalization milestone fell in May 2026. This review found no verified public statement that it was met, so do not treat the milestone as a completed deliverable or a current capability.
 
 CDAO itself was relocated under the Under Secretary of Defense for Research and Engineering (Emil Michael) in August 2025. Michael was given a 120-day clock to recommend a path forward for Advana and Maven Smart System and announced plans to push AI capabilities to all 3 million DoD users across classification levels by December 2025. Whether those targets are met will become clear over the next budget cycle.
 
@@ -428,6 +428,6 @@ Palantir AIP and Foundry are the platforms to reach for when the data problem is
 
 **The one thing to remember:** Advana is the DoD's single authoritative data aggregation platform for cross-component analytics, but it is in a significant transition period — the War Data Platform restructuring will change how data access and AI applications are built on top of it, and practitioners who understand that transition will make better architecture decisions than those who treat today's platform as permanent.
 
-**What to do Monday morning:** If you have a DoD analytics assignment coming up, submit your DD Form 2875 this week — before the contract starts, before your access needs become urgent. Second, spend an hour in the Advana University materials at `dau.edu` before you touch a notebook; the platform architecture documentation there will save you two weeks of figuring it out by trial and error. Third, pull up the January 9, 2026 Hegseth restructuring memo at `media.defense.gov` and read the WDP requirements section; the 120-day milestones will tell you what the platform will look like by the time your project needs production-ready infrastructure.
+**What to do Monday morning:** If you have a DoD analytics assignment coming up, submit your DD Form 2875 this week — before the contract starts, before your access needs become urgent. Second, spend an hour in the Advana University materials at `dau.edu` before you touch a notebook; the platform architecture documentation there will save you two weeks of figuring it out by trial and error. Third, read the January 9, 2026 restructuring memo at `media.defense.gov` and its WDP requirements section, then confirm current status with your program. Milestones in a memo describe intent at that date. They are not a delivery guarantee.
 
 **What comes next:** The next guide in this series covers Databricks as a standalone Federal analytics environment — how it differs from the Databricks you find inside Advana, what the FedRAMP authorization means for your architecture options, and how to build ML pipelines that can run in both environments without being rewritten from scratch.

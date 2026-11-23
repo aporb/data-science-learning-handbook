@@ -1,4 +1,4 @@
-# Generate Federal-Compliant Code
+# Generate Federal Platform Code
 
 Generate Python code following this handbook's patterns for federal platform contexts.
 
@@ -15,7 +15,7 @@ If no arguments provided, ask: What are you building, which platform, and what c
 Determine these three things:
 1. **What** — classifier, pipeline, dashboard, API, RAG system, data ingestion, etc.
 2. **Platform** — Databricks, Foundry, Advana/JupyterHub, Navy Jupiter, Qlik, local, or multi-platform
-3. **Classification level** — CUI, IL2, IL4, IL5 (affects what external services are available)
+3. **Data and authorization**: distinguish classification, CUI category, impact level, offering, endpoint, and system approval. Do not request actual restricted data.
 
 ### Step 2: Load platform constraints
 
@@ -83,9 +83,8 @@ Usage: [exactly how to run it — notebook cell, python command, etc.]
 - Shared file system — be careful with paths and permissions
 
 **All platforms at IL4+:**
-- No external API calls with data (no OpenAI, no HuggingFace hosted inference)
-- Self-hosted models only — use platform-provided or locally deployed models
-- Self-hosted embeddings for RAG (see ch13 RAG pipeline example)
+- Use only endpoints approved for the exact data, offering, region or network, and system authorization. Reject unauthorized public endpoints. Self-hosting alone does not authorize a model.
+- Verify embedding and inference services separately. Do not infer approval from the model name.
 - All data must stay within the classification boundary
 
 **All platforms:**

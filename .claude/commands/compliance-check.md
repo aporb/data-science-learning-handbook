@@ -1,6 +1,6 @@
 # Federal Compliance Review
 
-Review code or architecture against federal data science compliance requirements from this handbook.
+Provide an advisory review of code or architecture against federal data science compliance requirements from this handbook.
 
 ## Input
 
@@ -18,7 +18,7 @@ Classify the code/architecture:
 - **ML/model code** → check DoD AI Ethics and NIST AI RMF requirements
 - **Deployment** → check ATO requirements and container security
 - **API/integration** → check network security and data boundary rules
-- **GenAI/LLM** → check IL-level authorization and self-hosting requirements
+- **GenAI/LLM** → check IL-level authorization and deployment boundaries requirements
 
 ### Step 2: Read the relevant compliance sources
 
@@ -46,7 +46,7 @@ Use this exact format:
 |---|---------|----------|----------|-------------|
 | 1 | [what's wrong] | Critical/High/Medium/Low | [which standard] | [specific fix + handbook reference] |
 
-### Compliant Patterns Found
+### Positive Patterns Observed (not certification)
 - [list what the code does correctly — reinforce good practices]
 
 ### Priority Fixes
@@ -61,19 +61,25 @@ Use this exact format:
 ### Severity Definitions
 
 - **Critical**: Data could leak across classification boundaries, credentials exposed, no auth on sensitive endpoints
-- **High**: Missing encryption, hardcoded credentials, external API calls with government data at IL4+, no audit logging
+- **High**: Missing encryption, hardcoded credentials, nonpublic government data sent to unauthorized endpoints, no audit logging
 - **Medium**: Incomplete RBAC, missing model card for production AI, no drift monitoring, weak session management
 - **Low**: Style issues, missing docstring headers, non-standard platform patterns, missing error handling
 
 ### Key Rules to Check
 
 1. **No hardcoded credentials** — must use env vars or platform secret management
-2. **No external API calls with government data** at IL4+ (this includes OpenAI, Anthropic, HuggingFace hosted models)
-3. **Self-hosted models only** at IL4+ for ML inference and embeddings
+2. **Approved endpoints only**. Use only endpoints approved for the exact data, offering, region or network, and system authorization. Reject unauthorized public endpoints. Self-hosting alone does not authorize a model.
+3. **Verify deployments** for inference and embeddings. A model name or vendor announcement is not system approval.
 4. **AES-256 at rest, TLS 1.3 in transit** for all data handling
-5. **CAC/PIV authentication** required — no username/password auth for federal systems
+5. **Approved identity controls**. Preserve required CAC/PIV access and approved noninteractive workload identities.
 6. **RBAC with least privilege** — check role assignments against `security-compliance/rbac/role_hierarchy.py`
 7. **Audit logging** for all data access and model inference
 8. **Model cards required** for any production ML model (see `chapters/12-ethics-governance/code-examples/python/02_model_card.py`)
 9. **Bias audit required** before production deployment of classifiers (see `chapters/12-ethics-governance/code-examples/python/01_bias_audit.py`)
 10. **NIST AI RMF documentation** for AI systems (see `chapters/12-ethics-governance/code-examples/python/03_nist_rmf_workflow.py`)
+
+## Review limits
+
+This workflow is advisory. It cannot grant an ATO, certify compliance, or authorize data movement.
+Distinguish binding program requirements from recommended practice. State unknown authorization as unknown.
+Never include restricted data or actual credentials in the report.

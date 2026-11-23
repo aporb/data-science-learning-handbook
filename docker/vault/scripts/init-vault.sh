@@ -2,7 +2,9 @@
 # Vault Initialization Script
 # Initializes Vault cluster and configures basic security policies
 
-set -e
+set -euo pipefail
+# Protect bootstrap material before creating it. This is a lab-only example.
+umask 077
 
 # Colors for output
 RED='\033[0;31m'
@@ -118,7 +120,7 @@ vault write -f transit/keys/data-science-handbook
 
 echo -e "${GREEN}Vault initialization completed successfully!${NC}"
 echo -e "${YELLOW}Important: Securely store the unseal keys and root token!${NC}"
-echo -e "${RED}Root Token: $ROOT_TOKEN${NC}"
+echo -e "${YELLOW}Bootstrap token stored in the protected file. It is not printed.${NC}"
 echo -e "${YELLOW}Keys stored in: $VAULT_KEYS_FILE${NC}"
 
 # Set secure permissions

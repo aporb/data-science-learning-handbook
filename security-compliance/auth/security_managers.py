@@ -141,4 +141,609 @@ class SecurePINManager:
                 }
                 
                 # Check cache size limit
-                if len(self._pin_cache) >= self.max_cache_entries:\n                    self._evict_oldest_entry()\n                \n                self._pin_cache[cache_token] = cache_entry\n                \n                # Audit event\n                AuditLogger.instance().log_event(AuditEvent(\n                    event_type=AuditEventType.PIN_CACHE_ACCESS,\n                    timestamp=datetime.now(timezone.utc),\n                    user_id=user_id,\n                    success=True,\n                    additional_data={\n                        'action': 'cache_pin',\n                        'card_identifier': self._hash_identifier(card_identifier),\n                        'cache_timeout': self.cache_timeout\n                    }\n                ))\n                \n                logger.debug(f\"PIN cached for card {self._hash_identifier(card_identifier)}\")\n                return cache_token\n                \n            except Exception as e:\n                logger.error(f\"Failed to cache PIN: {e}\")\n                AuditLogger.instance().log_event(AuditEvent(\n                    event_type=AuditEventType.SECURITY_VIOLATION,\n                    timestamp=datetime.now(timezone.utc),\n                    user_id=user_id,\n                    success=False,\n                    error_message=f\"PIN caching failed: {str(e)}\"\n                ))\n                raise\n    \n    def retrieve_pin(self, cache_token: str, user_id: str = None) -> Optional[str]:\n        \"\"\"\n        Retrieve cached PIN using token\n        \n        Args:\n            cache_token: Cache token returned by cache_pin\n            user_id: User identifier for audit trail\n            \n        Returns:\n            Decrypted PIN if valid and not expired, None otherwise\n        \"\"\"\n        with self._cache_lock:\n            try:\n                cache_entry = self._pin_cache.get(cache_token)\n                \n                if not cache_entry:\n                    logger.warning(\"Invalid PIN cache token\")\n                    AuditLogger.instance().log_event(AuditEvent(\n                        event_type=AuditEventType.SECURITY_VIOLATION,\n                        timestamp=datetime.now(timezone.utc),\n                        user_id=user_id,\n                        success=False,\n                        error_message=\"Invalid PIN cache token\"\n                    ))\n                    return None\n                \n                # Check expiration\n                if time.time() > cache_entry['expires_at']:\n                    logger.debug(\"PIN cache entry expired\")\n                    del self._pin_cache[cache_token]\n                    AuditLogger.instance().log_event(AuditEvent(\n                        event_type=AuditEventType.PIN_CACHE_ACCESS,\n                        timestamp=datetime.now(timezone.utc),\n                        user_id=user_id,\n                        success=False,\n                        error_message=\"PIN cache entry expired\"\n                    ))\n                    return None\n                \n                # Update access statistics\n                cache_entry['access_count'] += 1\n                cache_entry['last_access'] = time.time()\n                \n                # Decrypt PIN if necessary\n                pin = cache_entry['pin']\n                if cache_entry['encrypted'] and self._encryption_key:\n                    pin = self._encryption_key.decrypt(pin.encode()).decode()\n                \n                # Audit successful access\n                AuditLogger.instance().log_event(AuditEvent(\n                    event_type=AuditEventType.PIN_CACHE_ACCESS,\n                    timestamp=datetime.now(timezone.utc),\n                    user_id=user_id,\n                    success=True,\n                    additional_data={\n                        'action': 'retrieve_pin',\n                        'access_count': cache_entry['access_count']\n                    }\n                ))\n                \n                return pin\n                \n            except Exception as e:\n                logger.error(f\"Failed to retrieve PIN: {e}\")\n                AuditLogger.instance().log_event(AuditEvent(\n                    event_type=AuditEventType.SECURITY_VIOLATION,\n                    timestamp=datetime.now(timezone.utc),\n                    user_id=user_id,\n                    success=False,\n                    error_message=f\"PIN retrieval failed: {str(e)}\"\n                ))\n                return None\n    \n    def invalidate_pin(self, cache_token: str, user_id: str = None):\n        \"\"\"Invalidate cached PIN\"\"\"\n        with self._cache_lock:\n            if cache_token in self._pin_cache:\n                del self._pin_cache[cache_token]\n                AuditLogger.instance().log_event(AuditEvent(\n                    event_type=AuditEventType.PIN_CACHE_ACCESS,\n                    timestamp=datetime.now(timezone.utc),\n                    user_id=user_id,\n                    success=True,\n                    additional_data={'action': 'invalidate_pin'}\n                ))\n                logger.debug(\"PIN cache entry invalidated\")\n    \n    def clear_all_pins(self, user_id: str = None):\n        \"\"\"Clear all cached PINs\"\"\"\n        with self._cache_lock:\n            count = len(self._pin_cache)\n            self._pin_cache.clear()\n            AuditLogger.instance().log_event(AuditEvent(\n                event_type=AuditEventType.PIN_CACHE_ACCESS,\n                timestamp=datetime.now(timezone.utc),\n                user_id=user_id,\n                success=True,\n                additional_data={\n                    'action': 'clear_all_pins',\n                    'cleared_count': count\n                }\n            ))\n            logger.info(f\"Cleared {count} cached PINs\")\n    \n    def _evict_oldest_entry(self):\n        \"\"\"Evict oldest cache entry when limit is reached\"\"\"\n        if not self._pin_cache:\n            return\n        \n        oldest_token = min(self._pin_cache.keys(), \n                          key=lambda k: self._pin_cache[k]['created_at'])\n        del self._pin_cache[oldest_token]\n        logger.debug(\"Evicted oldest PIN cache entry\")\n    \n    def _cleanup_expired_pins(self):\n        \"\"\"Background thread to cleanup expired PINs\"\"\"\n        while True:\n            try:\n                time.sleep(60)  # Check every minute\n                current_time = time.time()\n                \n                with self._cache_lock:\n                    expired_tokens = [\n                        token for token, entry in self._pin_cache.items()\n                        if current_time > entry['expires_at']\n                    ]\n                    \n                    for token in expired_tokens:\n                        del self._pin_cache[token]\n                    \n                    if expired_tokens:\n                        logger.debug(f\"Cleaned up {len(expired_tokens)} expired PIN cache entries\")\n                        \n            except Exception as e:\n                logger.error(f\"Error in PIN cleanup thread: {e}\")\n    \n    def _hash_identifier(self, identifier: str) -> str:\n        \"\"\"Hash identifier for privacy in logs\"\"\"\n        return hashlib.sha256(identifier.encode()).hexdigest()[:16]\n    \n    def get_cache_stats(self) -> Dict[str, Any]:\n        \"\"\"Get PIN cache statistics\"\"\"\n        with self._cache_lock:\n            current_time = time.time()\n            active_entries = sum(1 for entry in self._pin_cache.values() \n                               if current_time <= entry['expires_at'])\n            \n            return {\n                'total_entries': len(self._pin_cache),\n                'active_entries': active_entries,\n                'max_entries': self.max_cache_entries,\n                'cache_timeout': self.cache_timeout,\n                'encryption_enabled': self.enable_encryption\n            }\n\nclass SessionManager:\n    \"\"\"\n    Advanced session management with auto-logout and security monitoring\n    \"\"\"\n    \n    def __init__(self, default_timeout: int = 3600, max_sessions: int = 100):\n        \"\"\"\n        Initialize session manager\n        \n        Args:\n            default_timeout: Default session timeout in seconds\n            max_sessions: Maximum concurrent sessions\n        \"\"\"\n        self.default_timeout = default_timeout\n        self.max_sessions = max_sessions\n        self._sessions = {}\n        self._session_lock = threading.RLock()\n        \n        # Start session cleanup thread\n        self._cleanup_thread = threading.Thread(target=self._cleanup_expired_sessions, daemon=True)\n        self._cleanup_thread.start()\n        \n        logger.info(f\"Session Manager initialized (timeout={default_timeout}s, max_sessions={max_sessions})\")\n    \n    def create_session(self, user_id: str, card_identifier: str, \n                      timeout: Optional[int] = None, \n                      metadata: Dict[str, Any] = None) -> str:\n        \"\"\"\n        Create new authenticated session\n        \n        Args:\n            user_id: User identifier\n            card_identifier: Card/certificate identifier\n            timeout: Custom session timeout\n            metadata: Additional session metadata\n            \n        Returns:\n            Session ID\n        \"\"\"\n        with self._session_lock:\n            # Check session limit\n            if len(self._sessions) >= self.max_sessions:\n                self._cleanup_expired_sessions()\n                if len(self._sessions) >= self.max_sessions:\n                    raise RuntimeError(\"Maximum number of sessions reached\")\n            \n            session_id = secrets.token_urlsafe(32)\n            session_timeout = timeout or self.default_timeout\n            current_time = time.time()\n            \n            session_data = {\n                'session_id': session_id,\n                'user_id': user_id,\n                'card_identifier': card_identifier,\n                'created_at': current_time,\n                'last_activity': current_time,\n                'expires_at': current_time + session_timeout,\n                'timeout': session_timeout,\n                'is_active': True,\n                'activity_count': 1,\n                'metadata': metadata or {}\n            }\n            \n            self._sessions[session_id] = session_data\n            \n            # Audit session creation\n            AuditLogger.instance().log_event(AuditEvent(\n                event_type=AuditEventType.SESSION_CREATED,\n                timestamp=datetime.now(timezone.utc),\n                user_id=user_id,\n                session_id=session_id,\n                success=True,\n                additional_data={\n                    'session_timeout': session_timeout,\n                    'card_identifier': self._hash_identifier(card_identifier)\n                }\n            ))\n            \n            logger.info(f\"Session created for user {user_id}: {session_id}\")\n            return session_id\n    \n    def validate_session(self, session_id: str) -> bool:\n        \"\"\"\n        Validate session and update activity\n        \n        Args:\n            session_id: Session ID to validate\n            \n        Returns:\n            True if session is valid and active\n        \"\"\"\n        with self._session_lock:\n            session = self._sessions.get(session_id)\n            \n            if not session:\n                return False\n            \n            current_time = time.time()\n            \n            # Check if session has expired\n            if current_time > session['expires_at'] or not session['is_active']:\n                self._terminate_session(session_id, reason=\"expired\")\n                return False\n            \n            # Update activity\n            session['last_activity'] = current_time\n            session['activity_count'] += 1\n            \n            return True\n    \n    def extend_session(self, session_id: str, additional_time: int = None) -> bool:\n        \"\"\"\n        Extend session timeout\n        \n        Args:\n            session_id: Session ID to extend\n            additional_time: Additional time in seconds (default: original timeout)\n            \n        Returns:\n            True if session was extended\n        \"\"\"\n        with self._session_lock:\n            session = self._sessions.get(session_id)\n            \n            if not session or not session['is_active']:\n                return False\n            \n            extension = additional_time or session['timeout']\n            session['expires_at'] = time.time() + extension\n            \n            AuditLogger.instance().log_event(AuditEvent(\n                event_type=AuditEventType.SESSION_CREATED,  # Reusing for extension\n                timestamp=datetime.now(timezone.utc),\n                user_id=session['user_id'],\n                session_id=session_id,\n                success=True,\n                additional_data={\n                    'action': 'extend_session',\n                    'extension_time': extension\n                }\n            ))\n            \n            logger.debug(f\"Session {session_id} extended by {extension} seconds\")\n            return True\n    \n    def terminate_session(self, session_id: str, reason: str = \"user_logout\"):\n        \"\"\"\n        Terminate session\n        \n        Args:\n            session_id: Session ID to terminate\n            reason: Reason for termination\n        \"\"\"\n        self._terminate_session(session_id, reason)\n    \n    def _terminate_session(self, session_id: str, reason: str = \"unknown\"):\n        \"\"\"Internal session termination\"\"\"\n        with self._session_lock:\n            session = self._sessions.get(session_id)\n            \n            if session:\n                session['is_active'] = False\n                \n                AuditLogger.instance().log_event(AuditEvent(\n                    event_type=AuditEventType.SESSION_TERMINATED,\n                    timestamp=datetime.now(timezone.utc),\n                    user_id=session['user_id'],\n                    session_id=session_id,\n                    success=True,\n                    additional_data={\n                        'reason': reason,\n                        'duration': time.time() - session['created_at'],\n                        'activity_count': session['activity_count']\n                    }\n                ))\n                \n                # Remove from active sessions after audit\n                del self._sessions[session_id]\n                \n                logger.info(f\"Session terminated: {session_id} (reason: {reason})\")\n    \n    def get_session_info(self, session_id: str) -> Optional[Dict[str, Any]]:\n        \"\"\"Get session information\"\"\"\n        with self._session_lock:\n            session = self._sessions.get(session_id)\n            if session:\n                return session.copy()\n            return None\n    \n    def get_user_sessions(self, user_id: str) -> List[str]:\n        \"\"\"Get all active sessions for user\"\"\"\n        with self._session_lock:\n            return [\n                session_id for session_id, session in self._sessions.items()\n                if session['user_id'] == user_id and session['is_active']\n            ]\n    \n    def terminate_user_sessions(self, user_id: str, reason: str = \"admin_action\"):\n        \"\"\"Terminate all sessions for specific user\"\"\"\n        user_sessions = self.get_user_sessions(user_id)\n        for session_id in user_sessions:\n            self._terminate_session(session_id, reason)\n        \n        logger.info(f\"Terminated {len(user_sessions)} sessions for user {user_id}\")\n    \n    def _cleanup_expired_sessions(self):\n        \"\"\"Cleanup expired sessions\"\"\"\n        current_time = time.time()\n        expired_sessions = []\n        \n        with self._session_lock:\n            for session_id, session in list(self._sessions.items()):\n                if current_time > session['expires_at']:\n                    expired_sessions.append(session_id)\n            \n            for session_id in expired_sessions:\n                self._terminate_session(session_id, \"expired\")\n        \n        if expired_sessions:\n            logger.debug(f\"Cleaned up {len(expired_sessions)} expired sessions\")\n    \n    def _hash_identifier(self, identifier: str) -> str:\n        \"\"\"Hash identifier for privacy in logs\"\"\"\n        return hashlib.sha256(identifier.encode()).hexdigest()[:16]\n    \n    def get_session_stats(self) -> Dict[str, Any]:\n        \"\"\"Get session statistics\"\"\"\n        with self._session_lock:\n            current_time = time.time()\n            active_sessions = sum(1 for s in self._sessions.values() \n                                if s['is_active'] and current_time <= s['expires_at'])\n            \n            return {\n                'total_sessions': len(self._sessions),\n                'active_sessions': active_sessions,\n                'max_sessions': self.max_sessions,\n                'default_timeout': self.default_timeout\n            }\n\nclass AuditLogger:\n    \"\"\"\n    Comprehensive audit logging for authentication events\n    Implements DoD-compliant audit trail\n    \"\"\"\n    \n    _instance = None\n    _lock = threading.Lock()\n    \n    def __new__(cls, *args, **kwargs):\n        \"\"\"Singleton pattern for audit logger\"\"\"\n        if not cls._instance:\n            with cls._lock:\n                if not cls._instance:\n                    cls._instance = super().__new__(cls)\n        return cls._instance\n    \n    def __init__(self, log_file_path: str = None, max_log_size: int = 100_000_000, \n                 backup_count: int = 10, enable_syslog: bool = False):\n        \"\"\"\n        Initialize audit logger\n        \n        Args:\n            log_file_path: Path to audit log file\n            max_log_size: Maximum log file size in bytes\n            backup_count: Number of backup log files to keep\n            enable_syslog: Whether to also log to syslog\n        \"\"\"\n        if hasattr(self, '_initialized'):\n            return\n            \n        self.log_file_path = log_file_path or os.path.expanduser(\"~/.cac/audit.log\")\n        self.max_log_size = max_log_size\n        self.backup_count = backup_count\n        self.enable_syslog = enable_syslog\n        \n        # Create log directory\n        os.makedirs(os.path.dirname(self.log_file_path), exist_ok=True)\n        \n        # Setup file handler with rotation\n        from logging.handlers import RotatingFileHandler\n        self.file_handler = RotatingFileHandler(\n            self.log_file_path, \n            maxBytes=max_log_size, \n            backupCount=backup_count\n        )\n        \n        # Setup formatter\n        formatter = logging.Formatter(\n            '%(asctime)s - AUDIT - %(levelname)s - %(message)s',\n            datefmt='%Y-%m-%d %H:%M:%S UTC'\n        )\n        self.file_handler.setFormatter(formatter)\n        \n        # Setup audit logger\n        self.audit_logger = logging.getLogger('cac_audit')\n        self.audit_logger.setLevel(logging.INFO)\n        self.audit_logger.addHandler(self.file_handler)\n        \n        # Setup syslog if enabled\n        if enable_syslog:\n            try:\n                from logging.handlers import SysLogHandler\n                syslog_handler = SysLogHandler(address='/dev/log')\n                syslog_handler.setFormatter(formatter)\n                self.audit_logger.addHandler(syslog_handler)\n            except Exception as e:\n                logger.warning(f\"Failed to setup syslog: {e}\")\n        \n        self._initialized = True\n        logger.info(f\"Audit Logger initialized: {self.log_file_path}\")\n    \n    @classmethod\n    def instance(cls):\n        \"\"\"Get singleton instance\"\"\"\n        if not cls._instance:\n            cls()\n        return cls._instance\n    \n    def log_event(self, event: AuditEvent):\n        \"\"\"\n        Log audit event\n        \n        Args:\n            event: AuditEvent to log\n        \"\"\"\n        try:\n            # Convert event to JSON\n            event_dict = {\n                'event_type': event.event_type.value,\n                'timestamp': event.timestamp.isoformat(),\n                'user_id': event.user_id,\n                'session_id': event.session_id,\n                'source_ip': event.source_ip,\n                'user_agent': event.user_agent,\n                'success': event.success,\n                'error_message': event.error_message,\n                'additional_data': event.additional_data\n            }\n            \n            # Remove None values\n            event_dict = {k: v for k, v in event_dict.items() if v is not None}\n            \n            # Log as JSON\n            log_message = json.dumps(event_dict, separators=(',', ':'))\n            \n            if event.success:\n                self.audit_logger.info(log_message)\n            else:\n                self.audit_logger.warning(log_message)\n                \n        except Exception as e:\n            logger.error(f\"Failed to log audit event: {e}\")\n    \n    def log_authentication_attempt(self, user_id: str, card_identifier: str, \n                                 success: bool, error_message: str = None, \n                                 session_id: str = None, source_ip: str = None):\n        \"\"\"Log authentication attempt\"\"\"\n        event_type = AuditEventType.AUTHENTICATION_SUCCESS if success else AuditEventType.AUTHENTICATION_FAILURE\n        \n        self.log_event(AuditEvent(\n            event_type=event_type,\n            timestamp=datetime.now(timezone.utc),\n            user_id=user_id,\n            session_id=session_id,\n            source_ip=source_ip,\n            success=success,\n            error_message=error_message,\n            additional_data={\n                'card_identifier': hashlib.sha256(card_identifier.encode()).hexdigest()[:16]\n            }\n        ))\n    \n    def log_certificate_validation(self, certificate_subject: str, issuer: str, \n                                 validation_result: bool, details: Dict[str, Any] = None):\n        \"\"\"Log certificate validation\"\"\"\n        self.log_event(AuditEvent(\n            event_type=AuditEventType.CERTIFICATE_VALIDATION,\n            timestamp=datetime.now(timezone.utc),\n            success=validation_result,\n            additional_data={\n                'certificate_subject': certificate_subject,\n                'issuer': issuer,\n                'validation_details': details or {}\n            }\n        ))\n    \n    def log_signing_operation(self, user_id: str, data_hash: str, \n                            success: bool, session_id: str = None):\n        \"\"\"Log digital signing operation\"\"\"\n        self.log_event(AuditEvent(\n            event_type=AuditEventType.SIGNING_OPERATION,\n            timestamp=datetime.now(timezone.utc),\n            user_id=user_id,\n            session_id=session_id,\n            success=success,\n            additional_data={\n                'data_hash': data_hash\n            }\n        ))\n    \n    def get_audit_stats(self) -> Dict[str, Any]:\n        \"\"\"Get audit logging statistics\"\"\"\n        stats = {\n            'log_file_path': self.log_file_path,\n            'max_log_size': self.max_log_size,\n            'backup_count': self.backup_count,\n            'syslog_enabled': self.enable_syslog\n        }\n        \n        # Get log file size\n        try:\n            if os.path.exists(self.log_file_path):\n                stats['current_log_size'] = os.path.getsize(self.log_file_path)\n            else:\n                stats['current_log_size'] = 0\n        except Exception:\n            stats['current_log_size'] = 0\n        \n        return stats"}, {"oldText": "            # Check cache size limit\n            if len(self._pin_cache) >= self.max_cache_entries:\n                self._evict_oldest_entry()", "newText": "                # Check cache size limit\n                if len(self._pin_cache) >= self.max_cache_entries:\n                    self._evict_oldest_entry()"}]
+                if len(self._pin_cache) >= self.max_cache_entries:
+                    self._evict_oldest_entry()
+
+                self._pin_cache[cache_token] = cache_entry
+
+                # Audit event
+                AuditLogger.instance().log_event(AuditEvent(
+                    event_type=AuditEventType.PIN_CACHE_ACCESS,
+                    timestamp=datetime.now(timezone.utc),
+                    user_id=user_id,
+                    success=True,
+                    additional_data={
+                        'action': 'cache_pin',
+                        'card_identifier': self._hash_identifier(card_identifier),
+                        'cache_timeout': self.cache_timeout
+                    }
+                ))
+
+                logger.debug(f"PIN cached for card {self._hash_identifier(card_identifier)}")
+                return cache_token
+
+            except Exception as e:
+                logger.error(f"Failed to cache PIN: {e}")
+                AuditLogger.instance().log_event(AuditEvent(
+                    event_type=AuditEventType.SECURITY_VIOLATION,
+                    timestamp=datetime.now(timezone.utc),
+                    user_id=user_id,
+                    success=False,
+                    error_message=f"PIN caching failed: {str(e)}"
+                ))
+                raise
+
+    def retrieve_pin(self, cache_token: str, user_id: str = None) -> Optional[str]:
+        """
+        Retrieve cached PIN using token
+
+        Args:
+            cache_token: Cache token returned by cache_pin
+            user_id: User identifier for audit trail
+
+        Returns:
+            Decrypted PIN if valid and not expired, None otherwise
+        """
+        with self._cache_lock:
+            try:
+                cache_entry = self._pin_cache.get(cache_token)
+
+                if not cache_entry:
+                    logger.warning("Invalid PIN cache token")
+                    AuditLogger.instance().log_event(AuditEvent(
+                        event_type=AuditEventType.SECURITY_VIOLATION,
+                        timestamp=datetime.now(timezone.utc),
+                        user_id=user_id,
+                        success=False,
+                        error_message="Invalid PIN cache token"
+                    ))
+                    return None
+
+                # Check expiration
+                if time.time() > cache_entry['expires_at']:
+                    logger.debug("PIN cache entry expired")
+                    del self._pin_cache[cache_token]
+                    AuditLogger.instance().log_event(AuditEvent(
+                        event_type=AuditEventType.PIN_CACHE_ACCESS,
+                        timestamp=datetime.now(timezone.utc),
+                        user_id=user_id,
+                        success=False,
+                        error_message="PIN cache entry expired"
+                    ))
+                    return None
+
+                # Update access statistics
+                cache_entry['access_count'] += 1
+                cache_entry['last_access'] = time.time()
+
+                # Decrypt PIN if necessary
+                pin = cache_entry['pin']
+                if cache_entry['encrypted'] and self._encryption_key:
+                    pin = self._encryption_key.decrypt(pin.encode()).decode()
+
+                # Audit successful access
+                AuditLogger.instance().log_event(AuditEvent(
+                    event_type=AuditEventType.PIN_CACHE_ACCESS,
+                    timestamp=datetime.now(timezone.utc),
+                    user_id=user_id,
+                    success=True,
+                    additional_data={
+                        'action': 'retrieve_pin',
+                        'access_count': cache_entry['access_count']
+                    }
+                ))
+
+                return pin
+
+            except Exception as e:
+                logger.error(f"Failed to retrieve PIN: {e}")
+                AuditLogger.instance().log_event(AuditEvent(
+                    event_type=AuditEventType.SECURITY_VIOLATION,
+                    timestamp=datetime.now(timezone.utc),
+                    user_id=user_id,
+                    success=False,
+                    error_message=f"PIN retrieval failed: {str(e)}"
+                ))
+                return None
+
+    def invalidate_pin(self, cache_token: str, user_id: str = None):
+        """Invalidate cached PIN"""
+        with self._cache_lock:
+            if cache_token in self._pin_cache:
+                del self._pin_cache[cache_token]
+                AuditLogger.instance().log_event(AuditEvent(
+                    event_type=AuditEventType.PIN_CACHE_ACCESS,
+                    timestamp=datetime.now(timezone.utc),
+                    user_id=user_id,
+                    success=True,
+                    additional_data={'action': 'invalidate_pin'}
+                ))
+                logger.debug("PIN cache entry invalidated")
+
+    def clear_all_pins(self, user_id: str = None):
+        """Clear all cached PINs"""
+        with self._cache_lock:
+            count = len(self._pin_cache)
+            self._pin_cache.clear()
+            AuditLogger.instance().log_event(AuditEvent(
+                event_type=AuditEventType.PIN_CACHE_ACCESS,
+                timestamp=datetime.now(timezone.utc),
+                user_id=user_id,
+                success=True,
+                additional_data={
+                    'action': 'clear_all_pins',
+                    'cleared_count': count
+                }
+            ))
+            logger.info(f"Cleared {count} cached PINs")
+
+    def _evict_oldest_entry(self):
+        """Evict oldest cache entry when limit is reached"""
+        if not self._pin_cache:
+            return
+
+        oldest_token = min(self._pin_cache.keys(),
+                          key=lambda k: self._pin_cache[k]['created_at'])
+        del self._pin_cache[oldest_token]
+        logger.debug("Evicted oldest PIN cache entry")
+
+    def _cleanup_expired_pins(self):
+        """Background thread to cleanup expired PINs"""
+        while True:
+            try:
+                time.sleep(60)  # Check every minute
+                current_time = time.time()
+
+                with self._cache_lock:
+                    expired_tokens = [
+                        token for token, entry in self._pin_cache.items()
+                        if current_time > entry['expires_at']
+                    ]
+
+                    for token in expired_tokens:
+                        del self._pin_cache[token]
+
+                    if expired_tokens:
+                        logger.debug(f"Cleaned up {len(expired_tokens)} expired PIN cache entries")
+
+            except Exception as e:
+                logger.error(f"Error in PIN cleanup thread: {e}")
+
+    def _hash_identifier(self, identifier: str) -> str:
+        """Hash identifier for privacy in logs"""
+        return hashlib.sha256(identifier.encode()).hexdigest()[:16]
+
+    def get_cache_stats(self) -> Dict[str, Any]:
+        """Get PIN cache statistics"""
+        with self._cache_lock:
+            current_time = time.time()
+            active_entries = sum(1 for entry in self._pin_cache.values()
+                               if current_time <= entry['expires_at'])
+
+            return {
+                'total_entries': len(self._pin_cache),
+                'active_entries': active_entries,
+                'max_entries': self.max_cache_entries,
+                'cache_timeout': self.cache_timeout,
+                'encryption_enabled': self.enable_encryption
+            }
+
+class SessionManager:
+    """
+    Advanced session management with auto-logout and security monitoring
+    """
+
+    def __init__(self, default_timeout: int = 3600, max_sessions: int = 100):
+        """
+        Initialize session manager
+
+        Args:
+            default_timeout: Default session timeout in seconds
+            max_sessions: Maximum concurrent sessions
+        """
+        self.default_timeout = default_timeout
+        self.max_sessions = max_sessions
+        self._sessions = {}
+        self._session_lock = threading.RLock()
+
+        # Start session cleanup thread
+        self._cleanup_thread = threading.Thread(target=self._cleanup_expired_sessions, daemon=True)
+        self._cleanup_thread.start()
+
+        logger.info(f"Session Manager initialized (timeout={default_timeout}s, max_sessions={max_sessions})")
+
+    def create_session(self, user_id: str, card_identifier: str,
+                      timeout: Optional[int] = None,
+                      metadata: Dict[str, Any] = None) -> str:
+        """
+        Create new authenticated session
+
+        Args:
+            user_id: User identifier
+            card_identifier: Card/certificate identifier
+            timeout: Custom session timeout
+            metadata: Additional session metadata
+
+        Returns:
+            Session ID
+        """
+        with self._session_lock:
+            # Check session limit
+            if len(self._sessions) >= self.max_sessions:
+                self._cleanup_expired_sessions()
+                if len(self._sessions) >= self.max_sessions:
+                    raise RuntimeError("Maximum number of sessions reached")
+
+            session_id = secrets.token_urlsafe(32)
+            session_timeout = timeout or self.default_timeout
+            current_time = time.time()
+
+            session_data = {
+                'session_id': session_id,
+                'user_id': user_id,
+                'card_identifier': card_identifier,
+                'created_at': current_time,
+                'last_activity': current_time,
+                'expires_at': current_time + session_timeout,
+                'timeout': session_timeout,
+                'is_active': True,
+                'activity_count': 1,
+                'metadata': metadata or {}
+            }
+
+            self._sessions[session_id] = session_data
+
+            # Audit session creation
+            AuditLogger.instance().log_event(AuditEvent(
+                event_type=AuditEventType.SESSION_CREATED,
+                timestamp=datetime.now(timezone.utc),
+                user_id=user_id,
+                session_id=session_id,
+                success=True,
+                additional_data={
+                    'session_timeout': session_timeout,
+                    'card_identifier': self._hash_identifier(card_identifier)
+                }
+            ))
+
+            logger.info(f"Session created for user {user_id}: {session_id}")
+            return session_id
+
+    def validate_session(self, session_id: str) -> bool:
+        """
+        Validate session and update activity
+
+        Args:
+            session_id: Session ID to validate
+
+        Returns:
+            True if session is valid and active
+        """
+        with self._session_lock:
+            session = self._sessions.get(session_id)
+
+            if not session:
+                return False
+
+            current_time = time.time()
+
+            # Check if session has expired
+            if current_time > session['expires_at'] or not session['is_active']:
+                self._terminate_session(session_id, reason="expired")
+                return False
+
+            # Update activity
+            session['last_activity'] = current_time
+            session['activity_count'] += 1
+
+            return True
+
+    def extend_session(self, session_id: str, additional_time: int = None) -> bool:
+        """
+        Extend session timeout
+
+        Args:
+            session_id: Session ID to extend
+            additional_time: Additional time in seconds (default: original timeout)
+
+        Returns:
+            True if session was extended
+        """
+        with self._session_lock:
+            session = self._sessions.get(session_id)
+
+            if not session or not session['is_active']:
+                return False
+
+            extension = additional_time or session['timeout']
+            session['expires_at'] = time.time() + extension
+
+            AuditLogger.instance().log_event(AuditEvent(
+                event_type=AuditEventType.SESSION_CREATED,  # Reusing for extension
+                timestamp=datetime.now(timezone.utc),
+                user_id=session['user_id'],
+                session_id=session_id,
+                success=True,
+                additional_data={
+                    'action': 'extend_session',
+                    'extension_time': extension
+                }
+            ))
+
+            logger.debug(f"Session {session_id} extended by {extension} seconds")
+            return True
+
+    def terminate_session(self, session_id: str, reason: str = "user_logout"):
+        """
+        Terminate session
+
+        Args:
+            session_id: Session ID to terminate
+            reason: Reason for termination
+        """
+        self._terminate_session(session_id, reason)
+
+    def _terminate_session(self, session_id: str, reason: str = "unknown"):
+        """Internal session termination"""
+        with self._session_lock:
+            session = self._sessions.get(session_id)
+
+            if session:
+                session['is_active'] = False
+
+                AuditLogger.instance().log_event(AuditEvent(
+                    event_type=AuditEventType.SESSION_TERMINATED,
+                    timestamp=datetime.now(timezone.utc),
+                    user_id=session['user_id'],
+                    session_id=session_id,
+                    success=True,
+                    additional_data={
+                        'reason': reason,
+                        'duration': time.time() - session['created_at'],
+                        'activity_count': session['activity_count']
+                    }
+                ))
+
+                # Remove from active sessions after audit
+                del self._sessions[session_id]
+
+                logger.info(f"Session terminated: {session_id} (reason: {reason})")
+
+    def get_session_info(self, session_id: str) -> Optional[Dict[str, Any]]:
+        """Get session information"""
+        with self._session_lock:
+            session = self._sessions.get(session_id)
+            if session:
+                return session.copy()
+            return None
+
+    def get_user_sessions(self, user_id: str) -> List[str]:
+        """Get all active sessions for user"""
+        with self._session_lock:
+            return [
+                session_id for session_id, session in self._sessions.items()
+                if session['user_id'] == user_id and session['is_active']
+            ]
+
+    def terminate_user_sessions(self, user_id: str, reason: str = "admin_action"):
+        """Terminate all sessions for specific user"""
+        user_sessions = self.get_user_sessions(user_id)
+        for session_id in user_sessions:
+            self._terminate_session(session_id, reason)
+
+        logger.info(f"Terminated {len(user_sessions)} sessions for user {user_id}")
+
+    def _cleanup_expired_sessions(self):
+        """Cleanup expired sessions"""
+        current_time = time.time()
+        expired_sessions = []
+
+        with self._session_lock:
+            for session_id, session in list(self._sessions.items()):
+                if current_time > session['expires_at']:
+                    expired_sessions.append(session_id)
+
+            for session_id in expired_sessions:
+                self._terminate_session(session_id, "expired")
+
+        if expired_sessions:
+            logger.debug(f"Cleaned up {len(expired_sessions)} expired sessions")
+
+    def _hash_identifier(self, identifier: str) -> str:
+        """Hash identifier for privacy in logs"""
+        return hashlib.sha256(identifier.encode()).hexdigest()[:16]
+
+    def get_session_stats(self) -> Dict[str, Any]:
+        """Get session statistics"""
+        with self._session_lock:
+            current_time = time.time()
+            active_sessions = sum(1 for s in self._sessions.values()
+                                if s['is_active'] and current_time <= s['expires_at'])
+
+            return {
+                'total_sessions': len(self._sessions),
+                'active_sessions': active_sessions,
+                'max_sessions': self.max_sessions,
+                'default_timeout': self.default_timeout
+            }
+
+class AuditLogger:
+    """
+    Comprehensive audit logging for authentication events
+    Implements DoD-compliant audit trail
+    """
+
+    _instance = None
+    _lock = threading.Lock()
+
+    def __new__(cls, *args, **kwargs):
+        """Singleton pattern for audit logger"""
+        if not cls._instance:
+            with cls._lock:
+                if not cls._instance:
+                    cls._instance = super().__new__(cls)
+        return cls._instance
+
+    def __init__(self, log_file_path: str = None, max_log_size: int = 100_000_000,
+                 backup_count: int = 10, enable_syslog: bool = False):
+        """
+        Initialize audit logger
+
+        Args:
+            log_file_path: Path to audit log file
+            max_log_size: Maximum log file size in bytes
+            backup_count: Number of backup log files to keep
+            enable_syslog: Whether to also log to syslog
+        """
+        if hasattr(self, '_initialized'):
+            return
+
+        self.log_file_path = log_file_path or os.path.expanduser("~/.cac/audit.log")
+        self.max_log_size = max_log_size
+        self.backup_count = backup_count
+        self.enable_syslog = enable_syslog
+
+        # Create log directory
+        os.makedirs(os.path.dirname(self.log_file_path), exist_ok=True)
+
+        # Setup file handler with rotation
+        from logging.handlers import RotatingFileHandler
+        self.file_handler = RotatingFileHandler(
+            self.log_file_path,
+            maxBytes=max_log_size,
+            backupCount=backup_count
+        )
+
+        # Setup formatter
+        formatter = logging.Formatter(
+            '%(asctime)s - AUDIT - %(levelname)s - %(message)s',
+            datefmt='%Y-%m-%d %H:%M:%S UTC'
+        )
+        self.file_handler.setFormatter(formatter)
+
+        # Setup audit logger
+        self.audit_logger = logging.getLogger('cac_audit')
+        self.audit_logger.setLevel(logging.INFO)
+        self.audit_logger.addHandler(self.file_handler)
+
+        # Setup syslog if enabled
+        if enable_syslog:
+            try:
+                from logging.handlers import SysLogHandler
+                syslog_handler = SysLogHandler(address='/dev/log')
+                syslog_handler.setFormatter(formatter)
+                self.audit_logger.addHandler(syslog_handler)
+            except Exception as e:
+                logger.warning(f"Failed to setup syslog: {e}")
+
+        self._initialized = True
+        logger.info(f"Audit Logger initialized: {self.log_file_path}")
+
+    @classmethod
+    def instance(cls):
+        """Get singleton instance"""
+        if not cls._instance:
+            cls()
+        return cls._instance
+
+    def log_event(self, event: AuditEvent):
+        """
+        Log audit event
+
+        Args:
+            event: AuditEvent to log
+        """
+        try:
+            # Convert event to JSON
+            event_dict = {
+                'event_type': event.event_type.value,
+                'timestamp': event.timestamp.isoformat(),
+                'user_id': event.user_id,
+                'session_id': event.session_id,
+                'source_ip': event.source_ip,
+                'user_agent': event.user_agent,
+                'success': event.success,
+                'error_message': event.error_message,
+                'additional_data': event.additional_data
+            }
+
+            # Remove None values
+            event_dict = {k: v for k, v in event_dict.items() if v is not None}
+
+            # Log as JSON
+            log_message = json.dumps(event_dict, separators=(',', ':'))
+
+            if event.success:
+                self.audit_logger.info(log_message)
+            else:
+                self.audit_logger.warning(log_message)
+
+        except Exception as e:
+            logger.error(f"Failed to log audit event: {e}")
+
+    def log_authentication_attempt(self, user_id: str, card_identifier: str,
+                                 success: bool, error_message: str = None,
+                                 session_id: str = None, source_ip: str = None):
+        """Log authentication attempt"""
+        event_type = AuditEventType.AUTHENTICATION_SUCCESS if success else AuditEventType.AUTHENTICATION_FAILURE
+
+        self.log_event(AuditEvent(
+            event_type=event_type,
+            timestamp=datetime.now(timezone.utc),
+            user_id=user_id,
+            session_id=session_id,
+            source_ip=source_ip,
+            success=success,
+            error_message=error_message,
+            additional_data={
+                'card_identifier': hashlib.sha256(card_identifier.encode()).hexdigest()[:16]
+            }
+        ))
+
+    def log_certificate_validation(self, certificate_subject: str, issuer: str,
+                                 validation_result: bool, details: Dict[str, Any] = None):
+        """Log certificate validation"""
+        self.log_event(AuditEvent(
+            event_type=AuditEventType.CERTIFICATE_VALIDATION,
+            timestamp=datetime.now(timezone.utc),
+            success=validation_result,
+            additional_data={
+                'certificate_subject': certificate_subject,
+                'issuer': issuer,
+                'validation_details': details or {}
+            }
+        ))
+
+    def log_signing_operation(self, user_id: str, data_hash: str,
+                            success: bool, session_id: str = None):
+        """Log digital signing operation"""
+        self.log_event(AuditEvent(
+            event_type=AuditEventType.SIGNING_OPERATION,
+            timestamp=datetime.now(timezone.utc),
+            user_id=user_id,
+            session_id=session_id,
+            success=success,
+            additional_data={
+                'data_hash': data_hash
+            }
+        ))
+
+    def get_audit_stats(self) -> Dict[str, Any]:
+        """Get audit logging statistics"""
+        stats = {
+            'log_file_path': self.log_file_path,
+            'max_log_size': self.max_log_size,
+            'backup_count': self.backup_count,
+            'syslog_enabled': self.enable_syslog
+        }
+
+        # Get log file size
+        try:
+            if os.path.exists(self.log_file_path):
+                stats['current_log_size'] = os.path.getsize(self.log_file_path)
+            else:
+                stats['current_log_size'] = 0
+        except Exception:
+            stats['current_log_size'] = 0
+
+        return stats

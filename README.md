@@ -41,7 +41,7 @@ We believe this is the first reference resource for a regulated industry domain 
 | Capability | What It Does |
 |-----------|-------------|
 | **`/compliance-check`** | Reviews your code against NIST 800-53, DoD AI Ethics, FedRAMP, and IL requirements. Outputs a structured severity table with remediation pointing to specific handbook sections. |
-| **`/generate-federal-code`** | Generates platform-appropriate Python with correct headers, security patterns, and IL-level constraints. Knows that Databricks doesn't allow pip install in cells, that Foundry uses `palantir_models`, and that IL4+ means no external API calls. |
+| **`/generate-federal-code`** | Generates platform-appropriate Python with correct headers, security patterns, and IL-level constraints. Checks runtime-specific package rules, Foundry libraries, and approval of the exact data boundary and endpoints. |
 | **`/teach`** | Interactive tutor mode. Opens with the chapter's narrative hook, walks through concepts with code, tracks which learning objectives you've covered. |
 
 ### Supported agent platforms
@@ -120,39 +120,28 @@ Each guide is self-contained: access, setup, development environment, code patte
 
 ## Local Development Environment
 
-This handbook ships with a Docker Compose stack that mirrors federal platform constraints locally:
-
-| Service | Port | Purpose |
-|---------|------|---------|
-| Jupyter | 8888 | Development notebooks (+ Streamlit, Dash) |
-| MLflow | 5000 | Experiment tracking and model registry |
-| PostgreSQL | 5432 | Relational database |
-| Redis | 6379 | Caching and session store |
-| Nginx | 80/443 | Reverse proxy with TLS |
-| Prometheus | 9090 | Metrics collection |
-| Grafana | 3000 | Monitoring dashboards |
-| Vault | 8200 | Secret management |
-| CAC-auth | 8001 | CAC/PIV authentication simulator |
+Use the small public/synthetic-data notebook lab. It is not a replica of an accredited federal environment.
 
 ```bash
-cp .env.example .env && docker compose up -d
+docker compose -p fdsh-learning -f compose.learning.yml --profile learning up --build -d
 ```
 
-See [docs/LOCAL_ENVIRONMENT.md](docs/LOCAL_ENVIRONMENT.md) for full setup instructions.
+The notebook uses generated-token authentication and binds to `127.0.0.1:8888`.
+No agency credential is required. The separate 13-service reference stack requires explicit opt-in and further configuration.
+See [docs/LOCAL_ENVIRONMENT.md](docs/LOCAL_ENVIRONMENT.md) for login, tests, limitations, and shutdown instructions.
 
 ---
 
 ## Security Compliance Reference
 
-The `security-compliance/` directory contains reference implementations for federal security patterns — not toy examples, but working code for:
+The `security-compliance/` directory contains educational patterns for identity, access control, encryption, audits, and evidence collection.
+It does not supply certified controls, a production-ready security framework, or an ATO.
+Syntax checks and synthetic unit tests do not establish operational readiness.
 
-- **CAC/PIV authentication** with PKCS#11 smart card integration and OAuth bridging
-- **RBAC/ABAC** with MAC enforcement (Bell-LaPadula), role hierarchies, and database-backed permission resolution
-- **FIPS 140-2 encryption** with AES-256 at rest, TLS 1.3 in transit, and HSM key management
-- **NIST 800-53 compliance** with automated control assessment, evidence collection, and reporting
-- **Audit logging** with immutable trails and 7-year retention policies
-
-See [security-compliance/CLAUDE.md](security-compliance/CLAUDE.md) for a module-by-module guide.
+Use the [security boundaries](security-compliance/security-policy.md) before adapting an example.
+AES-256 does not prove FIPS module validation. Hash chaining does not make audit storage immutable.
+FIPS 140-2 historical status and FedRAMP 2026 terminology require current, system-specific review.
+See [security-compliance/CLAUDE.md](security-compliance/CLAUDE.md) for module limitations.
 
 ---
 
@@ -167,7 +156,7 @@ Contributions that improve accuracy, add platform-specific detail, or extend cov
 - **Code** (`.py`, `.sh`, `.yml`, `.yaml`, `Dockerfile*`): [MIT License](LICENSE)
 - **Written content** (`chapters/`, `platform-guides/`, `docs/`): [Creative Commons Attribution 4.0 International (CC BY 4.0)](LICENSE)
 
-Content is based on publicly available information. Nothing in this repository is classified or export-controlled. Platform-specific details reflect publicly documented capabilities as of early 2026.
+Content is based on publicly available information. Nothing in this repository is classified or export-controlled. Safety and selected platform guidance were reviewed on November 23, 2026. Dated sources and deployment checks appear in the relevant sections. Unverified tenant capabilities remain unknown.
 
 ---
 

@@ -1,6 +1,6 @@
 # Federal Data Science Handbook
 
-A completed practitioner's guide to data science on federal government platforms. 96,000+ words across 13 chapters, 5 platform guides, 43 Python code examples, and a reference security implementation. All content is QA-signed-off and frozen.
+A completed practitioner's guide to data science on federal government platforms. 96,000+ words across 13 chapters, 5 platform guides, 43 Python code examples, and a reference security implementation. Maintain the established teaching structure. Sourced accuracy corrections, safety fixes, and tested example repairs are allowed. Historical QA sign-off is not certification.
 
 **This is a reference repository, not a project to build.** Use it to look things up, generate compliant code, and teach concepts.
 
@@ -72,21 +72,17 @@ Each of the 43 Python code examples has a docstring header with `Platform:` and 
 
 **Security modules** — mixed runability. See `security-compliance/CLAUDE.md` for module-by-module classification.
 
-## Docker Development Environment
+## Local Learning Environment
 
-`docker-compose.yml` runs 13 services mirroring federal platform constraints:
-
-```bash
-cp .env.example .env && docker compose up -d
-```
-
-Quick verification after startup:
+Start with the one-service public/synthetic-data lab, not the legacy 13-service reference stack:
 
 ```bash
-docker compose ps --format "table {{.Name}}\t{{.Status}}\t{{.Ports}}"
+docker compose -p fdsh-learning -f compose.learning.yml --profile learning up --build -d
 ```
 
-Full setup instructions: `docs/LOCAL_ENVIRONMENT.md`
+Keep notebook token authentication enabled. Host publication is loopback-only. Never add agency credentials, CUI, or classified data.
+Read `docs/LOCAL_ENVIRONMENT.md` for login, test commands, and limitations.
+The legacy stack requires the explicit `reference` profile. It does not mirror an accredited environment.
 
 ## Agent Commands
 
@@ -98,9 +94,9 @@ Full setup instructions: `docs/LOCAL_ENVIRONMENT.md`
 
 ## Cross-Repo Reference
 
-**Companion site**: `site/` submodule → https://aporb.github.io/federal-ds-handbook-site/
+**Companion site** (separate repository): https://aporb.github.io/federal-ds-handbook-site/
 - Site has rendered HTML versions of all chapters and platform guides
-- When working on site content, switch to `../site/` and read site `CLAUDE.md`
+- Locate the separate site checkout and read its `CLAUDE.md`. Only the private parent checkout provides `handbook/` and `site/` submodules.
 
 **Section-level context** (auto-loaded when working in these directories):
 - `chapters/CLAUDE.md` — chapter index, code file mapping, learning objectives
@@ -109,7 +105,7 @@ Full setup instructions: `docs/LOCAL_ENVIRONMENT.md`
 
 ## Content Rules
 
-- **Do NOT modify** chapter READMEs, platform guide READMEs, or exercise files — content is QA-signed-off
+- **Maintenance**: Preserve the teaching structure. Allow sourced accuracy corrections, safety fixes, and tested example repairs. Mirror prose changes to the companion site.
 - **Style guide**: `docs/STYLE_GUIDE.md` — practitioner voice, specific details, scenes not thesis statements
 - **Writing spec**: `docs/CHAPTER_WRITING_SPEC.md`
 - **Code header format** — every generated code file must include:
@@ -119,8 +115,8 @@ Full setup instructions: `docs/LOCAL_ENVIRONMENT.md`
   Platform: [Databricks | Foundry | Advana | Local | Any]
   Usage: [how to run]
   ```
-- **Security**: never hardcode credentials, never send government data to external APIs, self-hosted models only at IL4+
+- **Security**: never hardcode credentials. Use only endpoints approved for the exact data, offering, region or network, and system authorization. Reject unauthorized public endpoints. Self-hosting alone does not authorize a model.
 
 ## Model Configuration
 
-When generating code for this handbook, use `claude-sonnet-4-20250514` with standard effort. The 96K+ words of domain content require careful grounding — avoid rushing through platform-specific constraints.
+Use the model and tools authorized by the operator and the data boundary. Do not select a hosted model from this handbook as evidence of authorization.

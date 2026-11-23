@@ -35,20 +35,20 @@ This is not a project to build or deploy. It is a knowledge base. Use it to answ
 ## Pre-Built Agent Workflows
 
 ### 1. Compliance Checker
-Reviews code against federal security and compliance requirements.
+Provides advisory checks against identified requirements. It cannot certify compliance or grant authorization.
 
 **What it reads**: `security-compliance/security-policy.md`, `security-compliance/compliance/`, `chapters/12-ethics-governance/README.md`, `chapters/11-deployment/README.md`
 
 **What it checks**: Data classification handling, auth patterns, encryption, DoD AI Ethics, NIST 800-53 controls, FedRAMP requirements, IL-appropriate data handling
 
-**Output**: Structured findings report with severity, violated standard, and remediation pointing to specific handbook sections
+**Output**: Structured advisory findings with severity, sourced requirement, uncertainty, and remediation. Distinguish binding requirements from recommended practices.
 
 ### 2. Federal Code Generator
 Generates platform-appropriate Python following handbook patterns.
 
 **What it reads**: `chapters/02-python-r-foundations/` (platform constraints), relevant chapter code examples as templates, `security-compliance/auth/` if auth is involved
 
-**What it enforces**: Correct docstring headers, platform-specific import patterns, no external API calls at IL4+, no hardcoded credentials, self-hosted models for classified environments
+**What it enforces**: Correct docstring headers, platform-specific import patterns, no hardcoded credentials, approved endpoints only, and explicit data-boundary verification
 
 **Output**: Python code with handbook-format docstring header, inline comments, and pointers to related handbook sections
 
@@ -75,7 +75,7 @@ Commands defined in `.claude/commands/`.
 `.cursorrules` is auto-loaded on project open. Contains code generation constraints, platform rules, and sensitivity rules. Agent workflows from this file can be invoked conversationally.
 
 ### OpenCode
-Configuration at `.opencode/config.yaml`. Defines context files, custom instructions, and workflow definitions mirroring the three agent workflows above.
+Configuration at `opencode.json`. It adds handbook instructions and three commands. The old `.opencode/config.yaml` is not an OpenCode configuration source. See the current OpenCode configuration documentation before changing schema fields.
 
 ### Cline
 Project rules in `.clinerules/rules.md`. Three workflows available in `.clinerules/workflows/`:
@@ -86,7 +86,7 @@ Project rules in `.clinerules/rules.md`. Three workflows available in `.clinerul
 Type `/` in chat to see and invoke workflows.
 
 ### Other Agents
-Any agent that reads Markdown can use this repo. Start with `CLAUDE.md` for the content map and this file for workflow instructions. The key constraint: never modify QA-signed-off content (chapter READMEs, platform guides, exercises).
+Any agent that reads Markdown can use this repo. Start with `CLAUDE.md` for the content map and this file for workflow instructions. Preserve the teaching structure. Apply sourced accuracy corrections and tested safety fixes. Mirror approved prose changes to the companion site. Historical QA sign-off is not certification.
 
 ## Suggested Prompts by Use Case
 
@@ -132,7 +132,7 @@ Agents discover project structure by reading code. Key paths:
 
 ## Cross-Repo Reference
 
-**Companion site**: `../site/` (submodule) → https://aporb.github.io/federal-ds-handbook-site/
+**Companion site** (separate repository): https://aporb.github.io/federal-ds-handbook-site/
 - Rendered HTML versions of all chapters and platform guides
 - Hand-rolled HTML/CSS/JS — no build step, no framework
 - Site has its own `CLAUDE.md` and `AGENTS.md` for agents working on the site

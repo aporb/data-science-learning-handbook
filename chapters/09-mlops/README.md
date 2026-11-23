@@ -73,18 +73,36 @@ One GovCloud-specific behavior: the MLflow UI in AWS GovCloud workspaces respect
 
 Logging experiments is the easy part. The harder discipline is the model registry: a centralized catalog of trained models with explicit lifecycle states, promotion approvals, and version history.
 
-The MLflow Model Registry uses four stages: **None** (freshly registered, not yet under review), **Staging** (candidate for production, undergoing integration tests), **Production** (the live model serving inference), and **Archived** (retired from active use but retained for audit purposes).
+### Unity Catalog: aliases, not stages
 
-The key practice is treating stage transitions as deliberate, gate-protected events — not just a button you click when you feel good about a model. A production-grade registry workflow looks like this:
+Last verified: November 23, 2026. Databricks recommends Models in Unity Catalog.
+Set the registry URI to `databricks-uc` and use a three-part name: `catalog.schema.model`.
+Unity Catalog does not support the old registry stage APIs.
 
-1. Training run completes, metrics exceed your defined thresholds, model is registered to the registry at stage None.
-2. An automated CI step runs a standardized evaluation suite against the candidate model and a recent sample of production data. If it passes, the model transitions to Staging.
-3. A human reviewer (the ML engineer, the program manager, or both depending on your governance structure) reviews the evaluation report and approves the Staging-to-Production transition.
-4. The previous Production model is transitioned to Archived. The new model begins serving.
+```python
+import mlflow
+from mlflow.tracking import MlflowClient
 
-That approval step in stage 3 is where government MLOps diverges from startup MLOps. On a commercial product, you might automate the entire promotion pipeline. On a DoD system with an ATO, you need a documented human approval in the audit trail. The MLflow registry handles this via registry model version comments and transition events, all of which are logged and retrievable.
+mlflow.set_registry_uri("databricks-uc")
+client = MlflowClient(registry_uri="databricks-uc")
+name = "navy_logistics.maintenance.priority_classifier"
+# After evaluation and the required program approval:
+client.set_registered_model_alias(name, "champion", "7")
+model = mlflow.pyfunc.load_model(f"models:/{name}@champion")
+```
 
-> **Note:** The MLflow Model Registry and the Databricks Unity Catalog are now integrated. As of December 2025, all new Databricks workspaces use Unity Catalog as the underlying governance layer. Models registered via the MLflow API appear in Unity Catalog under `catalog.schema.model_name`. This means Unity Catalog access controls, lineage tracking, and audit logs apply to your models automatically. For ATO documentation, this is significant: Unity Catalog produces audit logs suitable for compliance reporting without any additional configuration.
+An alias is a mutable pointer. Record the resolved version, evaluation evidence, approver, and deployment change separately.
+Changing an alias does not automatically update an existing serving endpoint or certify its configuration.
+Confirm workspace privileges, model permissions, logging, and supported GovCloud features.
+
+### Legacy Workspace Registry: stages
+
+Older Workspace Registry examples use None, Staging, Production, and Archived.
+Their `transition_model_version_stage` calls and `models:/name/Production` URIs are legacy stage syntax, not Unity Catalog aliases.
+Use them only when maintaining an explicitly identified legacy backend. Plan migration rather than teaching them as the default.
+The companion Python example separates both paths and defaults to Unity Catalog.
+
+Sources: [Databricks model lifecycle](https://docs.databricks.com/aws/en/machine-learning/manage-model-lifecycle/), [MLflow registry workflow](https://mlflow.org/docs/latest/ml/model-registry/workflow/).
 
 ## Model Deployment on Palantir Foundry
 

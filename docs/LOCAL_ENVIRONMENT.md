@@ -1,109 +1,97 @@
-# Local Development Environment
+# Local learning environment
 
-This handbook includes a Docker Compose stack that mirrors federal platform constraints on your local machine. It is designed to give practitioners a sandboxed environment where code examples and exercises run under conditions similar to what they will encounter on Advana, Databricks, Navy Jupiter, and other federal platforms.
+Use only public or synthetic data. This lab is not an IL4, IL5, IL6, CAC, or cross-domain accredited environment.
+Do not add agency credentials, operational records, CUI, or classified material.
 
----
+## Choose a setup
 
-## What It Includes
+The small learning profile runs one authenticated Jupyter notebook on Python 3.11.
+It uses a digest-pinned base image and hash-locked packages.
+Chapter files mount read-only. Save your own notebooks in the writable `notebooks/` directory inside Jupyter.
+No government login or real API key is required.
 
-| Service | Purpose | Port |
-|---------|---------|------|
-| **Jupyter** | JupyterLab notebooks for running chapter code examples | 8888 |
-| **MLflow** | Experiment tracking and model registry (Chapter 9, 11) | 5000 |
-| **PostgreSQL** | Relational database for data exercises | 5432 |
-| **Redis** | Caching layer and message broker | 6379 |
-| **Nginx** | Reverse proxy with SSL termination | 80/443 |
-| **Prometheus** | Metrics collection for monitoring examples | 9090 |
-| **Grafana** | Dashboard visualization for monitoring examples | 3000 |
-| **CAC Auth Service** | Simulated CAC/PIV authentication service | 8443 |
+The separate legacy reference stack has 13 services. It demonstrates architecture patterns but requires additional configuration.
+It is not the recommended first-run environment or a production deployment.
 
----
+## Python-only setup
 
-## Prerequisites
-
-- [Docker](https://docs.docker.com/get-docker/) (20.10+)
-- [Docker Compose](https://docs.docker.com/compose/install/) (v2+)
-- At least 8GB of available RAM
-
----
-
-## Quick Start
+From the repository root:
 
 ```bash
-# Clone the repository
-git clone https://github.com/aporb/data-science-learning-handbook.git
-cd data-science-learning-handbook
-
-# Copy the environment template
-cp .env.example .env
-
-# Edit .env with your configuration (API keys, credentials)
-# See env-example.txt for platform-specific variables
-
-# Start all services
-docker compose up -d
-
-# Verify services are running
-docker compose ps
+python3.11 -m venv .venv
+. .venv/bin/activate
+python -m pip install --require-hashes -r requirements-learning.txt
+python -m pytest tests -q
+python scripts/check_handbook.py
 ```
 
-JupyterLab will be available at `http://localhost:8888`. MLflow at `http://localhost:5000`.
+This profile does not install Spark, Foundry libraries, GPU frameworks, or the complete security infrastructure.
+Examples for those systems require the indicated authorized platform and approved dependencies.
+Do not install this public lock directly into a managed government environment.
 
----
+## Small Docker lab
 
-## Configuration
-
-### Environment Variables
-
-Copy `.env.example` to `.env` and configure:
-
-- **Database credentials** — PostgreSQL user, password, database name
-- **MLflow settings** — Artifact storage location, tracking URI
-- **Platform API keys** — Databricks tokens, Qlik API keys (optional, for platform-specific exercises)
-- **CAC/PIV paths** — Certificate paths for the authentication service simulator
-
-See `env-example.txt` for a commented reference of all available variables.
-
-### Service-Specific Configuration
-
-Each service has configuration files in `docker/`:
-
-- `docker/jupyter/` — Notebook configuration
-- `docker/mlflow/` — MLflow Nginx config
-- `docker/nginx/` — Reverse proxy configuration
-- `docker/prometheus/` — Metrics and alert rules
-- `docker/grafana/` — Dashboard provisioning
-- `docker/vault/` — Secrets management configuration
-- `docker/redis/` — Redis configuration
-
----
-
-## Common Operations
+Install Docker and Compose v2. From the repository root:
 
 ```bash
-# Stop all services
-docker compose down
-
-# Rebuild after Dockerfile changes
-docker compose build
-
-# View logs for a specific service
-docker compose logs -f jupyter
-
-# Reset everything (including data volumes)
-docker compose down -v
+docker compose -p fdsh-learning -f compose.learning.yml --profile learning up --build -d
+docker compose -p fdsh-learning -f compose.learning.yml --profile learning ps
 ```
 
----
-
-## Troubleshooting
-
-**Services fail to start:** Check that port 8888, 5000, 5432, and 6379 are not in use by other applications.
-
-**Out of memory:** The full stack requires ~6-8GB RAM. If constrained, start only the services you need:
+Open `http://127.0.0.1:8888`. Jupyter requires its generated token.
+Retrieve the login URL on your own machine:
 
 ```bash
-docker compose up -d jupyter mlflow postgres
+docker compose -p fdsh-learning -f compose.learning.yml --profile learning logs notebook
 ```
 
-**Jupyter kernel dies:** Increase Docker memory allocation in Docker Desktop settings.
+Treat the token as a local credential. Do not paste it into issues, reports, or agent conversations.
+Do not disable token authentication, XSRF protection, or same-origin checks.
+The container listens on all container interfaces so Docker can route traffic. The published host port binds only to loopback.
+
+If port 8888 is occupied, set `HANDBOOK_NOTEBOOK_PORT` before the Compose command.
+Use the selected port in the browser URL. Do not change the binding to `0.0.0.0`.
+
+Stop only this lab:
+
+```bash
+docker compose -p fdsh-learning -f compose.learning.yml --profile learning down
+```
+
+This preserves the named notebook volume. Adding `--volumes` deletes those notebooks. Export your work before deleting it.
+Containers can reach the network. Loopback publication is not an air gap or a certification of the host.
+
+## Legacy reference stack
+
+The 13 service definitions are in `docker-compose.yml` under the explicit `reference` profile:
+Jupyter, MLflow, PostgreSQL, Redis, Nginx, Prometheus, Grafana, scanner, docs, CAC simulator, Consul, Vault, and Vault initialization.
+Every published port binds to loopback. These examples still require separate dependency, certificate, and configuration review.
+
+Validate the model without starting services:
+
+```bash
+docker compose --profile reference config --quiet
+```
+
+Do not start all reference services merely to run a chapter example.
+If you study a particular service, select it explicitly after reviewing its Dockerfile, mounts, dependencies, and configuration.
+The CAC service is a simulator. It does not establish a real clearance or identity assurance.
+
+The Vault example requires provisioned TLS material and a trusted CA at `/vault/tls/ca.crt`.
+The certificate must cover the `vault` service hostname. Certificate verification stays enabled.
+Bootstrap keys and the root token must remain in protected files, not terminal logs.
+The example is not a production Vault bootstrap or recovery design.
+
+## Dependencies and verification
+
+`requirements-learning.in` declares the limited learning profile. `requirements-learning.txt` locks resolved packages and hashes.
+The older `requirements.txt` and `environment.yml` cover broader reference environments, not this tested subset.
+
+For a planned dependency change, resolve a fresh lock in an isolated environment:
+
+```bash
+uv pip compile --python-version 3.11 --universal --generate-hashes requirements-learning.in -o requirements-learning.txt
+```
+
+Run the tests and a current dependency advisory scan after each change.
+A successful test run does not prove the absence of vulnerabilities or authorization for government workloads.

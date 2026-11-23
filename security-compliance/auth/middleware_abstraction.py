@@ -12,7 +12,10 @@ from dataclasses import dataclass
 from enum import Enum
 import subprocess
 import glob
-import winreg if platform.system() == "Windows" else None
+if platform.system() == "Windows":
+    import winreg
+else:
+    winreg = None
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -342,4 +345,176 @@ class PKCS11ProviderManager:
             self.current_provider = None
             return False
     
-    def initialize_with_fallback(self) -> bool:\n        \"\"\"\n        Initialize provider with automatic fallback to other middleware\n        \n        Returns:\n            True if any provider initialized successfully\n        \"\"\"\n        if not self.available_middleware:\n            logger.error(\"No middleware available for fallback\")\n            return False\n        \n        # Try each middleware in priority order\n        for middleware in self.available_middleware:\n            logger.info(f\"Trying to initialize {middleware.name}...\")\n            \n            if self.initialize_provider(middleware.middleware_type):\n                logger.info(f\"Successfully initialized {middleware.name}\")\n                return True\n            else:\n                logger.warning(f\"Failed to initialize {middleware.name}, trying next...\")\n        \n        logger.error(\"All middleware initialization attempts failed\")\n        return False\n    \n    def get_current_provider_info(self) -> Optional[MiddlewareInfo]:\n        \"\"\"Get information about currently active provider\"\"\"\n        if not self.current_provider:\n            return None\n        \n        # Find middleware info for current provider\n        for middleware in self.available_middleware:\n            if middleware.is_available:\n                try:\n                    # Try to match by checking if the library is loaded\n                    test_lib = PyKCS11.PyKCS11Lib()\n                    test_lib.load(middleware.pkcs11_path)\n                    # If we get here, this might be our current provider\n                    # (This is a simplified check - in practice you'd want more robust matching)\n                    return middleware\n                except:\n                    continue\n        \n        return None\n    \n    def get_provider_capabilities(self) -> List[str]:\n        \"\"\"Get capabilities of current provider\"\"\"\n        provider_info = self.get_current_provider_info()\n        return provider_info.capabilities if provider_info else []\n    \n    def supports_capability(self, capability: str) -> bool:\n        \"\"\"Check if current provider supports specific capability\"\"\"\n        return capability in self.get_provider_capabilities()\n    \n    def get_available_middleware_summary(self) -> Dict[str, Any]:\n        \"\"\"Get summary of all available middleware\"\"\"\n        summary = {\n            'total_detected': len(self.available_middleware),\n            'middleware_list': [],\n            'best_available': None\n        }\n        \n        for middleware in self.available_middleware:\n            summary['middleware_list'].append({\n                'name': middleware.name,\n                'type': middleware.middleware_type.value,\n                'version': middleware.version,\n                'path': middleware.pkcs11_path,\n                'capabilities': middleware.capabilities,\n                'priority': middleware.priority\n            })\n        \n        best = self.detector.get_best_middleware()\n        if best:\n            summary['best_available'] = {\n                'name': best.name,\n                'type': best.middleware_type.value,\n                'path': best.pkcs11_path\n            }\n        \n        return summary\n    \n    def cleanup(self):\n        \"\"\"Cleanup provider resources\"\"\"\n        if self.current_provider:\n            try:\n                # Note: PyKCS11 doesn't have an explicit cleanup method\n                # but we can set it to None to release the reference\n                self.current_provider = None\n                logger.info(\"PKCS#11 provider cleaned up\")\n            except Exception as e:\n                logger.warning(f\"Error during provider cleanup: {e}\")\n\nclass MiddlewareCompatibilityLayer:\n    \"\"\"\n    Compatibility layer to handle differences between middleware implementations\n    Provides normalized interface for common operations\n    \"\"\"\n    \n    def __init__(self, provider_manager: PKCS11ProviderManager):\n        \"\"\"\n        Initialize compatibility layer\n        \n        Args:\n            provider_manager: PKCS#11 provider manager\n        \"\"\"\n        self.provider_manager = provider_manager\n        self.middleware_specific_quirks = {\n            MiddlewareType.ACTIVCLIENT: {\n                'requires_pin_pad': True,\n                'supports_key_generation': True,\n                'max_pin_length': 8,\n                'session_timeout': 1800  # 30 minutes\n            },\n            MiddlewareType.OPENSC: {\n                'requires_pin_pad': False,\n                'supports_key_generation': False,\n                'max_pin_length': 12,\n                'session_timeout': 3600  # 1 hour\n            },\n            MiddlewareType.COOLKEY: {\n                'requires_pin_pad': False,\n                'supports_key_generation': False,\n                'max_pin_length': 8,\n                'session_timeout': 1800\n            }\n        }\n    \n    def get_middleware_quirks(self) -> Dict[str, Any]:\n        \"\"\"Get middleware-specific quirks and limitations\"\"\"\n        provider_info = self.provider_manager.get_current_provider_info()\n        if not provider_info:\n            return {}\n        \n        return self.middleware_specific_quirks.get(provider_info.middleware_type, {})\n    \n    def normalize_error_message(self, error_message: str, middleware_type: MiddlewareType) -> str:\n        \"\"\"Normalize error messages across different middleware\"\"\"\n        # Common error message mappings\n        error_mappings = {\n            MiddlewareType.ACTIVCLIENT: {\n                'CKR_PIN_INCORRECT': 'Invalid PIN entered',\n                'CKR_PIN_LOCKED': 'Card is locked due to too many incorrect PIN attempts',\n                'CKR_TOKEN_NOT_PRESENT': 'Smart card not detected'\n            },\n            MiddlewareType.OPENSC: {\n                'CKR_PIN_INCORRECT': 'PIN verification failed',\n                'CKR_PIN_LOCKED': 'PIN is locked',\n                'CKR_TOKEN_NOT_PRESENT': 'No token present'\n            }\n        }\n        \n        middleware_mappings = error_mappings.get(middleware_type, {})\n        \n        for error_code, friendly_message in middleware_mappings.items():\n            if error_code in error_message:\n                return friendly_message\n        \n        return error_message\n    \n    def get_recommended_settings(self) -> Dict[str, Any]:\n        \"\"\"Get recommended settings for current middleware\"\"\"\n        quirks = self.get_middleware_quirks()\n        provider_info = self.provider_manager.get_current_provider_info()\n        \n        settings = {\n            'session_timeout': quirks.get('session_timeout', 3600),\n            'max_pin_length': quirks.get('max_pin_length', 12),\n            'retry_attempts': 3,\n            'enable_pin_caching': not quirks.get('requires_pin_pad', False),\n            'middleware_name': provider_info.name if provider_info else 'Unknown'\n        }\n        \n        return settings"}, {"oldText": "import winreg if platform.system() == \"Windows\" else None", "newText": "try:\n    import winreg\nexcept ImportError:\n    winreg = None"}]
+    def initialize_with_fallback(self) -> bool:
+        """
+        Initialize provider with automatic fallback to other middleware
+
+        Returns:
+            True if any provider initialized successfully
+        """
+        if not self.available_middleware:
+            logger.error("No middleware available for fallback")
+            return False
+
+        # Try each middleware in priority order
+        for middleware in self.available_middleware:
+            logger.info(f"Trying to initialize {middleware.name}...")
+
+            if self.initialize_provider(middleware.middleware_type):
+                logger.info(f"Successfully initialized {middleware.name}")
+                return True
+            else:
+                logger.warning(f"Failed to initialize {middleware.name}, trying next...")
+
+        logger.error("All middleware initialization attempts failed")
+        return False
+
+    def get_current_provider_info(self) -> Optional[MiddlewareInfo]:
+        """Get information about currently active provider"""
+        if not self.current_provider:
+            return None
+
+        # Find middleware info for current provider
+        for middleware in self.available_middleware:
+            if middleware.is_available:
+                try:
+                    # Try to match by checking if the library is loaded
+                    test_lib = PyKCS11.PyKCS11Lib()
+                    test_lib.load(middleware.pkcs11_path)
+                    # If we get here, this might be our current provider
+                    # (This is a simplified check - in practice you'd want more robust matching)
+                    return middleware
+                except:
+                    continue
+
+        return None
+
+    def get_provider_capabilities(self) -> List[str]:
+        """Get capabilities of current provider"""
+        provider_info = self.get_current_provider_info()
+        return provider_info.capabilities if provider_info else []
+
+    def supports_capability(self, capability: str) -> bool:
+        """Check if current provider supports specific capability"""
+        return capability in self.get_provider_capabilities()
+
+    def get_available_middleware_summary(self) -> Dict[str, Any]:
+        """Get summary of all available middleware"""
+        summary = {
+            'total_detected': len(self.available_middleware),
+            'middleware_list': [],
+            'best_available': None
+        }
+
+        for middleware in self.available_middleware:
+            summary['middleware_list'].append({
+                'name': middleware.name,
+                'type': middleware.middleware_type.value,
+                'version': middleware.version,
+                'path': middleware.pkcs11_path,
+                'capabilities': middleware.capabilities,
+                'priority': middleware.priority
+            })
+
+        best = self.detector.get_best_middleware()
+        if best:
+            summary['best_available'] = {
+                'name': best.name,
+                'type': best.middleware_type.value,
+                'path': best.pkcs11_path
+            }
+
+        return summary
+
+    def cleanup(self):
+        """Cleanup provider resources"""
+        if self.current_provider:
+            try:
+                # Note: PyKCS11 doesn't have an explicit cleanup method
+                # but we can set it to None to release the reference
+                self.current_provider = None
+                logger.info("PKCS#11 provider cleaned up")
+            except Exception as e:
+                logger.warning(f"Error during provider cleanup: {e}")
+
+class MiddlewareCompatibilityLayer:
+    """
+    Compatibility layer to handle differences between middleware implementations
+    Provides normalized interface for common operations
+    """
+
+    def __init__(self, provider_manager: PKCS11ProviderManager):
+        """
+        Initialize compatibility layer
+
+        Args:
+            provider_manager: PKCS#11 provider manager
+        """
+        self.provider_manager = provider_manager
+        self.middleware_specific_quirks = {
+            MiddlewareType.ACTIVCLIENT: {
+                'requires_pin_pad': True,
+                'supports_key_generation': True,
+                'max_pin_length': 8,
+                'session_timeout': 1800  # 30 minutes
+            },
+            MiddlewareType.OPENSC: {
+                'requires_pin_pad': False,
+                'supports_key_generation': False,
+                'max_pin_length': 12,
+                'session_timeout': 3600  # 1 hour
+            },
+            MiddlewareType.COOLKEY: {
+                'requires_pin_pad': False,
+                'supports_key_generation': False,
+                'max_pin_length': 8,
+                'session_timeout': 1800
+            }
+        }
+
+    def get_middleware_quirks(self) -> Dict[str, Any]:
+        """Get middleware-specific quirks and limitations"""
+        provider_info = self.provider_manager.get_current_provider_info()
+        if not provider_info:
+            return {}
+
+        return self.middleware_specific_quirks.get(provider_info.middleware_type, {})
+
+    def normalize_error_message(self, error_message: str, middleware_type: MiddlewareType) -> str:
+        """Normalize error messages across different middleware"""
+        # Common error message mappings
+        error_mappings = {
+            MiddlewareType.ACTIVCLIENT: {
+                'CKR_PIN_INCORRECT': 'Invalid PIN entered',
+                'CKR_PIN_LOCKED': 'Card is locked due to too many incorrect PIN attempts',
+                'CKR_TOKEN_NOT_PRESENT': 'Smart card not detected'
+            },
+            MiddlewareType.OPENSC: {
+                'CKR_PIN_INCORRECT': 'PIN verification failed',
+                'CKR_PIN_LOCKED': 'PIN is locked',
+                'CKR_TOKEN_NOT_PRESENT': 'No token present'
+            }
+        }
+
+        middleware_mappings = error_mappings.get(middleware_type, {})
+
+        for error_code, friendly_message in middleware_mappings.items():
+            if error_code in error_message:
+                return friendly_message
+
+        return error_message
+
+    def get_recommended_settings(self) -> Dict[str, Any]:
+        """Get recommended settings for current middleware"""
+        quirks = self.get_middleware_quirks()
+        provider_info = self.provider_manager.get_current_provider_info()
+
+        settings = {
+            'session_timeout': quirks.get('session_timeout', 3600),
+            'max_pin_length': quirks.get('max_pin_length', 12),
+            'retry_attempts': 3,
+            'enable_pin_caching': not quirks.get('requires_pin_pad', False),
+            'middleware_name': provider_info.name if provider_info else 'Unknown'
+        }
+
+        return settings

@@ -77,7 +77,7 @@ def test_matplotlib_importable():
 # ---------------------------------------------------------------------------
 
 def test_python_version():
-    """Require Python >= 3.9 (3.8 is EOL October 2024)."""
-    assert sys.version_info >= (3, 9), (
-        f"Python 3.9+ required, got {sys.version_info.major}.{sys.version_info.minor}"
+    """Require Python >= 3.11 for the learning profile."""
+    assert sys.version_info >= (3, 11), (
+        f"Python 3.11+ required, got {sys.version_info.major}.{sys.version_info.minor}"
     )
