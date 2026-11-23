@@ -1,13 +1,15 @@
+# Public/synthetic data only. Opt-in legacy reference stack, not an accredited environment.
 services:
   # Jupyter Lab for development
   jupyter:
+    profiles: ["reference"]
     build:
       context: .
       dockerfile: docker/Dockerfile.jupyter
     ports:
-      - "8888:8888"
-      - "8501:8501"  # Streamlit
-      - "8050:8050"  # Dash
+      - "127.0.0.1:8888:8888"
+      - "127.0.0.1:8501:8501"  # Streamlit
+      - "127.0.0.1:8050:8050"  # Dash
     volumes:
       - ./:/workspace
       - jupyter_data:/home/jovyan/.jupyter
@@ -19,11 +21,12 @@ services:
 
   # MLflow tracking server
   mlflow:
+    profiles: ["reference"]
     build:
       context: .
       dockerfile: docker/Dockerfile.mlflow
     ports:
-      - "5000:5000"
+      - "127.0.0.1:5000:5000"
     volumes:
       - mlflow_data:/app/mlruns
       - mlflow_artifacts:/app/mlartifacts
@@ -38,6 +41,7 @@ services:
 
   # PostgreSQL for MLflow backend
   postgres:
+    profiles: ["reference"]
     image: postgres:15-alpine
     environment:
       - POSTGRES_USER=${POSTGRES_USER:-mlflow}
@@ -46,16 +50,17 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     networks:
       - ds-handbook
     restart: unless-stopped
 
   # Redis for caching and message broker
   redis:
+    profiles: ["reference"]
     image: redis:7-alpine
     ports:
-      - "6379:6379"
+      - "127.0.0.1:6379:6379"
     volumes:
       - redis_data:/data
     networks:
@@ -64,12 +69,13 @@ services:
 
   # Nginx reverse proxy
   nginx:
+    profiles: ["reference"]
     build:
       context: .
       dockerfile: docker/Dockerfile.nginx
     ports:
-      - "80:80"
-      - "443:443"
+      - "127.0.0.1:80:80"
+      - "127.0.0.1:443:443"
     volumes:
       - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./docker/nginx/ssl:/etc/nginx/ssl:ro
@@ -82,9 +88,10 @@ services:
 
   # Prometheus for monitoring
   prometheus:
+    profiles: ["reference"]
     image: prom/prometheus:latest
     ports:
-      - "9090:9090"
+      - "127.0.0.1:9090:9090"
     volumes:
       - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
@@ -101,9 +108,10 @@ services:
 
   # Grafana for visualization
   grafana:
+    profiles: ["reference"]
     image: grafana/grafana:latest
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     volumes:
       - grafana_data:/var/lib/grafana
       - ./docker/grafana/provisioning:/etc/grafana/provisioning:ro
@@ -118,6 +126,7 @@ services:
 
   # Security scanner service
   security-scanner:
+    profiles: ["reference"]
     build:
       context: .
       dockerfile: docker/Dockerfile.security
@@ -132,9 +141,10 @@ services:
 
   # Documentation server
   docs:
+    profiles: ["reference"]
     image: nginx:alpine
     ports:
-      - "8080:80"
+      - "127.0.0.1:8080:80"
     volumes:
       - ./docs:/usr/share/nginx/html:ro
       - ./docker/nginx/docs.conf:/etc/nginx/conf.d/default.conf:ro
@@ -144,11 +154,12 @@ services:
 
   # CAC/PIV Authentication Service
   cac-auth:
+    profiles: ["reference"]
     build:
       context: .
       dockerfile: docker/Dockerfile.cac-auth
     ports:
-      - "8001:8000"
+      - "127.0.0.1:8001:8000"
     volumes:
       - ./security-compliance/auth:/app/auth
       - ./docker/cac-auth/config:/app/config
@@ -179,10 +190,11 @@ services:
 
   # Consul for Vault HA backend
   consul:
+    profiles: ["reference"]
     image: hashicorp/consul:1.16.1
     ports:
-      - "8500:8500"
-      - "8600:8600/udp"
+      - "127.0.0.1:8500:8500"
+      - "127.0.0.1:8600:8600/udp"
     volumes:
       - consul_data:/consul/data
       - ./docker/vault/consul.hcl:/consul/config/consul.hcl:ro
@@ -199,19 +211,20 @@ services:
 
   # HashiCorp Vault for credential management
   vault:
+    profiles: ["reference"]
     build:
       context: .
       dockerfile: docker/Dockerfile.vault
     ports:
-      - "8200:8200"
-      - "8201:8201"
+      - "127.0.0.1:8200:8200"
+      - "127.0.0.1:8201:8201"
     volumes:
       - vault_data:/vault/data
       - vault_logs:/vault/logs
       - vault_tls:/vault/tls
       - ./docker/vault/scripts:/vault/scripts:ro
     environment:
-      - VAULT_ADDR=https://0.0.0.0:8200
+      - VAULT_ADDR=https://vault:8200
       - VAULT_API_ADDR=https://vault:8200
       - VAULT_CLUSTER_ADDR=https://vault:8201
       - VAULT_UI=true
@@ -236,15 +249,18 @@ services:
 
   # Vault initialization service (runs once)
   vault-init:
+    profiles: ["reference"]
     build:
       context: .
       dockerfile: docker/Dockerfile.vault
     volumes:
       - vault_data:/vault/data
+      - vault_tls:/vault/tls:ro
       - ./docker/vault/scripts:/vault/scripts:ro
     environment:
       - VAULT_ADDR=https://vault:8200
-      - VAULT_SKIP_VERIFY=true
+      - VAULT_SKIP_VERIFY=false
+      - VAULT_CACERT=/vault/tls/ca.crt
     depends_on:
       vault:
         condition: service_healthy

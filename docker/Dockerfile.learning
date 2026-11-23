@@ -1,0 +1,14 @@
+# Small public/synthetic-data lab. Revalidate the digest and lock before upgrades.
+FROM python:3.11-slim-bookworm@sha256:a83ba18aef0f865b1a4a611c2cf460fe446f2795673bbb9fe43be570439e3b39
+
+COPY requirements-learning.txt /tmp/requirements-learning.txt
+RUN python -m pip install --no-cache-dir --require-hashes -r /tmp/requirements-learning.txt \
+    && useradd --create-home --uid 1000 learner \
+    && mkdir -p /home/learner/work /etc/jupyter \
+    && chown -R learner:learner /home/learner
+COPY --chmod=0644 docker/jupyter/learning_server_config.py /etc/jupyter/jupyter_server_config.py
+USER learner
+WORKDIR /home/learner/work
+EXPOSE 8888
+# Authentication uses Jupyter's generated token. No empty-token overrides.
+CMD ["jupyter", "lab", "--config=/etc/jupyter/jupyter_server_config.py", "--ServerApp.root_dir=/home/learner/work", "--ServerApp.preferred_dir=/home/learner/work"]

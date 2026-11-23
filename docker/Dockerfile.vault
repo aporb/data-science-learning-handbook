@@ -26,10 +26,10 @@ RUN mkdir -p /vault/config \
     /vault/scripts
 
 # Copy Vault configuration
-COPY vault/vault.hcl /vault/config/vault.hcl
+COPY docker/vault/vault.hcl /vault/config/vault.hcl
 
 # Copy initialization and startup scripts
-COPY vault/scripts/ /vault/scripts/
+COPY docker/vault/scripts/ /vault/scripts/
 
 # Set proper permissions
 RUN chown -R vault:vault /vault && \
