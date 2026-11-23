@@ -30,8 +30,6 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler, OrdinalEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.metrics import roc_auc_score, confusion_matrix
-import warnings
-warnings.filterwarnings("ignore")
 
 
 # ===========================================================================
@@ -198,83 +196,56 @@ def bias_audit_report(
     threshold: float = 0.50,
     reference_group: str = None,
 ) -> pd.DataFrame:
+    """Compare group metrics for a synthetic adverse-outcome demonstration.
+
+    A positive prediction means an adverse flag in this example. favorable_rate
+    is 1 - positive_rate. dp_ratio compares favorable rates, not adverse rates.
+    The 0.80 screen is illustrative, not a legal conclusion or universal rule.
+    Confirm the actual decision and outcome direction with domain/legal experts.
+    Undefined denominators remain NaN. Small slices are reported as excluded.
     """
-    Compute bias metrics across protected groups.
-
-    Metrics:
-        positive_rate: Fraction of samples predicted positive at threshold
-        tpr: True positive rate (sensitivity / recall)
-        fpr: False positive rate
-        auc: ROC-AUC for this group
-        dp_ratio: Demographic parity ratio vs. reference group
-        fpr_ratio: FPR ratio vs. reference group (equalized odds proxy)
-
-    The 4/5ths rule (EEOC): dp_ratio < 0.80 signals potential disparate impact.
-    """
-    y_pred = (y_pred_proba >= threshold).astype(int)
-    rows   = []
-
-    for group in sorted(sensitive_attr.unique()):
-        mask = (sensitive_attr == group).values
-        n    = int(mask.sum())
+    y_true = np.asarray(y_true)
+    scores = np.asarray(y_pred_proba, dtype=float)
+    groups = pd.Series(sensitive_attr).reset_index(drop=True)
+    if y_true.ndim != 1 or scores.ndim != 1 or len(y_true) != len(scores) or len(groups) != len(scores):
+        raise ValueError("Inputs must be one-dimensional and equally sized")
+    if not 0 <= threshold <= 1 or not np.isin(y_true, [0, 1]).all():
+        raise ValueError("Use binary labels and a threshold between zero and one")
+    if not np.isfinite(scores).all() or ((scores < 0) | (scores > 1)).any() or groups.isna().any():
+        raise ValueError("Use finite probabilities and nonmissing group labels")
+    predicted = (scores >= threshold).astype(int)
+    columns = ["group", "n", "positive_rate", "favorable_rate", "tpr", "fpr", "auc"]
+    rows = []
+    excluded = []
+    for group in groups.unique():
+        mask = (groups == group).to_numpy()
+        n = int(mask.sum())
         if n < 30:
+            excluded.append(str(group))
             continue
-
-        tn, fp, fn, tp = confusion_matrix(
-            y_true[mask], y_pred[mask], labels=[0, 1]
-        ).ravel()
-
-        positive_rate = (tp + fp) / n
-        tpr = tp / (tp + fn) if (tp + fn) > 0 else np.nan
-        fpr = fp / (fp + tn) if (fp + tn) > 0 else np.nan
-
-        auc_val = np.nan
-        n_pos   = int(y_true[mask].sum())
-        if n_pos >= 10 and n_pos < n:
-            try:
-                auc_val = roc_auc_score(y_true[mask], y_pred_proba[mask])
-            except Exception:
-                pass
-
+        tn, fp, fn, tp = confusion_matrix(y_true[mask], predicted[mask], labels=[0, 1]).ravel()
+        positive_rate = float((tp + fp) / n)
         rows.append({
-            "group":         group,
-            "n":             n,
-            "positive_rate": round(float(positive_rate), 4),
-            "tpr":           round(float(tpr), 4) if not np.isnan(tpr) else np.nan,
-            "fpr":           round(float(fpr), 4) if not np.isnan(fpr) else np.nan,
-            "auc":           round(float(auc_val), 4) if not np.isnan(auc_val) else np.nan,
+            "group": group, "n": n, "positive_rate": positive_rate,
+            "favorable_rate": 1 - positive_rate,
+            "tpr": float(tp / (tp + fn)) if tp + fn else np.nan,
+            "fpr": float(fp / (fp + tn)) if fp + tn else np.nan,
+            "auc": float(roc_auc_score(y_true[mask], scores[mask]))
+                   if len(np.unique(y_true[mask])) == 2 else np.nan,
         })
-
-    result = pd.DataFrame(rows).sort_values("positive_rate", ascending=False)
-
-    # Reference group: lowest positive rate (most favorable treatment)
+    result = pd.DataFrame(rows, columns=columns)
+    result.attrs["excluded_groups"] = excluded
+    if result.empty:
+        return result.assign(dp_ratio=pd.Series(dtype=float), fpr_ratio=pd.Series(dtype=float))
     if reference_group is None:
-        reference_group = result.iloc[-1]["group"]
-
-    ref_row            = result[result["group"] == reference_group].iloc[0]
-    result["dp_ratio"] = (result["positive_rate"] / ref_row["positive_rate"]).round(3)
-    result["fpr_ratio"] = (result["fpr"] / ref_row["fpr"]).round(3)
-
-    print(f"\n{'='*70}")
-    print(f"BIAS AUDIT REPORT")
-    print(f"  Threshold : {threshold}  |  Reference group: {reference_group}")
-    print(f"{'='*70}")
-    print(result.to_string(index=False))
-    print()
-
-    # 4/5ths rule check
-    flagged = result[result["dp_ratio"] < 0.80]
-    if len(flagged) > 0:
-        print(f"POTENTIAL DISPARATE IMPACT — groups below 4/5ths threshold:")
-        for _, row in flagged.iterrows():
-            print(f"  {row['group']}: positive_rate={row['positive_rate']:.3f}, "
-                  f"dp_ratio={row['dp_ratio']:.3f}")
-        print(f"\n  Required action: Document findings in model card and RAI assessment.")
-        print(f"  Options: threshold adjustment, resampling, feature review, or waiver.")
-    else:
-        print("  4/5ths check: No groups below 0.80 threshold.")
-
-    return result
+        reference_group = result.loc[result["favorable_rate"].idxmax(), "group"]
+    reference = result.loc[result["group"] == reference_group]
+    if reference.empty:
+        raise ValueError("Reference group is missing or below the sample-size threshold")
+    ref = reference.iloc[0]
+    result["dp_ratio"] = result["favorable_rate"] / ref["favorable_rate"] if ref["favorable_rate"] else np.nan
+    result["fpr_ratio"] = result["fpr"] / ref["fpr"] if ref["fpr"] > 0 else np.nan
+    return result.sort_values("positive_rate", ascending=False).reset_index(drop=True)
 
 
 def equalized_odds_check(
@@ -286,7 +257,9 @@ def equalized_odds_check(
     Check approximate equalized odds.
     Returns True if both TPR and FPR range across groups is within tolerance.
     """
-    valid       = bias_df.dropna(subset=["tpr", "fpr"])
+    if len(bias_df) < 2 or bias_df[["tpr", "fpr"]].isna().any().any():
+        return False  # Insufficient evidence is not a passing fairness check.
+    valid = bias_df
     tpr_range   = float(valid["tpr"].max() - valid["tpr"].min())
     fpr_range   = float(valid["fpr"].max() - valid["fpr"].min())
     tpr_ok      = tpr_range <= tpr_tolerance

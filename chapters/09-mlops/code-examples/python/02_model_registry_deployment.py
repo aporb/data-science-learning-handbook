@@ -8,7 +8,10 @@ This example covers:
 - The Palantir palantir_models deployment pattern for Foundry
 - A performance gate function used in CI/CD to block bad model promotions
 
-Platform: Databricks MLflow + Palantir Foundry
+Platform: Databricks MLflow + Palantir Foundry; synthetic local legacy demo
+Usage: Import functions in the approved platform. Run directly only for synthetic data.
+Sources: https://docs.databricks.com/aws/en/machine-learning/manage-model-lifecycle/
+         https://mlflow.org/docs/latest/ml/model-registry/workflow/
 """
 
 import json
@@ -42,40 +45,50 @@ class ModelRegistryManager:
     in a way that produces an audit trail suitable for ATO review.
     """
 
-    def __init__(self, model_name: str, tracking_uri: Optional[str] = None):
+    def __init__(self, model_name: str, tracking_uri: Optional[str] = None,
+                 *, registry_backend: str = "unity_catalog", registry_uri: Optional[str] = None):
+        """Use UC aliases by default. Select legacy stages explicitly.
+
+        UC requires catalog.schema.model and an authorized Databricks workspace.
+        Legacy means the old Workspace Registry or an isolated local file store.
+        This object never establishes authorization or supplies credentials.
         """
-        Parameters
-        ----------
-        model_name : str
-            The registered model name. On Databricks with Unity Catalog, this
-            should be a three-part name: catalog.schema.model_name
-            (e.g., "navy_logistics.maintenance.priority_classifier")
-        tracking_uri : str, optional
-            MLflow tracking URI. Leave None when running on Databricks —
-            the platform configures this automatically.
-        """
+        if registry_backend not in {"unity_catalog", "legacy"}:
+            raise ValueError("registry_backend must be unity_catalog or legacy")
+        if registry_backend == "unity_catalog" and len(model_name.split(".")) != 3:
+            raise ValueError("Unity Catalog requires catalog.schema.model")
         if tracking_uri:
             mlflow.set_tracking_uri(tracking_uri)
-        self.client = MlflowClient()
+        self.registry_backend = registry_backend
+        self.registry_uri = registry_uri or (
+            "databricks-uc" if registry_backend == "unity_catalog" else "databricks"
+        )
+        mlflow.set_registry_uri(self.registry_uri)
+        self.client = MlflowClient(registry_uri=self.registry_uri)
         self.model_name = model_name
 
+    def _version_for_alias(self, alias: str) -> Optional[str]:
+        from mlflow.exceptions import MlflowException
+        try:
+            return self.client.get_model_version_by_alias(self.model_name, alias).version
+        except MlflowException as error:
+            if error.error_code == "RESOURCE_DOES_NOT_EXIST":
+                return None
+            raise  # Authentication, permission, and service failures are not "absent".
+
     def get_current_production_version(self) -> Optional[str]:
-        """Return the version number of the current Production model, or None."""
-        versions = self.client.get_latest_versions(
-            name=self.model_name, stages=["Production"]
-        )
-        if not versions:
-            return None
-        return versions[0].version
+        """Resolve UC @champion, or the explicitly selected legacy Production stage."""
+        if self.registry_backend == "unity_catalog":
+            return self._version_for_alias("champion")
+        versions = self.client.get_latest_versions(name=self.model_name, stages=["Production"])
+        return versions[0].version if versions else None
 
     def get_current_staging_version(self) -> Optional[str]:
-        """Return the version number of the current Staging model, or None."""
-        versions = self.client.get_latest_versions(
-            name=self.model_name, stages=["Staging"]
-        )
-        if not versions:
-            return None
-        return versions[0].version
+        """Resolve UC @candidate, or the explicitly selected legacy Staging stage."""
+        if self.registry_backend == "unity_catalog":
+            return self._version_for_alias("candidate")
+        versions = self.client.get_latest_versions(name=self.model_name, stages=["Staging"])
+        return versions[0].version if versions else None
 
     def evaluate_model_on_test_set(
         self, version: str, X_test: pd.DataFrame, y_test: pd.Series
@@ -184,30 +197,11 @@ class ModelRegistryManager:
         """
         Promote a Staging model to Production with documented approval.
 
-        The approval notes become part of the model version's permanent record
-        in the MLflow registry — the audit trail that ATO reviewers can query.
+        The caller must complete evaluation and program approval first.
+        A mutable description is supporting evidence, not a permanent approval ledger.
         """
-        # Archive the current Production version first
-        current_prod = self.get_current_production_version()
-        if current_prod is not None:
-            self.client.transition_model_version_stage(
-                name=self.model_name,
-                version=current_prod,
-                stage="Archived",
-            )
-            self.client.update_model_version(
-                name=self.model_name,
-                version=current_prod,
-                description=f"Archived by promotion of version {version}.",
-            )
-            print(f"Previous Production version {current_prod} moved to Archived")
-
-        # Promote the candidate
-        self.client.transition_model_version_stage(
-            name=self.model_name,
-            version=version,
-            stage="Production",
-        )
+        if not approver_name.strip() or not approval_notes.strip():
+            raise ValueError("Record a real program approval before promotion")
 
         # Write the approval record into the version description
         import datetime
@@ -223,7 +217,15 @@ class ModelRegistryManager:
             description=approval_record,
         )
 
-        print(f"Version {version} promoted to Production")
+        # Record evidence before changing the live pointer. This is not an immutable log.
+        if self.registry_backend == "unity_catalog":
+            self.client.set_registered_model_alias(self.model_name, "champion", version)
+        else:
+            self.client.transition_model_version_stage(
+                name=self.model_name, version=version, stage="Production",
+                archive_existing_versions=True,
+            )
+        print(f"Version {version} selected for production")
         print(f"Approver: {approver_name}")
 
 
@@ -231,16 +233,23 @@ class ModelRegistryManager:
 # Part B: Running Inference from a Production Model (Databricks)
 # ---------------------------------------------------------------------------
 
-def load_production_model(model_name: str):
-    """
-    Load the current Production model from the MLflow registry.
+def load_production_model(model_name: str, *, registry_backend: str = "unity_catalog",
+                          registry_uri: Optional[str] = None):
+    """Load UC @champion or an explicitly selected legacy /Production stage.
 
-    Using the 'Production' alias means your inference code does not need to
-    change when a new model version is promoted — the alias always points
-    to the current live version.
+    Resolve an alias to a fixed version when recording a deployed model's identity.
+    Alias movement does not automatically update an already deployed serving endpoint.
     """
-    model_uri = f"models:/{model_name}/Production"
-    return mlflow.sklearn.load_model(model_uri)
+    if registry_backend not in {"unity_catalog", "legacy"}:
+        raise ValueError("registry_backend must be unity_catalog or legacy")
+    if registry_backend == "unity_catalog" and len(model_name.split(".")) != 3:
+        raise ValueError("Unity Catalog requires catalog.schema.model")
+    mlflow.set_registry_uri(registry_uri or (
+        "databricks-uc" if registry_backend == "unity_catalog" else "databricks"
+    ))
+    uri = (f"models:/{model_name}@champion" if registry_backend == "unity_catalog"
+           else f"models:/{model_name}/Production")
+    return mlflow.sklearn.load_model(uri)
 
 
 def run_batch_inference(
@@ -489,7 +498,11 @@ def demo_registry_workflow():
     print("=" * 70)
 
     # Use local file-based tracking for the demo
-    mlflow.set_tracking_uri("file:///tmp/mlflow_demo")
+    from pathlib import Path
+    import tempfile
+    local_uri = Path(tempfile.mkdtemp(prefix="fdsh-mlflow-")).as_uri()
+    mlflow.set_tracking_uri(local_uri)
+    mlflow.set_registry_uri(local_uri)
     mlflow.set_experiment("demo_maintenance_classifier")
 
     # Create a small synthetic dataset
@@ -523,13 +536,13 @@ def demo_registry_workflow():
         run_id = run.info.run_id
         print(f"Trained model. Run ID: {run_id}, Accuracy: {accuracy:.4f}")
 
-    model_name = "demo/maintenance_classifier"
+    model_name = "demo_maintenance_classifier"
     try:
         registered = mlflow.register_model(f"runs:/{run_id}/model", model_name)
         print(f"Registered as version {registered.version}")
         print("\nPromotion gate check (simulated):")
         print("  Test accuracy: {:.4f} >= 0.88 minimum? {}".format(
-            accuracy, "PASS" if accuracy >= 0.50 else "FAIL (demo threshold 0.50)"
+            accuracy, "PASS" if accuracy >= 0.88 else "FAIL"
         ))
         print("\nIn production: call registry_manager.promote_to_production()")
         print("  - Archives the previous Production model")

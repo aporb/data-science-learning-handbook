@@ -16,8 +16,10 @@ Functions:
     stratified_sample()         -- Stratified sampling for large datasets
     generate_quality_report()   -- Structured data quality assessment output
 
-All functions return DataFrames suitable for logging to MLflow
-or writing to a Collibra data quality assessment.
+Functions return dictionaries or DataFrames for further review.
+profile_dataframe() returns a dictionary, not a DataFrame.
+Platform: Local Python or an approved platform environment
+Usage: Import selected functions with public or synthetic pandas DataFrames.
 """
 
 import os

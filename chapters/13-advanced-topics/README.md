@@ -6,7 +6,7 @@ The Situation Room briefing was scheduled for 0800. It was 0754, and Lieutenant 
 
 Nakamura had seen this movie before. The information was always there. Finding it was the bottleneck. She'd been told, repeatedly, that the DoD was deploying AI to solve exactly this problem. What she needed was something that could read all eleven documents simultaneously and answer a natural-language question about enemy supply routes in under thirty seconds. What she had was a junior analyst with a sore ctrl finger.
 
-Six months later, deployed on Maven Smart System — Palantir's AI platform running Anthropic's Claude at IL5 — that same workflow took 28 seconds. The analyst typed the question in plain English. The system cited which document each answer came from. The briefing prep dropped from forty minutes to twelve.
+In this illustrative follow-on, an approved retrieval deployment reduced the search to a short, cited answer. The timing and characters are fictional, not measured product results. Any intelligence data requires its own authorized system and classification boundary.
 
 That gap — between what AI promises and what actually runs authorized in a federal environment — is what this chapter is about.
 
@@ -14,9 +14,9 @@ That gap — between what AI promises and what actually runs authorized in a fed
 
 By the end of this chapter, you will be able to:
 
-- Identify which LLMs are authorized at which classification levels and why that matters for your architecture
+- Verify the exact model deployment, data permissions, and authorization boundary before designing the integration
 - Build a production RAG pipeline on government data using FAISS and ChromaDB with proper chunking for policy documents and contracts
-- Write AIP Logic in Palantir Foundry to ground LLM responses in Ontology data, preventing hallucination by design
+- Write AIP Logic in Palantir Foundry to ground LLM responses in Ontology data and evaluate hallucination risk
 - Fine-tune a language model using LoRA/QLoRA on Databricks GPU clusters for domain-specific government tasks
 - Engineer prompts for contract analysis, policy summarization, and FOIA response generation
 - Implement hallucination detection and human-in-the-loop gates for high-stakes decisions
@@ -34,27 +34,24 @@ So the question is not "which LLM is best?" The question is "which LLM is author
 
 ### The Authorization Matrix
 
-The authorization picture as of March 2026:
+Last verified: November 23, 2026. A model family is not an authorization category. Replace a vendor-wide Yes/No matrix with deployment evidence.
 
-| Model / Provider | Unclassified (CUI) | IL4 | IL5 | IL6 |
-|---|---|---|---|---|
-| GPT-4o (Azure OpenAI) | Yes (Azure Gov) | Yes | Yes (via Palantir/Azure partnership) | Yes (Azure Gov Top Secret) |
-| Claude 3.5 / 3.7 (Anthropic) | Yes (via FedStart) | Yes (via FedStart) | Yes (via Palantir FedStart, April 2025) | In progress |
-| Llama 3.1/3.3 (Meta, self-hosted) | Yes | Yes | Yes (air-gapped deployment) | Yes (air-gapped) |
-| Mistral 7B/8x7B (self-hosted) | Yes | Yes | Yes (air-gapped) | Yes (air-gapped) |
-| Gemini (Google, via FedStart) | Yes | Yes | In progress | No |
+| Deployment path | Public evidence | What you still must verify |
+|-----------------|----------------|----------------------------|
+| Managed government model endpoint | The provider's exact government offering documentation | Model/version, endpoint, region or network, service boundary, retention, and program-approved data types. |
+| Claude Gov or another specialized classified offering | [Anthropic's Claude Gov announcement](https://www.anthropic.com/news/claude-gov-models-for-u-s-national-security-customers) confirms specialized classified deployments | Availability to your organization, exact network and classification, customer access, and system authorization. The announcement does not authorize a commercial Claude account. |
+| Model inside Palantir or Databricks | The tenant's approved model inventory and [platform integration documentation](https://www.palantir.com/docs/foundry/model-integration/overview/) | The actual integration path and each service's authorization. Commercial documentation does not establish GovCloud availability. |
+| Self-hosted open-weight model | Model license, provenance, import review, and approved enclave documentation | Model artifacts, dependencies, runtime, supply chain, permitted use, and system approval. Air-gapping alone grants no authorization. |
 
-> **Note:** Authorization status changes. The table above reflects publicly announced program statuses as of March 2026. Before building a production system, verify current ATO status with your ISSO and check the FedRAMP Marketplace at marketplace.fedramp.gov.
+Before connecting data, record the exact offering, deployment, model version, endpoint, region or network, permitted data, source, verification date, and responsible program contact. Treat unknown scope as unapproved until confirmed. Verify embeddings, inference, storage, logging, and tools separately.
 
-The most important development in 2024-2025 was Palantir's FedRAMP High authorization in December 2024, followed by Anthropic joining the Palantir FedStart program in April 2025. That combination put Claude inside IL5 environments. The Palantir-Microsoft partnership from August 2024 put GPT-4 (via Azure OpenAI) into IL6 environments. Those two deals changed what was architecturally possible for defense AI.
-
-For self-hosted open-source models like Llama 3.3 and Mistral, authorization follows your accredited compute environment. If your IL5 enclave has approved the model binary for import, you can run it. This is the most flexible path but requires the most engineering and security review.
+IL4 and IL5 concern unclassified workloads. IL6 covers up to Secret, not blanket Top Secret processing. Neither a cloud authorization nor a vendor partnership automatically authorizes the customer system. Confirm the program boundary with the system owner and authorizing official.
 
 ### What "Model-Agnostic" Actually Means
 
 Palantir AIP is built on a "k-LLM philosophy" — one architecture that can use any LLM on the platform interchangeably. When you build an AIP Logic workflow, you choose a model from a dropdown. Swapping from GPT-4 to Claude to Llama 3 requires changing that dropdown, not rewriting your application.
 
-This matters more than it sounds. Model authorization changes. Models get updated, deprecated, and re-approved. If your application is tightly coupled to one model provider's SDK, every authorization change requires an engineering sprint. If you build on AIP's abstraction layer, you swap the model and move on.
+A model swap still requires evaluation, security review, and program change approval. Model authorization changes. Models get updated, deprecated, and re-approved. If your application is tightly coupled to one model provider's SDK, every authorization change requires an engineering sprint. If you build on AIP's abstraction layer, you swap the model and move on.
 
 The same principle applies when you build your own RAG stack. Design against an interface, not a provider.
 
@@ -66,7 +63,7 @@ Retrieval-Augmented Generation is the dominant approach for using LLMs with gove
 
 The architecture is straightforward. You have a corpus of documents — contracts, technical manuals, policy memoranda, FOIA-eligible records. You chunk those documents, create vector embeddings of each chunk, store them in a vector database, and at query time you retrieve the most relevant chunks and inject them into the LLM's context window along with the user's question.
 
-What is not straightforward is how you implement this at IL5 where you cannot call out to an external embedding API.
+At IL5, embeddings and inference must use services approved for the system boundary. An unauthorized public endpoint is not acceptable. A specifically authorized managed endpoint and a reviewed self-hosted deployment are different implementation paths.
 
 ### Chunking Government Documents
 
@@ -91,7 +88,7 @@ For policy documents, split at numbered paragraph boundaries. For technical manu
 
 ### Embedding Models at IL5
 
-You have two options for embeddings in a classified environment:
+For an unclassified IL5 deployment, evaluate embedding options within the approved boundary:
 
 **Option 1: Self-hosted sentence-transformers.** Models like `all-MiniLM-L6-v2` (80MB), `all-mpnet-base-v2` (420MB), or `e5-large-v2` (1.3GB) can be imported into an air-gapped environment and run entirely on-premise. No external API calls. For most government document retrieval tasks, `e5-large-v2` or the MTEB leaderboard's top performers give you production-quality embeddings.
 
@@ -335,7 +332,7 @@ Qlik and Navy Jupiter are not serious contenders for GenAI workloads in 2026. Th
 - Nobody on the team has asked "what is the ATO status of this API endpoint?"
 - The ISSO has never heard of the AI component of your application
 
-**What to do instead:** Start authorization early. Treat the LLM endpoint as a new external service that requires the same security review as any other external dependency. Use Palantir FedRAMP High or Azure Government endpoints for anything above Moderate. For IL5+, use Palantir/Azure classified environment deployments or self-hosted open-source models.
+**What to do instead:** Start authorization early. Treat the LLM endpoint as a new external service that requires the same security review as any other external dependency. Use the exact endpoint and services approved for the data and system. IL5 is unclassified. Verify managed and self-hosted models separately. Neither a brand name nor a local runtime establishes authorization.
 
 ---
 
