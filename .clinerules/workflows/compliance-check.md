@@ -1,6 +1,6 @@
 # Federal Compliance Check
 
-Review code against federal data science compliance requirements from this handbook.
+Provide an advisory review of code against federal data science compliance requirements from this handbook.
 
 ## Step 1: Identify what's being reviewed
 
@@ -9,7 +9,7 @@ Look at the code provided by the user (or the current file in context). Classify
 - **Auth/access** → check CAC/PIV and RBAC patterns
 - **ML/model** → check DoD AI Ethics and NIST AI RMF
 - **Deployment** → check ATO and container security
-- **GenAI/LLM** → check IL-level authorization and self-hosting
+- **GenAI/LLM** → check IL-level authorization and deployment boundaries
 
 ## Step 2: Read the compliance policy
 
@@ -32,10 +32,10 @@ Based on the code type identified in Step 1, read the relevant sources:
 
 Review the code against these rules:
 1. No hardcoded credentials — must use env vars or platform secret management
-2. No external API calls with government data at IL4+
-3. Self-hosted models only at IL4+ for inference and embeddings
+2. Reject nonpublic government data sent to unauthorized endpoints
+3. Use only endpoints approved for the exact data, offering, region or network, and system authorization. Reject unauthorized public endpoints. Self-hosting alone does not authorize a model.
 4. AES-256 at rest, TLS 1.3 in transit
-5. CAC/PIV authentication — no username/password auth
+5. Preserve required CAC/PIV access and approved workload identities
 6. RBAC with least privilege
 7. Audit logging for all data access and model inference
 8. Model cards required for production ML models
@@ -46,6 +46,12 @@ Review the code against these rules:
 
 Output a structured report with:
 - **Findings table**: Finding | Severity (Critical/High/Medium/Low) | Standard | Remediation
-- **Compliant patterns found**: what the code does correctly
+- **Positive patterns observed (not certification)**: what the code does correctly
 - **Top 3 priority fixes**: with specific code suggestions
 - **Handbook references**: specific file paths with relevant patterns
+
+## Review limits
+
+This workflow is advisory. It cannot grant an ATO, certify compliance, or authorize data movement.
+Distinguish binding program requirements from recommended practice. State unknown authorization as unknown.
+Never include restricted data or actual credentials in the report.

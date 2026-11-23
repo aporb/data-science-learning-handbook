@@ -1,6 +1,6 @@
 # Federal Data Science Handbook — Cline Rules
 
-This is a completed reference handbook (96K+ words, 43 Python examples, 13 chapters, 5 platform guides). Content is QA-signed-off and frozen. Do NOT modify chapter READMEs, platform guides, or exercise files.
+This is a completed reference handbook (96K+ words, 43 Python examples, 13 chapters, 5 platform guides). Preserve the teaching structure. Allow sourced accuracy corrections, safety fixes, and tested example repairs. Mirror prose changes to the companion site.
 
 Read `CLAUDE.md` for the full content map. Read `AGENTS.md` for agent workflows.
 
@@ -13,14 +13,14 @@ Read `CLAUDE.md` for the full content map. Read `AGENTS.md` for agent workflows.
    - Foundry: Use palantir_models for publishing. No direct file I/O.
    - Advana/Jupiter: JupyterHub shared cluster. No sudo. Conda environments.
 4. Security code must reference patterns in `security-compliance/` — do not invent compliance patterns
-5. At IL4+: no external API calls with data, self-hosted models only
+5. Use only endpoints approved for the exact data, offering, region or network, and system authorization. Reject unauthorized public endpoints. Self-hosting alone does not authorize a model.
 6. Never hardcode tokens, passwords, or credentials
 
 ## Sensitivity Rules
 
-- Never suggest sending government data to external APIs
-- RAG at IL4+ must use self-hosted embeddings
-- Check the LLM authorization matrix in chapter 13 before recommending any model
+- Never send nonpublic government data to an unapproved endpoint.
+- Use only approved embedding and inference services within the system boundary.
+- Use the chapter 13 deployment checklist and obtain program confirmation. The handbook does not authorize a model.
 
 ## Available Workflows
 

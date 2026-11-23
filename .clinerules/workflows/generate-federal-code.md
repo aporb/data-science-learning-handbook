@@ -1,4 +1,4 @@
-# Generate Federal-Compliant Code
+# Generate Federal Platform Code
 
 Generate Python code following handbook patterns for federal platform contexts.
 
@@ -20,7 +20,7 @@ Generate Python code following handbook patterns for federal platform contexts.
 
 <ask_followup_question>
 <question>What classification level?</question>
-<options>["IL2 (public/CUI)", "IL4 (controlled)", "IL5 (higher controlled)", "Not sure"]</options>
+<options>["Public or synthetic", "CUI in an authorized environment", "Classified (discussion only, no data)", "Not sure"]</options>
 </ask_followup_question>
 
 ## Step 4: Load platform constraints
@@ -54,7 +54,7 @@ Generate the code with these requirements:
 - Start with the required docstring header: Title, Description, `Platform:`, `Usage:`
 - Follow the platform detection pattern from Step 4
 - Apply platform constraints: no pip install in Databricks cells, use dbutils.secrets, etc.
-- At IL4+: no external API calls with data, self-hosted models only
+- Use only endpoints approved for the exact data, offering, region or network, and system authorization. Reject unauthorized public endpoints. Self-hosting alone does not authorize a model.
 - Never hardcode credentials
 - Include error handling for platform-specific failure modes
 

@@ -1,6 +1,6 @@
 # Security Compliance — Agent Context
 
-14 modules covering federal security architecture. ~311 Python/config files total. These are reference implementations for DoD-compliant systems, NOT chapter code examples.
+14 modules covering federal security architecture. ~311 Python/config files total. These are educational patterns, NOT certified controls or chapter code examples.
 
 **Read `security-policy.md` first** for the high-level policy framework (classification levels, auth controls, encryption standards, compliance standards).
 
@@ -17,8 +17,8 @@ Study these and adapt patterns. Do not run as-is without configuration.
 | `sessions/` | Session management files | Classification-aware session policies |
 | `credential-management/` | Vault integration files | HashiCorp Vault integration, disaster recovery |
 
-### Operational Tools
-Designed to run against live systems. Require environment configuration.
+### Infrastructure-dependent tools
+Study these patterns in an isolated lab. Do not run against live systems without separate authorization.
 
 | Module | What It Does |
 |--------|-------------|
@@ -68,4 +68,4 @@ CAC/PIV → auth/ (OAuth bridge) → sessions/ (classification-aware)
 
 ## Do Not Modify
 
-These are reference implementations. If generating security code, use these as patterns but create new files — do not edit the reference implementations.
+These are educational reference implementations, not certified security controls. Allow tested syntax and safety repairs. Do not infer operational readiness from parsing or unit tests. Never run security tools against live targets without separate authorization.

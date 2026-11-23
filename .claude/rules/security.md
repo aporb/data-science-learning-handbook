@@ -1,6 +1,6 @@
 # Security & Compliance — Federal Data Science Handbook
 
-Reference implementations for federal security patterns. Not toy examples — working code for CAC/PIV auth, RBAC, encryption, compliance, and audit logging.
+Reference implementations for federal security patterns. Educational patterns for CAC/PIV auth, RBAC, encryption, compliance, and audit logging. Not certified or production-ready controls.
 
 ## Module index
 
@@ -24,5 +24,5 @@ Reference implementations for federal security patterns. Not toy examples — wo
 1. ALWAYS reference existing patterns in `security-compliance/` — do not invent compliance patterns
 2. Read `security-compliance/security-policy.md` for classification levels and encryption standards
 3. Read `security-compliance/CLAUDE.md` for module-by-module classification of runability
-4. IL4+ requires: AES-256 at rest, TLS 1.3 in transit, CAC/PIV auth, audit logging for all data access
+4. Verify required cryptographic modules, identity controls, and audit coverage against the system security plan. An algorithm name does not prove FIPS validation.
 5. Never hardcode tokens, passwords, or credentials — use env vars or platform secret management

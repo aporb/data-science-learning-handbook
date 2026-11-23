@@ -1,6 +1,6 @@
 # Platform Guides — Federal Data Science Handbook
 
-Content in `platform-guides/*/README.md` is QA-signed-off and frozen. Do NOT modify.
+Preserve each guide's structure. Allow sourced accuracy corrections and safety fixes. Record verification dates for changing platform claims. Mirror prose changes to the companion site.
 
 ## When working with platform guides
 

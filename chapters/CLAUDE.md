@@ -1,6 +1,6 @@
 # Chapters — Agent Context
 
-13 chapters covering the full data science lifecycle on federal platforms. Each chapter has a README.md (prose content) and code-examples/python/ (working Python files). Content is QA-signed-off — do not modify.
+13 chapters covering the full data science lifecycle on federal platforms. Each chapter has a README.md (prose content) and code-examples/python/ (working Python files). Preserve the teaching structure. Allow sourced accuracy corrections, safety fixes, and tested example repairs. Mirror prose changes to the companion site.
 
 ## Chapter Index
 
