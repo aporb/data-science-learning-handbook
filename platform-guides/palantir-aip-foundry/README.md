@@ -79,7 +79,7 @@ For DoD work specifically:
 
 - **IL4** covers Controlled Unclassified Information (CUI) — most acquisition data, contractor-sensitive data, some personnel records. Palantir has been IL4 authorized on Azure for several years.
 - **IL5** covers National Security Systems data that is unclassified but sensitive — higher-sensitivity CUI, DoD-only data. IL5 also runs on Azure Government.
-- **IL6** covers Secret-level classified data. This is where the August 2024 Microsoft partnership becomes important: Palantir was the first industry partner to deploy Azure OpenAI Service in Azure Government Top Secret (IL6). The full Palantir stack — Foundry, Gotham, AIP, Apollo — runs in that environment.
+- **IL6** covers classified data up to Secret. Public reporting describes Palantir and Microsoft bringing Azure OpenAI Service into Azure Government Top Secret environments after their August 2024 partnership. Treat that as vendor reporting about a deployment path, not as authorization for your data, model, or tenant. Confirm the exact offering, network, model endpoint, and system approval.
 
 In practice: if you are working on an unclassified federal program using Foundry in the commercial or Azure Government cloud, you are operating at FedRAMP High or IL4/IL5. If you are on a classified DoD program, you may be on IL6 via the Azure classified enclave. Your environment will determine which LLMs are available inside AIP — the k-LLM model-agnostic architecture means different models can be configured for different classification levels.
 
@@ -294,7 +294,7 @@ AI FDE requires AIP to be enabled on your enrollment. It is in beta, which means
 
 Palantir deliberately built AIP to be model-agnostic. You can configure multiple LLMs simultaneously in your enrollment — GPT-4, Claude, other models — and select different models for different Logic blocks or agents based on capability, cost, or policy requirements.
 
-For government customers, this matters specifically because model availability varies by classification level. In unclassified environments, you may have broad model selection. In the IL6 environment (Azure Government Top Secret), you have Azure OpenAI Service — GPT-4 variants deployed inside the classified enclave, made possible by the August 2024 Palantir-Microsoft partnership. Anthropic's Claude became available in government environments through the FedStart program in April 2025 and is documented as the model underlying the Maven Smart System.
+For government customers, this matters specifically because model availability varies by classification level. In unclassified environments, you may have broad model selection. In a classified deployment, the models available to you are whatever that specific environment has approved. Vendor partnerships and public announcements describe possible deployment paths. They do not establish which model, version, or endpoint your program may use. Ask the environment owner for the current approved model list, then verify it again before each release.
 
 Swapping models does not require rewriting your AIP Logic or agents. The Ontology grounding and the tools layer remain constant across model changes.
 
