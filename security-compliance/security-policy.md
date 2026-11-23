@@ -1,162 +1,89 @@
-# Security Policy and Compliance Framework
+# Security boundaries for handbook examples
 
-## Overview
+Last reviewed: November 23, 2026.
 
-This document outlines the security policies and compliance framework for the Data Science Learning Handbook project, ensuring DoD compliance and multi-classification data handling.
+## Scope and authority
+
+This is an educational reference, not an agency policy, security certification, or authorization to operate (ATO).
+The repository and local lab accept only public or synthetic data.
+Do not place CUI, classified data, actual credentials, or operational records in this repository or lab.
+
+A CAC authenticates a person. It does not grant a clearance, need-to-know, data access, or permission to move data.
+A cloud authorization does not authorize every service, model, region, or customer system.
+Use the program's approved architecture and security plan. Confirm scope with the system owner, ISSO, and authorizing official.
 
 ## Data Classification Levels
 
-### Unclassified
-- **Scope**: Public datasets, educational examples, basic tutorials
-- **Access**: Open to all users
-- **Storage**: Public cloud or local development
-- **Examples**: Iris dataset, synthetic data, basic ML tutorials
+| Data | Boundary considerations |
+|------|-------------------------|
+| Public information | Use approved public sources and synthetic fixtures for handbook exercises. Check licenses and privacy restrictions. |
+| Controlled Unclassified Information (CUI) | CUI is unclassified. Use the system and services approved for the data category, mission, and contract. DoD IL4 and IL5 address unclassified workloads with different requirements. |
+| Secret | Use a specifically authorized Secret environment. DoD cloud IL6 addresses workloads up to Secret. SIPRNet supports Secret communications. Ordinary AWS GovCloud and Azure Government offerings do not become classified environments through encryption or a CAC. |
+| Top Secret / SCI | Use an environment explicitly authorized for that classification and compartments, such as the appropriate JWICS environment. IL6 is not a blanket Top Secret authorization. SIPRNet is not a Top Secret network. |
 
-### Secret
-- **Scope**: Government-specific use cases, operational data patterns
-- **Access**: CAC/PIV card required, RBAC enforced
-- **Storage**: Approved government cloud (AWS GovCloud, Azure Gov)
-- **Examples**: Defense logistics data, personnel analytics
+Classification follows authorized classification guidance, not the subject of an example.
+A logistics or personnel dataset is not automatically Secret. Unclassified does not mean public.
+Do not infer that an Advana, Jupiter, or vendor deployment on one network shares another deployment's authorization.
 
-### Top Secret
-- **Scope**: Advanced techniques, sensitive operational data
-- **Access**: Additional clearance required, multi-factor authentication
-- **Storage**: Classified networks only (SIPRNet, JWICS)
-- **Examples**: Intelligence analysis, classified ML models
+## Approved services and models
+
+Do not send nonpublic government data to public chat, embedding, telemetry, or inference endpoints.
+An approved managed service can be used only within the program's approved boundary.
+Verify the exact offering, model version, endpoint, region or network, data handling terms, and permitted use.
+Self-hosting is an implementation option, not an exemption from model import, licensing, supply-chain, or security review.
+If authorization is unknown, stop the integration and obtain confirmation. Do not test with restricted data.
 
 ## Security Controls
 
-### Authentication & Authorization
-- **CAC/PIV Integration**: Smart card authentication for all access
-- **OAuth 2.0**: Token-based authentication with refresh tokens
-- **RBAC**: Role-based access control with principle of least privilege
-- **MFA**: Multi-factor authentication for elevated access
+Use least privilege, the approved identity provider, and service identities appropriate for each workload.
+Preserve required CAC/PIV authentication for interactive users. Do not simulate a CAC as evidence of real identity validation.
+Apply the system's required encryption configuration and validated cryptographic modules.
+An algorithm name such as AES-256 or a TLS version does not establish FIPS validation.
+Protect secrets through approved secret storage and rotation. Do not put secrets in source, prompts, screenshots, or logs.
 
-### Data Encryption
-- **At Rest**: AES-256 encryption for all stored data
-- **In Transit**: TLS 1.3 for all network communications
-- **Key Management**: Hardware Security Module (HSM) integration
-- **Certificate Management**: PKI certificates for authentication
+Log security-relevant access and changes under the approved privacy and records-retention rules.
+A hash chain alone does not make storage immutable or tamper-proof. Validate integrity, access control, and recovery separately.
+Do not use example cross-domain code to transfer operational data. Use approved transfer mechanisms and release procedures.
 
-### Network Security
-- **Zero Trust Architecture**: Never trust, always verify
-- **Micro-segmentation**: Network isolation by classification level
-- **VPN Required**: All remote access via approved VPN
-- **Firewall Rules**: Default deny, explicit allow
+## Data Encryption
 
-### Audit & Monitoring
-- **Comprehensive Logging**: All access and operations logged
-- **SIEM Integration**: Real-time security monitoring
-- **Audit Trails**: Immutable audit logs with 7-year retention
-- **Compliance Reporting**: Automated compliance dashboards
+NIST moved FIPS 140-2 validations to the historical list on September 21, 2026.
+NIST supports continued purchase and use for existing systems subject to agency decisions.
+For new deployments, confirm current agency requirements, module validation status, operating mode, and configuration.
+Do not replace every reference to FIPS 140-2 mechanically or claim validation from a Python library name.
 
 ## Compliance Standards
 
-### DoD Requirements
-- **DoD 8570/8140**: Information Assurance Workforce certification
-- **NIST SP 800-53**: Security and Privacy Controls
-- **NIST SP 800-171**: Controlled Unclassified Information
-- **FedRAMP**: Federal Risk and Authorization Management Program
+Use the applicable version and scope of FISMA, NIST controls, CUI requirements, FedRAMP, and DoD cloud guidance.
+FedRAMP certification and DoD impact levels are different programs. Neither replaces a system authorization.
+Current FedRAMP 2026 rules use class-based terminology. Retain historical names when discussing historical authorizations.
+Check the current offering record rather than applying a vendor-wide label.
 
-### Data Protection
-- **FISMA**: Federal Information Security Management Act
-- **HIPAA**: Health Insurance Portability and Accountability Act (where applicable)
-- **GDPR**: General Data Protection Regulation (for international data)
-- **CCPA**: California Consumer Privacy Act
+For AI governance, distinguish binding agency policy from voluntary frameworks and recommended engineering practice.
+OMB M-25-21 excludes AI used as a component of a National Security System. Other defense and intelligence policies apply there.
+The NIST AI RMF is guidance. Do not describe a handbook checklist as proof that an AI system satisfies every legal requirement.
 
-### Platform-Specific Compliance
-- **AWS**: AWS GovCloud compliance, FedRAMP High
-- **Azure**: Azure Government, DoD CC SRG IL5
-- **GCP**: Google Cloud Government, FedRAMP High
+## Local lab and reference tools
 
-## Security Scanning
+Keep published container ports on loopback. Keep notebook authentication and XSRF protection enabled.
+Use synthetic data even when the lab demonstrates authentication, classification, or audit concepts.
+The reference stack is not a replica of an accredited environment.
+Do not run penetration tests or security scanners against live systems without separate written authorization.
+Parsing and unit tests do not establish operational security or production readiness.
 
-### Static Analysis
-- **SAST**: Static Application Security Testing
-- **Dependency Scanning**: Third-party library vulnerability scanning
-- **Secret Scanning**: API keys, passwords, tokens detection
-- **Code Quality**: Security-focused code quality checks
+## Incident response and contacts
 
-### Dynamic Analysis
-- **DAST**: Dynamic Application Security Testing
-- **Container Scanning**: Docker image vulnerability scanning
-- **Infrastructure Scanning**: Cloud configuration security
-- **Penetration Testing**: Regular security assessments
+If restricted information enters a prompt or lab, stop the activity and use the program's incident-reporting procedure.
+Do not copy suspected restricted content into a public issue or attempt informal cross-domain cleanup.
+This project does not operate a DoD security team, CISO approval process, or emergency hotline.
+Report nonsensitive documentation defects through the repository issue tracker.
+Use the actual program's security channels for operational incidents.
 
-### Compliance Scanning
-- **Configuration Compliance**: CIS benchmarks
-- **Policy Compliance**: Custom security policies
-- **Data Classification**: Automated data classification scanning
-- **Access Review**: Regular access rights review
+## Sources
 
-## Incident Response
-
-### Detection
-- **Real-time Monitoring**: 24/7 security monitoring
-- **Anomaly Detection**: ML-based threat detection
-- **Alerting**: Immediate notification of security events
-- **Escalation**: Clear escalation procedures
-
-### Response
-- **Incident Classification**: Severity-based response
-- **Containment**: Immediate threat containment
-- **Investigation**: Forensic analysis and root cause
-- **Recovery**: System restoration and lessons learned
-
-### Communication
-- **Notification**: Stakeholder notification procedures
-- **Reporting**: Regulatory reporting requirements
-- **Documentation**: Complete incident documentation
-- **Post-incident**: Lessons learned and improvements
-
-## Security Training
-
-### User Training
-- **Security Awareness**: Annual security training
-- **Platform Training**: Platform-specific security training
-- **Incident Response**: User incident response procedures
-- **Best Practices**: Security best practices training
-
-### Developer Training
-- **Secure Coding**: Secure development practices
-- **OWASP Top 10**: Web application security
-- **Code Review**: Security-focused code review
-- **Threat Modeling**: Application threat modeling
-
-## Regular Reviews
-
-### Security Assessments
-- **Annual Review**: Comprehensive security review
-- **Quarterly Scanning**: Regular vulnerability scanning
-- **Monthly Patching**: Security patch management
-- **Continuous Monitoring**: Ongoing security monitoring
-
-### Compliance Audits
-- **Annual Audit**: Third-party compliance audit
-- **Quarterly Review**: Internal compliance review
-- **Monthly Checks**: Automated compliance checks
-- **Continuous Monitoring**: Real-time compliance monitoring
-
-## Contact Information
-
-### Security Team
-- **Email**: security@ds-handbook.dod.mil
-- **Phone**: +1-800-SECURITY
-- **Emergency**: 24/7 security hotline
-
-### Compliance Team
-- **Email**: compliance@ds-handbook.dod.mil
-- **Phone**: +1-800-COMPLIANCE
-
-### Platform Security
-- **AWS**: aws-security@ds-handbook.dod.mil
-- **Azure**: azure-security@ds-handbook.dod.mil
-- **GCP**: gcp-security@ds-handbook.dod.mil
-
-## Document Control
-
-- **Version**: 1.0
-- **Last Updated**: 2024-07-15
-- **Next Review**: 2024-10-15
-- **Owner**: Security Team
-- **Approved By**: CISO
+- [DoD Cloud Computing Security](https://public.cyber.mil/dccs/): current cloud guidance and impact-level requirements.
+- [AWS GovCloud FAQ](https://aws.amazon.com/govcloud-us/faqs/): GovCloud scope and compliance programs.
+- [Databricks AWS GovCloud](https://docs.databricks.com/aws/en/security/privacy/gov-cloud): distinct offerings and NIPRNet IL5 environment.
+- [NIST FIPS transition](https://csrc.nist.gov/projects/fips-140-3-transition-effort): historical validations and existing-system use.
+- [FedRAMP 2026 Class D rules](https://www.fedramp.gov/2026/reference/rev5/d/): current rules and terminology.
+- [OMB M-25-21](https://www.whitehouse.gov/wp-content/uploads/2025/02/M-25-21-Accelerating-Federal-Use-of-AI-through-Innovation-Governance-and-Public-Trust.pdf): AI use, governance, and applicability.

@@ -383,14 +383,11 @@ logger = logging.getLogger('session_management')
 
 ## Support
 
-For technical support and security questions:
-- Security Team: security@dod.mil
-- Architecture Team: architecture@dod.mil
-- System Administration: sysadmin@dod.mil
+Use your program's approved help desk and incident process for operational questions. The handbook does not operate a DoD support service. Report public documentation problems through the repository issue tracker. Never submit restricted data or credentials.
 
 ## Classification
 
-This implementation is classified as **UNCLASSIFIED//FOR OFFICIAL USE ONLY** and contains security-sensitive information. Handle according to DoD information handling procedures.
+This is public educational content, not an official classification determination. Use synthetic records only. Follow the program's approved handling rules for real systems.
 
 ## Version History
 
